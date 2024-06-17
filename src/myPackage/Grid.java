@@ -1,19 +1,17 @@
 package myPackage;
-import myPackage.Coordinates;
-import myPackage.Token;
 
-import java.util.HashMap;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 
 public class Grid {
 
-    private int size = 8;
+    private final int size = 8;
     private HashMap<Coordinates, Token> grid;
-    private HashMap<Coordinates, Token> tokensMoveStart = new HashMap<Coordinates, Token>();
+    private HashMap<Coordinates, Token> tokensMoveStart = new HashMap<>();
 
     // Getters and Setters
 
@@ -36,7 +34,7 @@ public class Grid {
     // Constructors
     
     public Grid() {
-        this.grid = new HashMap<Coordinates, Token>();
+        this.grid = new HashMap<>();
     }
 
     // Methods
@@ -73,12 +71,12 @@ public class Grid {
             throw new IllegalArgumentException("Direction must be U, D, R or L");
         }
         
-        ArrayList<Integer> coeffs = new ArrayList<Integer>();
+        ArrayList<Integer> coeffs = new ArrayList<>();
         switch (direction) {
-            case 'U': coeffs.add(0); coeffs.add(-1); break;
-            case 'D': coeffs.add(0); coeffs.add(1); break;
-            case 'R': coeffs.add(1); coeffs.add(0); break;
-            case 'L': coeffs.add(-1); coeffs.add(0); break;
+            case 'U' -> { coeffs.add(0); coeffs.add(-1); }
+            case 'D' -> { coeffs.add(0); coeffs.add(1); }
+            case 'R' -> { coeffs.add(1); coeffs.add(0); }
+            case 'L' -> { coeffs.add(-1); coeffs.add(0); }
         }
         return coeffs;
     }
@@ -121,7 +119,7 @@ public class Grid {
         }
 
 
-        HashMap<Coordinates, Token> tokensToMove = new HashMap<Coordinates, Token>();
+        HashMap<Coordinates, Token> tokensToMove = new HashMap<>();
         Coordinates iterationsCoordinates = new Coordinates(coordinate.getX(), coordinate.getY());
         
         while (this.grid.containsKey(iterationsCoordinates)) {
@@ -132,20 +130,6 @@ public class Grid {
         
         return tokensToMove;
     }
-
-
-    // public void removeTowTokens(HashMap<Coordinates, Token> fiveTokens, Coordinates firstCoordinates, Coordinates secondCoordinates) {
-    //     if (!fiveTokens.containsKey(firstCoordinates)) {
-    //         String message = "There is no token at the given coordinates : " + firstCoordinates.toString();
-    //         throw new IllegalArgumentException(message);
-    //     }
-    //     if (!fiveTokens.containsKey(secondCoordinates)) {
-    //         String message = "There is no token at the given coordinates : " + secondCoordinates.toString();
-    //         throw new IllegalArgumentException(message);
-    //     }        
-    // }
-
-
 
     /**
      * Déplace un jeton dans une direction donnée.
@@ -178,7 +162,7 @@ public class Grid {
         
         // place the tokens to move in the new coordinates
 
-        HashMap<Coordinates, Token> tokensMoveEnd = new HashMap<Coordinates, Token>();
+        HashMap<Coordinates, Token> tokensMoveEnd = new HashMap<>();
 
         for (Coordinates c : tokensToMove.keySet()) {
 
@@ -205,11 +189,15 @@ public class Grid {
         
     }
     
+    /**
+     * Renvoie les alignements de 5 jetons dans le plateau.
+     * @return une liste des alignements de 5 jetons dans le plateau.
+     */
     public List<List<List<Coordinates>>> getAlignmentsOfFive() {
 
         List<List<List<Coordinates>>> result = new ArrayList<>();
-        result.add(new ArrayList<List<Coordinates>>()); // blue tokens
-        result.add(new ArrayList<List<Coordinates>>()); // yellow tokens
+        result.add(new ArrayList<>()); // blue tokens
+        result.add(new ArrayList<>()); // yellow tokens
 
         int [][] directions = {{0, 1}, {1, 0}, {1, 1}, {1, -1}};
 
@@ -242,7 +230,7 @@ public class Grid {
                         }
 
                         // print the alignment
-                        System.out.println("Alignment of 5 !");
+                        System.out.println(token.getColour() + " made an alignment of 5 !");
                     }
                 }
             }
@@ -258,24 +246,30 @@ public class Grid {
      * @return une liste des jetons voisins dans la direction donnée.
      */
     public List<Coordinates> getNeighboursInDirection(Coordinates coordinates, int direction[], char colour, Set<Coordinates> visited) {
+        
+        // Initialise la liste des voisins dans l'allignement et les deux hypothétiques voisins directs
         List<Coordinates> neighbours = new ArrayList<>();
         Coordinates neighbour1 = new Coordinates(coordinates.getX() + direction[0], coordinates.getY() + direction[1]);
         Coordinates neighbour2 = new Coordinates(coordinates.getX() - direction[0], coordinates.getY() - direction[1]);
+        Coordinates[] neighboursArray = {neighbour1, neighbour2};
 
-        if (!visited.contains(neighbour1) && grid.get(neighbour1) != null && grid.get(neighbour1).getColour() == colour) {
-            neighbours.add(neighbour1);
-            visited.add(neighbour1);
-            neighbours.addAll(getNeighboursInDirection(neighbour1, direction, colour, visited));
-        }
-        if (!visited.contains(neighbour2) && grid.get(neighbour2) != null && grid.get(neighbour2).getColour() == colour) {
-            neighbours.add(neighbour2);
-            visited.add(neighbour2);
-            neighbours.addAll(getNeighboursInDirection(neighbour2, direction, colour, visited));
-        }
+        // Pour chaqun des deux voisins directs, si le voisin n'a pas déjà été visité et si le voisin est de la couleur donnée, on l'ajoute à la liste des voisins et on continue la recherche dans la même direction
+        for (Coordinates neighbour : neighboursArray) {
+            if (!visited.contains(neighbour) && grid.get(neighbour) != null && grid.get(neighbour).getColour() == colour) {
+                neighbours.add(neighbour);
+                visited.add(neighbour);
+                neighbours.addAll(getNeighboursInDirection(neighbour, direction, colour, visited));
+            }
+        } 
 
         return neighbours;
     }
 
+    /**
+     * Vérifie si une case a des voisins.
+     * @param coordinates les coordonnées de la case à vérifier.
+     * @return true si la case a des voisins, false sinon.
+     */
     public boolean hasNeighbours(Coordinates coordinates) {
         int [][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
         for (int[] direction : directions)

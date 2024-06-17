@@ -10,9 +10,14 @@ public class App {
         grid.placeToken('B', new Coordinates(0, 3));
         grid.placeToken('B', new Coordinates(0, 4));
 
+        grid.placeToken('Y', new Coordinates(1, 0));
+        grid.placeToken('Y', new Coordinates(1, 1));
+        grid.placeToken('Y', new Coordinates(1, 2));
+        grid.placeToken('Y', new Coordinates(1, 3));
+        grid.placeToken('Y', new Coordinates(1, 4));
+
         Game game = new Game(grid);
-        game.run();
-        
+        game.run();     
         
     }
 }

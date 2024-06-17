@@ -1,7 +1,7 @@
 package myPackage;
 
-import java.util.List;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Token {
     private char colour;
@@ -29,23 +29,11 @@ public class Token {
 
     public Token(char myColour) {
         this.colour = myColour;
-        this.alignments = new ArrayList<int[]>();
+        this.alignments = new ArrayList<>();
     }
 
     public Token(char myColour, List<int[]> alignments) {
         this.colour = myColour;
         this.alignments = alignments;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (obj == null) {
-            return false;
-        }
-        if (obj.getClass() != this.getClass()) {
-            return false;
-        }
-        Token token = (Token) obj;
-        return this.colour == token.getColour();
     }
 }
