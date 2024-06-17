@@ -36,6 +36,10 @@ public class Game {
 
     // Methods
 
+    public void initialize() {
+        grid.display();
+    }
+
     /**
      * Cette méthode exécute le jeu en boucle.
      */
@@ -46,19 +50,19 @@ public class Game {
     }
     
     /**
-     * Cette méthode gère un tour de jeu.
+     * Cette méthode exécute un tour de jeu.
      *
-     * Ensuite, elle demande au joueur de placer un jeton sur le plateau.
+     * Elle demande au joueur de placer un jeton sur le plateau.
      * Après cela, elle demande au joueur de pousser un jeton à lui dans une direction spécifiée.
-     * Enfin, elle vérifie si le jeu est terminé ou si des points ont été marqués.
-     * Ensuite, elle change le tour du joueur.
+     * Ensuite, elle vérifie si le jeu est terminé ou si des points ont été marqués.
+     * Enfin, elle change le tour du joueur.
      */
     public void gameTurn() {
-        System.out.println("Player " + this.playerTurn + " turn");
+        System.out.println("Player " + this.playerTurn + "'s turn");
 
         // Le joueur place son jeton sur le plateau
         do {
-            System.out.println("Enter the coordinates of the token you want to place");
+            System.out.println(playerTurn + " : Enter the coordinates of the token you want to place");
         } while (placeToken() == 1);
 
         // Affiche le plateau de jeu après que le joueur ait placé son jeton
@@ -66,7 +70,7 @@ public class Game {
 
         // Le joueur pousse son jeton sur le plateau
         do {
-            System.out.println("Enter the coordinates of the token you want to push and the direction you want to push it in (U, D, L, R) put E to not push the token");
+            System.out.println(playerTurn + " : Enter the coordinates of the token you want to push and the direction you want to push it in (U, D, L, R) put E to not push the token");
         } while (pushToken() == 1);
 
         // Affiche le plateau de jeu après que le joueur ait poussé son jeton
@@ -151,14 +155,20 @@ public class Game {
     public int updateScore() {
         List<List<List<Coordinates>>> alignmentsOfFive = grid.getAlignmentsOfFive();
 
-        if (alignmentsOfFive.get(0).isEmpty() || alignmentsOfFive.get(1).isEmpty()) {
-            score[0] += alignmentsOfFive.get(0).size();
-            score[1] += alignmentsOfFive.get(1).size();
-        }
+        int nbBlueAlignments = alignmentsOfFive.get(0).size();
+        int nbYellowAlignments = alignmentsOfFive.get(1).size();
 
+        if (nbBlueAlignments > nbYellowAlignments) 
+            score[0] += nbBlueAlignments - nbYellowAlignments;
+        else if (nbYellowAlignments > nbBlueAlignments) 
+            score[1] += nbYellowAlignments - nbBlueAlignments;
+            
+        if (score[0] == 2) return 0;
+        else if (score[1] == 2) return 1;
+        
         int[] order = {0, 1}; // Blue player first
         if (playerTurn == 'Y') order = new int[]{1, 0}; // Yellow player first
-
+        
         for (int i : order) {
             for (List<Coordinates> alignment : alignmentsOfFive.get(i)) {
                 try {
@@ -168,9 +178,6 @@ public class Game {
                 }
             }
         }
-
-        if (score[0] == 2) return 0;
-        else if (score[1] == 2) return 1;
         return -1;
     }
 
@@ -187,7 +194,7 @@ public class Game {
 
             // Demande au joueur de retirer un jeton de l'alignement
             do {
-                System.out.println("Enter the coordinates of the " + index + " token you want to remove");
+                System.out.println(grid.getToken(alignment.get(0)).getColor() + " : Enter the coordinates of the " + index + " token you want to remove");
                 try {
                     if (removeTokenFromAlignment(alignment) == 0) {
                         break;

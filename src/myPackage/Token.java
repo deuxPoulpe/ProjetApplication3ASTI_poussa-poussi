@@ -4,15 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Token {
-    private char colour;
+    private char color;
     private List<int[]> alignments;
 
-    public char getColour() {
-        return this.colour;
+    public char getColor() {
+        return this.color;
     }
 
-    public void setColour(char myColour) {
-        this.colour = myColour;
+    public void setColor(char myColor) {
+        this.color = myColor;
     }
 
     public List<int[]> getAlignments() {
@@ -27,13 +27,13 @@ public class Token {
         this.alignments.add(alignment);
     }
 
-    public Token(char myColour) {
-        this.colour = myColour;
+    public Token(char myColor) {
+        this.color = myColor;
         this.alignments = new ArrayList<>();
     }
 
-    public Token(char myColour, List<int[]> alignments) {
-        this.colour = myColour;
+    public Token(char myColor, List<int[]> alignments) {
+        this.color = myColor;
         this.alignments = alignments;
     }
 }

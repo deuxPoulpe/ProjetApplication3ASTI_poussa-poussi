@@ -39,7 +39,7 @@ public class Grid {
 
     // Methods
 
-    public void placeToken(char colour, Coordinates coordinates) {
+    public void placeToken(char color, Coordinates coordinates) {
         // Check if there is already a token at the given coordinates
         if (this.grid.containsKey(coordinates)) {
             throw new IllegalArgumentException("There is already a token at the given coordinates");
@@ -50,7 +50,7 @@ public class Grid {
             throw new IllegalArgumentException("There is no neighbour at the given coordinates");
         }
         
-        this.grid.put(coordinates, new Token(colour));
+        this.grid.put(coordinates, new Token(color));
     }
 
     public void removeToken(Coordinates coordinates) {
@@ -133,19 +133,19 @@ public class Grid {
 
     /**
      * Déplace un jeton dans une direction donnée.
-     * @param colour la couleur du jeton à déplacer.
+     * @param color la couleur du jeton à déplacer.
      * @param coordinates les coordonnées du jeton à déplacer.
      * @param direction la direction dans laquelle déplacer le jeton.
      * @throws IllegalArgumentException si les coordonnées ne contiennent pas de jeton, si la direction n'est pas U, D, R ou L ou si le jeton à déplacer n'est pas de la couleur donnée.
      * 
      */
-    public void pushToken(char colour, Coordinates coordinates, char direction){
+    public void pushToken(char color, Coordinates coordinates, char direction){
         
         if (!this.grid.containsKey(coordinates)) {
             throw new IllegalArgumentException("There is no token at the given coordinates");
         }
 
-        if (this.grid.get(coordinates).getColour() != colour) {
+        if (this.grid.get(coordinates).getColor() != color) {
             throw new IllegalArgumentException("You can only push your own tokens");
         }
 
@@ -179,8 +179,8 @@ public class Grid {
             }
 
         for (Coordinates c : tokensToMove.keySet()) {
-            char tokenColour = tokensToMove.get(c).getColour();
-            placeToken(tokenColour, new Coordinates(c.getX() + nbEmptyCells * coeffX, c.getY() + nbEmptyCells * coeffY));
+            char tokenColor = tokensToMove.get(c).getColor();
+            placeToken(tokenColor, new Coordinates(c.getX() + nbEmptyCells * coeffX, c.getY() + nbEmptyCells * coeffY));
             }
 
         this.tokensMoveStart = tokensToMove;
@@ -196,15 +196,15 @@ public class Grid {
     public List<List<List<Coordinates>>> getAlignmentsOfFive() {
 
         List<List<List<Coordinates>>> result = new ArrayList<>();
-        result.add(new ArrayList<>()); // blue tokens
-        result.add(new ArrayList<>()); // yellow tokens
+        result.add(new ArrayList<>()); // jetons Bleus
+        result.add(new ArrayList<>()); // jetons Jaunes
 
         int [][] directions = {{0, 1}, {1, 0}, {1, 1}, {1, -1}};
 
         // for each token in the grid
         for (Coordinates c : this.grid.keySet()) {
             Token token = this.grid.get(c);
-            char colour = token.getColour();
+            char color = token.getColor();
             
             // for each direction
             for (int[] direction : directions) {
@@ -214,7 +214,7 @@ public class Grid {
 
                     // if there are 5 tokens in a row in this direction
                     Set<Coordinates> visited = new HashSet<>();
-                    List<Coordinates> neighbours = getNeighboursInDirection(c, direction, colour, visited);
+                    List<Coordinates> neighbours = getNeighboursInDirection(c, direction, color, visited);
                     if (neighbours.size() >= 5) {
                         
                         // set the aligment of the tokens to the direction
@@ -223,14 +223,14 @@ public class Grid {
                         }
 
                         // add the tokens to the result
-                        if (colour == 'B') {
+                        if (color == 'B') {
                             result.get(0).add(neighbours);
-                        } else if (colour == 'Y') {
+                        } else if (color == 'Y') {
                             result.get(1).add(neighbours);
                         }
 
                         // print the alignment
-                        System.out.println(token.getColour() + " made an alignment of 5 !");
+                        System.out.println(token.getColor() + " made an alignment of 5 !");
                     }
                 }
             }
@@ -242,10 +242,10 @@ public class Grid {
      * Renvoie les jetons voisins d'un jeton donné dans une direction donnée.
      * @param coordinates les coordonnées du jeton à partir duquel chercher les voisins.
      * @param direction la direction dans laquelle chercher les voisins.
-     * @param colour la couleur des jetons voisins à chercher.
+     * @param color la couleur des jetons voisins à chercher.
      * @return une liste des jetons voisins dans la direction donnée.
      */
-    public List<Coordinates> getNeighboursInDirection(Coordinates coordinates, int direction[], char colour, Set<Coordinates> visited) {
+    public List<Coordinates> getNeighboursInDirection(Coordinates coordinates, int direction[], char color, Set<Coordinates> visited) {
         
         // Initialise la liste des voisins dans l'allignement et les deux hypothétiques voisins directs
         List<Coordinates> neighbours = new ArrayList<>();
@@ -255,10 +255,10 @@ public class Grid {
 
         // Pour chaqun des deux voisins directs, si le voisin n'a pas déjà été visité et si le voisin est de la couleur donnée, on l'ajoute à la liste des voisins et on continue la recherche dans la même direction
         for (Coordinates neighbour : neighboursArray) {
-            if (!visited.contains(neighbour) && grid.get(neighbour) != null && grid.get(neighbour).getColour() == colour) {
+            if (!visited.contains(neighbour) && grid.get(neighbour) != null && grid.get(neighbour).getColor() == color) {
                 neighbours.add(neighbour);
                 visited.add(neighbour);
-                neighbours.addAll(getNeighboursInDirection(neighbour, direction, colour, visited));
+                neighbours.addAll(getNeighboursInDirection(neighbour, direction, color, visited));
             }
         } 
 
@@ -284,45 +284,48 @@ public class Grid {
     }
 
     public void display() {
-        System.out.print("x─");
+        for (int i = 0; i < this.size; i++) {
+            System.out.print(i == 0 ? "   " + i : "   " + i);
+        }
+        System.out.println();
+
+        System.out.print(" ┌─");
         for (int i = 0; i < this.size - 1; i++) {
             System.out.print("──┬─");
         }
-        System.out.println("──x");
-        
+        System.out.println("──┐");
+
         for (int i = 0; i < this.size; i++) {
+            System.out.print(i + "│");
             for (int j = 0; j < this.size; j++) {
-                System.out.print("│");
                 Coordinates c = new Coordinates(j, i);
                 if (this.grid.containsKey(c)) {
-                    if (this.grid.get(c).getColour() == 'B') {
-                        System.out.print("\u001B[34m");
-
-                        System.out.print("███");
+                    if (this.grid.get(c).getColor() == 'B') {
+                        System.out.print("\u001B[34m███\u001B[0m");
                     } else {
-                        System.out.print("\u001B[33m");
-                        System.out.print("███");
+                        System.out.print("\u001B[33m███\u001B[0m");
                     }
-                    System.out.print("\u001B[0m");
                 } else {
                     System.out.print("   ");
                 }
+                System.out.print("│");
             }
-            System.out.println("│");
-            
+            System.out.println();
+
             if (i < this.size - 1) {
-                System.out.print("├─");
+                System.out.print(" ├─");
                 for (int j = 0; j < this.size - 1; j++) {
                     System.out.print("──┼─");
                 }
                 System.out.println("──┤");
             }
         }
-        System.out.print("x─");
+
+        System.out.print(" └─");
         for (int i = 0; i < this.size - 1; i++) {
             System.out.print("──┴─");
         }
-        System.out.println("──x");
+        System.out.println("──┘");
     }
         
 }
