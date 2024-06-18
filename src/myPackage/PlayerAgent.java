@@ -18,7 +18,8 @@ public class PlayerAgent extends Agent {
 
         Coordinates placeCoords;
         do {
-            System.out.println(super.getColor() + " : Enter the coordinates of the token you want to place");
+            if (Settings.getInstance().getDisplayInTerminal())
+                System.out.println(super.getColor() + " : Enter the coordinates of the token you want to place");
 
 
             int x = scanner.nextInt();
@@ -27,6 +28,8 @@ public class PlayerAgent extends Agent {
             placeCoords = new Coordinates(x, y);
 
         } while (!emptyCells.contains(placeCoords));
+
+        super.getGrid().placeToken(super.getColor(), placeCoords);
     }
 
     public void pushToken() {
@@ -34,7 +37,8 @@ public class PlayerAgent extends Agent {
         int result = 0;
 
         do {
-            System.out.println(super.getColor() + " : Enter the coordinates of the token you want to push and the direction you want to push it in (U, D, L, R) put E to not push the token");
+            if (Settings.getInstance().getDisplayInTerminal())
+                System.out.println(super.getColor() + " : Enter the coordinates of the token you want to push and the direction you want to push it in (U, D, L, R) put E to not push the token");
 
             int x = scanner.nextInt();
             int y = scanner.nextInt();
@@ -64,7 +68,8 @@ public class PlayerAgent extends Agent {
 
             // Demande au joueur de retirer un jeton de l'alignement
             do {
-                System.out.println(super.getGrid().getToken(alignment.get(0)).getColor() + " : Enter the coordinates of the " + index + " token you want to remove");
+                if (Settings.getInstance().getDisplayInTerminal())
+                    System.out.println(super.getGrid().getToken(alignment.get(0)).getColor() + " : Enter the coordinates of the " + index + " token you want to remove");
                 try {
                     if (removeTokenFromAlignment(alignment) == 0) {
                         break;
@@ -77,7 +82,8 @@ public class PlayerAgent extends Agent {
             index = "second";
 
             // Affiche le plateau de jeu après que le joueur ait retiré un jeton
-            super.getGrid().display();
+            if (Settings.getInstance().getDisplayInTerminal())
+                super.getGrid().display();
         }
     }
 

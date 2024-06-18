@@ -19,7 +19,8 @@ public class RandomAgent extends Agent {
         // On prend une cellule vide aléatoire
         int random = (int) (Math.random() * emptyCells.size());
 
-        System.out.println("RandomAgent: " + super.getColor() + " places token at " + emptyCells.get(random));
+        if (Settings.getInstance().getDisplayInTerminal())
+            System.out.println("RandomAgent: " + super.getColor() + " places token at " + emptyCells.get(random));
         super.getGrid().placeToken(super.getColor(), emptyCells.get(random));
     }
 
@@ -45,8 +46,10 @@ public class RandomAgent extends Agent {
         }
         while (randomDirection == null);
         
-        System.out.printf("RandomAgent: %c pushes token at %s ", super.getColor(), randomTokenCoords);
-        System.out.printf("in direction %d, %d\n", randomDirection[0], randomDirection[1]);
+        if (Settings.getInstance().getDisplayInTerminal()) {
+            System.out.printf("RandomAgent: %c pushes token at %s ", super.getColor(), randomTokenCoords);
+            System.out.printf("in direction %d, %d\n", randomDirection[0], randomDirection[1]);
+        }
 
         super.getGrid().pushToken(super.getColor(), randomTokenCoords, randomDirection);
     }

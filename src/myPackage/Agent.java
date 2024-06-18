@@ -111,9 +111,11 @@ public abstract class Agent {
                 tokensMoveEnd.put(new Coordinates(c.getX() + nbEmptyCells * coeffX, c.getY() + nbEmptyCells * coeffY), tokensToMove.get(c));
             }
             
-            // Si la direction fait pousser les jetons dans la même position qu'au tour d'avant, on la retire de la liste des directions valides
-            if (grid.getTokensMoveStart().equals(tokensMoveEnd)) {
-                return false;
+            if (Settings.getInstance().getAllowPushBack()) {
+                // Si la direction fait pousser les jetons dans la même position qu'au tour d'avant, on la retire de la liste des directions valides
+                if (grid.getTokensMoveStart().equals(tokensMoveEnd)) {
+                    return false;
+                }
             }
         }
         catch (IllegalArgumentException e) {

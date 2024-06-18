@@ -146,8 +146,10 @@ public class Grid {
             
         }
 
-        if (tokensMoveStart.equals(tokensMoveEnd)) {
-            throw new IllegalArgumentException("You are trying to push tokens in the same previous position");
+        if (Settings.getInstance().getAllowPushBack()) {
+            if (tokensMoveStart.equals(tokensMoveEnd)) {
+                throw new IllegalArgumentException("You are trying to push tokens in the same previous position");
+            }
         }
         
         for (Coordinates c : tokensToMove.keySet()) {
@@ -204,7 +206,8 @@ public class Grid {
                         }
 
                         // print the alignment
-                        System.out.println(token.getColor() + " made an alignment of 5 !");
+                        if (Settings.getInstance().getDisplayInTerminal())
+                            System.out.println(token.getColor() + " made an alignment of 5 !");
                     }
                 }
             }
