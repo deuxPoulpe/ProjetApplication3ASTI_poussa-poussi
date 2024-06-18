@@ -11,23 +11,9 @@ public class Game {
     private Agent player2;
     private Agent currentPlayer = player1;
 
-    // Getters et Setters
-
-    public Grid getGrid() {
-        return this.grid;
-    }
-
-    public void setGrid(Grid myGrid) {
-        this.grid = myGrid;
-    }
-
-    // Constructeur
-
     public Game(Grid myGrid) {
         this.grid = myGrid;
     }
-
-    // Methods
 
     public void start() {
         // Initialisation des joueurs
@@ -46,21 +32,18 @@ public class Game {
             grid.display();
 
         if (choice == '1') {
-            this.player1 = new PlayerAgent(grid, 'B');
-            this.player2 = new PlayerAgent(grid, 'Y');
+            this.player1 = new PlayerAgent('B');
+            this.player2 = new PlayerAgent('Y');
         } else if (choice == '2') {
-            this.player1 = new PlayerAgent(grid, 'B');
-            this.player2 = new RandomAgent(grid, 'Y');
+            this.player1 = new PlayerAgent('B');
+            this.player2 = new RandomAgent('Y');
         } else {
-            this.player1 = new RandomAgent(grid, 'B');
-            this.player2 = new RandomAgent(grid, 'Y');
+            this.player1 = new RandomAgent('B');
+            this.player2 = new RandomAgent('Y');
         }
         currentPlayer = player1;
     }
 
-    /**
-     * Cette méthode exécute le jeu en boucle.
-     */
     public void run() {
         
         while (true) {
@@ -88,7 +71,7 @@ public class Game {
             System.out.println("It's a draw.");
             System.exit(0);
         }
-        currentPlayer.placeToken();
+        currentPlayer.placeToken(grid);
 
         if (Settings.getInstance().getDisplayInTerminal())
             grid.display();
@@ -96,7 +79,7 @@ public class Game {
         if (!grid.isFull()) {
             if (Settings.getInstance().getDisplayInTerminal())
                 System.out.println("The grid is full. No more tokens can be pushed.");
-            currentPlayer.pushToken();
+            currentPlayer.pushToken(grid);
 
             if (Settings.getInstance().getDisplayInTerminal())
                 grid.display();
@@ -154,9 +137,9 @@ public class Game {
             for (List<Coordinates> alignment : alignmentsOfFive.get(i)) {
                 try {
                     if (i == 0)
-                        player1.removeTwoTokens(alignment);
+                        player1.removeTwoTokens(grid, alignment);
                     else
-                        player2.removeTwoTokens(alignment);
+                        player2.removeTwoTokens(grid, alignment);
 
                 } catch (Exception e) {
                     System.out.println(e.getMessage());
@@ -165,5 +148,5 @@ public class Game {
         }
         return -1;
     }
-
+    
 }

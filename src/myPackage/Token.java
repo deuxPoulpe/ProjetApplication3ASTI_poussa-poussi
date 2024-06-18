@@ -19,8 +19,8 @@ public class Token {
         return this.alignments;
     }
 
-    public void setAlignment(List<int[]> alignments) {
-        this.alignments = alignments;
+    public void clearAlignments() {
+        this.alignments = new ArrayList<>();
     }
 
     public void addToAlignments(int[] alignment) {

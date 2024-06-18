@@ -7,17 +7,12 @@ import java.util.Set;
 
 public abstract class Agent {
 
-    private Grid grid;
     private char color;
     private int score;
 
-    public abstract void placeToken();
-    public abstract void pushToken();
-    public abstract void removeTwoTokens(List<Coordinates> alignment);
-
-    public Grid getGrid() {
-        return this.grid;
-    }
+    public abstract void placeToken(Grid grid);
+    public abstract void pushToken(Grid grid);
+    public abstract void removeTwoTokens(Grid grid, List<Coordinates> alignment);
 
     public char getColor() {
         return this.color;
@@ -31,8 +26,7 @@ public abstract class Agent {
         this.score += scoreIncremnt;
     }
 
-    public Agent(Grid myGrid, char myColor) {
-        this.grid = myGrid;
+    public Agent(char myColor) {
         this.color = myColor;
     }
 
@@ -40,10 +34,10 @@ public abstract class Agent {
      * Cette méthode permet trouver les coordonnées des cellules vides du plateau.
      * @return Set<Coordinates> qui contient les coordonnées des cellules vides du plateau.
      */
-    public List<Coordinates> getValidEmptyCells () {
+    public List<Coordinates> getValidEmptyCells (Grid grid) {
         
         // On récupère les coordonnées des cellules non vides
-        Set<Coordinates> nonEmptyCells = grid.getGrid().keySet();
+        Set<Coordinates> nonEmptyCells = grid.getHashMap().keySet();
 
         // On initialise un Set qui contiendra les coordonnées des cellules vides
         List<Coordinates> emptyCells = new ArrayList<>();
@@ -68,16 +62,16 @@ public abstract class Agent {
      * Cette méthode permet de récupérer les coordonnées des jetons du joueur.
      * @return List<Coordinates> qui contient les coordonnées des jetons du joueur.
      */
-    public List<Coordinates> getOwnTokens () {
+    public List<Coordinates> getOwnTokensCoords (Grid grid) {
 
         // On initialise une liste qui contiendra les coordonnées des jetons du joueur
         List<Coordinates> ownTokens = new ArrayList<>();
 
         // On parcourt l'ensemble des jetons du posés sur le plateau
-        for (Coordinates coords : grid.getGrid().keySet()) {
+        for (Coordinates coords : grid.getHashMap().keySet()) {
 
             // Si la couleur du jeton est celle du joueur, on l'ajoute à la liste des jetons du joueur
-            if (grid.getGrid().get(coords).getColor() == this.color) {
+            if (grid.getToken(coords).getColor() == this.color) {
                 ownTokens.add(coords);
             }
         }
@@ -91,7 +85,7 @@ public abstract class Agent {
      * @param direction la direction aléatoire
      * @return int[] qui contient les coefficients de la direction aléatoire valide
      */
-    public boolean isValidPushDirection(Coordinates coordinates, int[] direction) {
+    public boolean isValidPushDirection(Grid grid, Coordinates coordinates, int[] direction) {
         try {
             int coeffX = direction[0];
             int coeffY = direction[1];
@@ -125,4 +119,15 @@ public abstract class Agent {
         return true;
     }
 
-}
+    public List<int[]> getValidPushDirections(Grid grid, Coordinates coordinates) {
+        // On initialise toutes les directions possibles dans une liste
+        int[][] directions = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
+        List<int[]> validDirections = new ArrayList<>();
+        for (int[] direction : directions) {
+            if (isValidPushDirection(grid, coordinates, direction)) {
+                validDirections.add(direction);
+            }
+        }
+        return validDirections;
+    }
+}  

@@ -7,14 +7,14 @@ public class PlayerAgent extends Agent {
 
     private Scanner scanner = new Scanner(System.in);
 
-    public PlayerAgent(Grid myGrid, char myColor) {
-        super(myGrid, myColor);
+    public PlayerAgent(char myColor) {
+        super(myColor);
     }
 
    
-    public void placeToken() {
+    public void placeToken(Grid grid) {
 
-        List<Coordinates> emptyCells = super.getValidEmptyCells();
+        List<Coordinates> emptyCells = super.getValidEmptyCells(grid);
 
         Coordinates placeCoords;
         do {
@@ -29,10 +29,10 @@ public class PlayerAgent extends Agent {
 
         } while (!emptyCells.contains(placeCoords));
 
-        super.getGrid().placeToken(super.getColor(), placeCoords);
+        grid.placeToken(super.getColor(), placeCoords);
     }
 
-    public void pushToken() {
+    public void pushToken(Grid grid) {
 
         int result = 0;
 
@@ -52,7 +52,7 @@ public class PlayerAgent extends Agent {
             
             Coordinates pushCoords = new Coordinates(x, y);
             try {
-                super.getGrid().pushToken(super.getColor(), pushCoords, direction);
+                grid.pushToken(super.getColor(), pushCoords, direction);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
                 result = 1;
@@ -61,7 +61,7 @@ public class PlayerAgent extends Agent {
         } while (result == 1);
     }
 
-    public void removeTwoTokens(List<Coordinates> alignment) {
+    public void removeTwoTokens(Grid grid, List<Coordinates> alignment) {
         String index = "first";
         for (int i = 0; i < 2; i++) {
             
@@ -69,9 +69,9 @@ public class PlayerAgent extends Agent {
             // Demande au joueur de retirer un jeton de l'alignement
             do {
                 if (Settings.getInstance().getDisplayInTerminal())
-                    System.out.println(super.getGrid().getToken(alignment.get(0)).getColor() + " : Enter the coordinates of the " + index + " token you want to remove");
+                    System.out.println(grid.getToken(alignment.get(0)).getColor() + " : Enter the coordinates of the " + index + " token you want to remove");
                 try {
-                    if (removeTokenFromAlignment(alignment) == 0) {
+                    if (removeTokenFromAlignment(grid, alignment) == 0) {
                         break;
                     }
                 } catch (Exception e) {
@@ -83,7 +83,7 @@ public class PlayerAgent extends Agent {
 
             // Affiche le plateau de jeu après que le joueur ait retiré un jeton
             if (Settings.getInstance().getDisplayInTerminal())
-                super.getGrid().display();
+                grid.display();
         }
     }
 
@@ -110,7 +110,7 @@ public class PlayerAgent extends Agent {
         return coeffs;
     }
     
-    public int removeTokenFromAlignment(List<Coordinates> alignment) throws Exception {
+    public int removeTokenFromAlignment(Grid grid, List<Coordinates> alignment) throws Exception {
 
         int x = scanner.nextInt();
         int y = scanner.nextInt();
@@ -131,7 +131,7 @@ public class PlayerAgent extends Agent {
         }
 
         try {
-            super.getGrid().removeToken(removeCoords);
+            grid.removeToken(removeCoords);
         } catch (IllegalArgumentException e) {
             System.out.println(e.getMessage());
             return 1;

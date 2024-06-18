@@ -13,9 +13,9 @@ public class Grid {
     private HashMap<Coordinates, Token> grid;
     private HashMap<Coordinates, Token> tokensMoveStart = new HashMap<>();
 
-    // Getters and Setters
 
-    public HashMap<Coordinates, Token> getGrid() {
+
+    public HashMap<Coordinates, Token> getHashMap() {
         return this.grid;
     }
 
@@ -37,11 +37,23 @@ public class Grid {
 
     // Constructors
     
+    public Grid(HashMap<Coordinates, Token> grid) {
+        this.grid = grid;
+    }
+
     public Grid() {
         this.grid = new HashMap<>();
     }
 
     // Methods
+
+    public Grid clone() {
+        HashMap<Coordinates, Token> newGrid = new HashMap<>();
+        for (Coordinates c : this.grid.keySet()) {
+            newGrid.put(c, this.grid.get(c));
+        }
+        return new Grid(newGrid);
+    }
 
     public boolean isFull() {
         return this.grid.size() == this.size * this.size;
@@ -190,7 +202,7 @@ public class Grid {
 
                     // if there are 5 tokens in a row in this direction
                     Set<Coordinates> visited = new HashSet<>();
-                    List<Coordinates> neighbours = getAlignedTokens(c, direction, color, visited);
+                    List<Coordinates> neighbours = getAlignment(c, direction, visited);
                     if (neighbours.size() >= 5) {
                         
                         // set the aligment of the tokens to the direction
@@ -212,6 +224,15 @@ public class Grid {
                 }
             }
         }
+        // for each token in all alignments, remove the alignment
+        for (List<List<Coordinates>> playerAlignments : result) {
+            for (List<Coordinates> alignment : playerAlignments) {
+                for (Coordinates c : alignment) {
+                    getToken(c).clearAlignments();
+                }
+            }
+            
+        }
         return result;
     }
 
@@ -222,7 +243,7 @@ public class Grid {
      * @param color la couleur des jetons voisins à chercher.
      * @return une liste des jetons voisins dans la direction donnée.
      */
-    public List<Coordinates> getAlignedTokens(Coordinates coordinates, int direction[], char color, Set<Coordinates> visited) {
+    public List<Coordinates> getAlignment(Coordinates coordinates, int direction[], Set<Coordinates> visited) {
         
         // Initialise la liste des voisins dans l'allignement et les deux hypothétiques voisins directs
         List<Coordinates> neighbours = new ArrayList<>();
@@ -232,10 +253,10 @@ public class Grid {
 
         // Pour chaqun des deux voisins directs, si le voisin n'a pas déjà été visité et si le voisin est de la couleur donnée, on l'ajoute à la liste des voisins et on continue la recherche dans la même direction
         for (Coordinates neighbour : neighboursArray) {
-            if (!visited.contains(neighbour) && grid.get(neighbour) != null && grid.get(neighbour).getColor() == color) {
+            if (!visited.contains(neighbour) && grid.get(neighbour) != null && grid.get(neighbour).getColor() == getToken(coordinates).getColor()) {
                 neighbours.add(neighbour);
                 visited.add(neighbour);
-                neighbours.addAll(getAlignedTokens(neighbour, direction, color, visited));
+                neighbours.addAll(getAlignment(neighbour, direction, visited));
             }
         } 
 
@@ -306,3 +327,7 @@ public class Grid {
     }
         
 }
+
+
+
+

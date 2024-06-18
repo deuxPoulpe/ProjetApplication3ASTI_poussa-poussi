@@ -17,7 +17,7 @@ public class App {
         // grid.placeToken('Y', new Coordinates(1, 4));
 
         // Initialisation des paramètres de jeu
-        Settings.getInstance(true, false);
+        Settings.getInstance(true, true);
 
         Game game = new Game(grid);
 

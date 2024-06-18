@@ -1,37 +1,36 @@
 package myPackage;
 
 import java.util.List;
-import java.util.ArrayList;
 
 public class RandomAgent extends Agent {
 
-    public RandomAgent(Grid myGrid, char myColor) {
-        super(myGrid, myColor);
+    public RandomAgent(char myColor) {
+        super(myColor);
     }
 
     /**
      * Cette méthode permet de placer un jeton aléatoire sur une cellule vide.
      * @return void
      */
-    public void placeToken() {
-        List<Coordinates> emptyCells = super.getValidEmptyCells();
+    public void placeToken(Grid grid) {
+        List<Coordinates> emptyCells = super.getValidEmptyCells(grid);
 
         // On prend une cellule vide aléatoire
         int random = (int) (Math.random() * emptyCells.size());
 
         if (Settings.getInstance().getDisplayInTerminal())
             System.out.println("RandomAgent: " + super.getColor() + " places token at " + emptyCells.get(random));
-        super.getGrid().placeToken(super.getColor(), emptyCells.get(random));
+        grid.placeToken(super.getColor(), emptyCells.get(random));
     }
 
     /**
      * Cette méthode permet de pousser un jeton aléatoire dans une direction aléatoire.
      * @return void
      */
-    public void pushToken() {
+    public void pushToken(Grid grid) {
 
         // On récupère les coordonnées des jetons du joueur
-        List<Coordinates> ownTokens = super.getOwnTokens();
+        List<Coordinates> ownTokens = super.getOwnTokensCoords(grid);
 
         Coordinates randomTokenCoords;
         int[] randomDirection;
@@ -42,7 +41,7 @@ public class RandomAgent extends Agent {
             ownTokens.remove(random);
 
             // On prend une direction aléatoire valide
-            randomDirection = getRandomDirection(randomTokenCoords);
+            randomDirection = getRandomDirection(grid, randomTokenCoords);
         }
         while (randomDirection == null);
         
@@ -51,7 +50,7 @@ public class RandomAgent extends Agent {
             System.out.printf("in direction %d, %d\n", randomDirection[0], randomDirection[1]);
         }
 
-        super.getGrid().pushToken(super.getColor(), randomTokenCoords, randomDirection);
+        grid.pushToken(super.getColor(), randomTokenCoords, randomDirection);
     }
 
     /**
@@ -59,7 +58,7 @@ public class RandomAgent extends Agent {
      * @param alignment la liste des coordonnées des jetons alignés
      * @return void
      */
-    public void removeTwoTokens(List<Coordinates> alignment) {
+    public void removeTwoTokens(Grid grid, List<Coordinates> alignment) {
         // Randomly remove two tokens
         int random = (int) (Math.random() * alignment.size());
         Coordinates firstToken = alignment.get(random);
@@ -67,8 +66,8 @@ public class RandomAgent extends Agent {
         random = (int) (Math.random() * alignment.size());
         Coordinates secondToken = alignment.get(random);
         
-        super.getGrid().removeToken(firstToken);
-        super.getGrid().removeToken(secondToken);
+        grid.removeToken(firstToken);
+        grid.removeToken(secondToken);
     }
 
     /**
@@ -76,13 +75,9 @@ public class RandomAgent extends Agent {
      * @param coords les coordonnées du jeton à pousser
      * @return int[] un tableau de deux entiers qui représente la direction aléatoire valide
      */
-    private int[] getRandomDirection(Coordinates coords) {
+    private int[] getRandomDirection(Grid grid, Coordinates coords) {
         // On initialise toutes les directions possibles dans une liste
-        int[][] directions = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
-        List<int[]> validDirections = new ArrayList<>();
-        for (int[] direction : directions) {
-            validDirections.add(direction);
-        }
+        List<int[]> validDirections = super.getValidPushDirections(grid, coords);
 
         do {
             // On prend une direction aléatoire
@@ -90,7 +85,7 @@ public class RandomAgent extends Agent {
             int[] randomDirection = validDirections.get(random);
 
             // Si la direction est valide, on la retourne
-            if (super.isValidPushDirection(coords, randomDirection)) {
+            if (super.isValidPushDirection(grid, coords, randomDirection)) {
                 return randomDirection;
             }
 
