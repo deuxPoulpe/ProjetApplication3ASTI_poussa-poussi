@@ -7,7 +7,6 @@ public class Game {
 
     private final Scanner scanner = new Scanner(System.in);
     private Grid grid;
-    private final int[] score = {0,0};
     private Agent player1;
     private Agent player2;
     private Agent currentPlayer = player1;
@@ -83,16 +82,24 @@ public class Game {
 
     public void Round() {
         // Phase de placement
+        if (grid.isFull()) {
+            System.out.println("It's a draw.");
+            System.exit(0);
+        }
         currentPlayer.placeToken();
         grid.display();
 
+        if (!grid.isFull()) {
+            System.out.println("The grid is full. No more tokens can be pushed.");
+            currentPlayer.pushToken();
+            grid.display();
+        }
+
         // Phase de poussée
-        currentPlayer.pushToken();
-        grid.display();
 
         // Vérification du score
         int gameState = updateScore();
-        System.out.println("Score: B = " + score[0] + " Y = " + score[1]);
+        System.out.println("Score: B = " + player1.getScore() + " Y = " + player2.getScore());
 
         if (gameState == 0) {
             System.out.println("B wins");
@@ -110,19 +117,29 @@ public class Game {
         int nbYellowAlignments = alignmentsOfFive.get(1).size();
 
         if (nbBlueAlignments > nbYellowAlignments) 
-            score[0] += nbBlueAlignments - nbYellowAlignments;
+            player2.incrementScore(nbBlueAlignments - nbYellowAlignments);
         else if (nbYellowAlignments > nbBlueAlignments) 
-            score[1] += nbYellowAlignments - nbBlueAlignments;
+        player2.incrementScore(nbYellowAlignments - nbBlueAlignments);
             
-        if (score[0] == 2) return 0;
-        else if (score[1] == 2) return 1;
-        
-        int[] order = {0, 1}; // Player 1 first
-        if (player2.equals(currentPlayer)) {
-            order[0] = 1;
-            order[1] = 0;
+            int[] order = {0, 1}; // Player 1 first
+            if (player2.equals(currentPlayer)) {
+                order[0] = 1;
+                order[1] = 0;
+            }
+            
+        // Si les deux joueurs ont un score supérieur à 2
+        if (player1.getScore() >= 2 && player2.getScore() >=2) {
+            // le joueur avec le score le plus élevé gagne
+            if (player1.getScore() > player2.getScore())
+                return 0;
+            else
+                return 1;
+        } else if (player1.getScore() >= 2) {
+            return 0;
+        } else if (player2.getScore() >= 2) {
+            return 1;
         }
-        
+
         for (int i : order) {
             for (List<Coordinates> alignment : alignmentsOfFive.get(i)) {
                 try {

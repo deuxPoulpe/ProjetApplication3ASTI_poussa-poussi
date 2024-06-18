@@ -14,7 +14,9 @@ public class PlayerAgent extends Agent {
    
     public void placeToken() {
 
-        int result = 0;
+        List<Coordinates> emptyCells = super.getValidEmptyCells();
+
+        Coordinates placeCoords;
         do {
             System.out.println(super.getColor() + " : Enter the coordinates of the token you want to place");
 
@@ -22,15 +24,9 @@ public class PlayerAgent extends Agent {
             int x = scanner.nextInt();
             int y = scanner.nextInt();
             
-            Coordinates placeCoords = new Coordinates(x, y);
+            placeCoords = new Coordinates(x, y);
 
-            try {
-                super.getGrid().placeToken(super.getColor(), placeCoords);
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-                result = 1;
-            }
-        } while (result == 1);
+        } while (!emptyCells.contains(placeCoords));
     }
 
     public void pushToken() {

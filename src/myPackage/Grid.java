@@ -43,13 +43,17 @@ public class Grid {
 
     // Methods
 
+    public boolean isFull() {
+        return this.grid.size() == this.size * this.size;
+    }
+
     public void placeToken(char color, Coordinates coordinates) {
         // Check if there is already a token at the given coordinates
         if (this.grid.containsKey(coordinates)) {
             throw new IllegalArgumentException("There is already a token at the given coordinates");
         }
 
-        if (!hasNeighbours(coordinates) && ( coordinates.getX() != 0 && coordinates.getX() != 7 && coordinates.getY() != 0 && coordinates.getY() != 7))
+        if (!hasNeighbours(coordinates) && ( coordinates.getX() != 0 && coordinates.getX() != size - 1 && coordinates.getY() != 0 && coordinates.getY() != size - 1))
         {
             throw new IllegalArgumentException("There is no neighbour at the given coordinates");
         }
@@ -152,8 +156,9 @@ public class Grid {
 
         for (Coordinates c : tokensToMove.keySet()) {
             char tokenColor = tokensToMove.get(c).getColor();
-            placeToken(tokenColor, new Coordinates(c.getX() + nbEmptyCells * coeffX, c.getY() + nbEmptyCells * coeffY));
+            this.grid.put(new Coordinates(c.getX() + nbEmptyCells * coeffX, c.getY() + nbEmptyCells * coeffY), new Token(tokenColor));
             }
+
 
         this.tokensMoveStart = tokensToMove;
     }

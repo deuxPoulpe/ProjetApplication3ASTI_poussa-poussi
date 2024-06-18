@@ -9,6 +9,7 @@ public abstract class Agent {
 
     private Grid grid;
     private char color;
+    private int score;
 
     public abstract void placeToken();
     public abstract void pushToken();
@@ -20,6 +21,14 @@ public abstract class Agent {
 
     public char getColor() {
         return this.color;
+    }
+
+    public int getScore() {
+        return this.score;
+    }
+
+    public void incrementScore(int scoreIncremnt) {
+        this.score += scoreIncremnt;
     }
 
     public Agent(Grid myGrid, char myColor) {
@@ -40,13 +49,14 @@ public abstract class Agent {
         List<Coordinates> emptyCells = new ArrayList<>();
 
         // On parcourt le plateau pour trouver les cellules vides
-        for (int i = 0; i < grid.getSize() - 1; i++) {
-            for (int j = 0; j < grid.getSize() - 1; j++) {
-                Coordinates coord = new Coordinates(i, j);
+        int gridSize = grid.getSize();
+        for (int i = 0; i < gridSize; i++) {
+            for (int j = 0; j < gridSize; j++) {
+                Coordinates coords = new Coordinates(i, j);
 
                 // Si la cellule n'est pas dans le Set des cellules non vides, on l'ajoute au Set des cellules vides
-                if (!nonEmptyCells.contains(coord) && grid.hasNeighbours(coord)) {
-                    emptyCells.add(coord);
+                if (!nonEmptyCells.contains(coords) && (grid.hasNeighbours(coords) || i == 0 || i == grid.getSize() - 1 || j == 0 || j == grid.getSize() - 1)) {
+                    emptyCells.add(coords);
                 }
             }
         }
@@ -64,11 +74,11 @@ public abstract class Agent {
         List<Coordinates> ownTokens = new ArrayList<>();
 
         // On parcourt l'ensemble des jetons du posés sur le plateau
-        for (Coordinates coord : grid.getGrid().keySet()) {
+        for (Coordinates coords : grid.getGrid().keySet()) {
 
             // Si la couleur du jeton est celle du joueur, on l'ajoute à la liste des jetons du joueur
-            if (grid.getGrid().get(coord).getColor() == this.color) {
-                ownTokens.add(coord);
+            if (grid.getGrid().get(coords).getColor() == this.color) {
+                ownTokens.add(coords);
             }
         }
 
