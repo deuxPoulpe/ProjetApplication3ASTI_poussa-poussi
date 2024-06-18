@@ -31,6 +31,10 @@ public class Grid {
         return this.grid.get(coordinates);
     }
 
+    public HashMap<Coordinates, Token> getTokensMoveStart() {
+        return this.tokensMoveStart;
+    }
+
     // Constructors
     
     public Grid() {
@@ -57,30 +61,6 @@ public class Grid {
         this.grid.remove(coordinates);
     }
 
-
-    /**
-     * Renvoie les coefficients de déplacement en x et en y pour une direction donnée.
-     * 
-     * @param direction la direction pour laquelle obtenir les coefficients de déplacement.
-     * @throws IllegalArgumentException si la direction n'est pas U, D, R ou L.
-     * @return les coefficients de déplacement en x et en y pour la direction donnée.
-     */
-    public ArrayList<Integer> getCoeffs(char direction) {
-
-        if (direction != 'U' && direction != 'D' && direction != 'R' && direction != 'L') {
-            throw new IllegalArgumentException("Direction must be U, D, R or L");
-        }
-        
-        ArrayList<Integer> coeffs = new ArrayList<>();
-        switch (direction) {
-            case 'U' -> { coeffs.add(0); coeffs.add(-1); }
-            case 'D' -> { coeffs.add(0); coeffs.add(1); }
-            case 'R' -> { coeffs.add(1); coeffs.add(0); }
-            case 'L' -> { coeffs.add(-1); coeffs.add(0); }
-        }
-        return coeffs;
-    }
-
     /**
      * Renvoie le nombre de cellules vides dans une direction donnée à partir de coordonnées données.
      * @param lastToken les coordonnées à partir desquelles commencer à chercher les cellules vides.
@@ -102,15 +82,7 @@ public class Grid {
         }
         return nbEmptyCells;
     }
-    
-    
-    /**
-     * Renvoie les jetons à déplacer dans une direction donnée à partir de coordonnées données.
-     * @param coordinate les coordonnées à partir desquelles commencer à chercher les jetons à déplacer.
-     * @param directions la direction dans laquelle chercher les jetons à déplacer.
-     * @throws IllegalArgumentException si les coordonnées ne contiennent pas de jeton ou si la direction n'est pas U, D, R ou L.
-     * @return les jetons à déplacer dans la direction donnée.
-     */
+ 
     public HashMap<Coordinates, Token> getTokensToMove(Coordinates coordinate, int coeffX, int coeffY) {
         
 
@@ -139,7 +111,7 @@ public class Grid {
      * @throws IllegalArgumentException si les coordonnées ne contiennent pas de jeton, si la direction n'est pas U, D, R ou L ou si le jeton à déplacer n'est pas de la couleur donnée.
      * 
      */
-    public void pushToken(char color, Coordinates coordinates, char direction){
+    public void pushToken(char color, Coordinates coordinates, int[] direction){
         
         if (!this.grid.containsKey(coordinates)) {
             throw new IllegalArgumentException("There is no token at the given coordinates");
@@ -149,8 +121,8 @@ public class Grid {
             throw new IllegalArgumentException("You can only push your own tokens");
         }
 
-        int coeffX = getCoeffs(direction).get(0);
-        int coeffY = getCoeffs(direction).get(1);
+        int coeffX = direction[0];
+        int coeffY = direction[1];
 
         HashMap<Coordinates, Token> tokensToMove = getTokensToMove(coordinates, coeffX, coeffY);
 
@@ -184,9 +156,6 @@ public class Grid {
             }
 
         this.tokensMoveStart = tokensToMove;
-
-
-        
     }
     
     /**
@@ -214,7 +183,7 @@ public class Grid {
 
                     // if there are 5 tokens in a row in this direction
                     Set<Coordinates> visited = new HashSet<>();
-                    List<Coordinates> neighbours = getNeighboursInDirection(c, direction, color, visited);
+                    List<Coordinates> neighbours = getAlignedTokens(c, direction, color, visited);
                     if (neighbours.size() >= 5) {
                         
                         // set the aligment of the tokens to the direction
@@ -245,7 +214,7 @@ public class Grid {
      * @param color la couleur des jetons voisins à chercher.
      * @return une liste des jetons voisins dans la direction donnée.
      */
-    public List<Coordinates> getNeighboursInDirection(Coordinates coordinates, int direction[], char color, Set<Coordinates> visited) {
+    public List<Coordinates> getAlignedTokens(Coordinates coordinates, int direction[], char color, Set<Coordinates> visited) {
         
         // Initialise la liste des voisins dans l'allignement et les deux hypothétiques voisins directs
         List<Coordinates> neighbours = new ArrayList<>();
@@ -258,7 +227,7 @@ public class Grid {
             if (!visited.contains(neighbour) && grid.get(neighbour) != null && grid.get(neighbour).getColor() == color) {
                 neighbours.add(neighbour);
                 visited.add(neighbour);
-                neighbours.addAll(getNeighboursInDirection(neighbour, direction, color, visited));
+                neighbours.addAll(getAlignedTokens(neighbour, direction, color, visited));
             }
         } 
 

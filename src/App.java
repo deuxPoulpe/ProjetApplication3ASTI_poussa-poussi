@@ -17,8 +17,7 @@ public class App {
         grid.placeToken('Y', new Coordinates(1, 4));
 
         Game game = new Game(grid);
-        game.initialize();
-        game.run();     
+        game.start();    
         
     }
 }
