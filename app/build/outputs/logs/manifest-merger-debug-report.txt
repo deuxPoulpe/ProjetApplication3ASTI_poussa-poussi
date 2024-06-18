@@ -4,6 +4,9 @@ ADDED from C:\Users\unPoulpe\Desktop\InsaCVL2023\pjaf\app\src\main\AndroidManife
 INJECTED from C:\Users\unPoulpe\Desktop\InsaCVL2023\pjaf\app\src\main\AndroidManifest.xml:2:1-26:12
 INJECTED from C:\Users\unPoulpe\Desktop\InsaCVL2023\pjaf\app\src\main\AndroidManifest.xml:2:1-26:12
 INJECTED from C:\Users\unPoulpe\Desktop\InsaCVL2023\pjaf\app\src\main\AndroidManifest.xml:2:1-26:12
+MERGED from [androidx.databinding:databinding-adapters:8.4.0] C:\Users\unPoulpe\.gradle\caches\transforms-4\f40a59ef62d5d7cfa1234167f10096ef\transformed\databinding-adapters-8.4.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.databinding:databinding-runtime:8.4.0] C:\Users\unPoulpe\.gradle\caches\transforms-4\e0a812fb3533c4e14b055c447944071c\transformed\databinding-runtime-8.4.0\AndroidManifest.xml:2:1-7:12
+MERGED from [androidx.databinding:viewbinding:8.4.0] C:\Users\unPoulpe\.gradle\caches\transforms-4\df5ffdce71864e185b7d71e99a7d0880\transformed\viewbinding-8.4.0\AndroidManifest.xml:2:1-7:12
 MERGED from [com.google.android.material:material:1.12.0] C:\Users\unPoulpe\.gradle\caches\transforms-4\75fa905ae4c1810e680a5616507a0811\transformed\material-1.12.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\unPoulpe\.gradle\caches\transforms-4\b837ad81ff39873ba69b851967d25721\transformed\constraintlayout-2.1.4\AndroidManifest.xml:2:1-11:12
 MERGED from [androidx.appcompat:appcompat-resources:1.7.0] C:\Users\unPoulpe\.gradle\caches\transforms-4\00414786a55ae4c2c25cb008ad5b92c7\transformed\appcompat-resources-1.7.0\AndroidManifest.xml:2:1-7:12
@@ -116,6 +119,12 @@ uses-sdk
 INJECTED from C:\Users\unPoulpe\Desktop\InsaCVL2023\pjaf\app\src\main\AndroidManifest.xml reason: use-sdk injection requested
 INJECTED from C:\Users\unPoulpe\Desktop\InsaCVL2023\pjaf\app\src\main\AndroidManifest.xml
 INJECTED from C:\Users\unPoulpe\Desktop\InsaCVL2023\pjaf\app\src\main\AndroidManifest.xml
+MERGED from [androidx.databinding:databinding-adapters:8.4.0] C:\Users\unPoulpe\.gradle\caches\transforms-4\f40a59ef62d5d7cfa1234167f10096ef\transformed\databinding-adapters-8.4.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.databinding:databinding-adapters:8.4.0] C:\Users\unPoulpe\.gradle\caches\transforms-4\f40a59ef62d5d7cfa1234167f10096ef\transformed\databinding-adapters-8.4.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.databinding:databinding-runtime:8.4.0] C:\Users\unPoulpe\.gradle\caches\transforms-4\e0a812fb3533c4e14b055c447944071c\transformed\databinding-runtime-8.4.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.databinding:databinding-runtime:8.4.0] C:\Users\unPoulpe\.gradle\caches\transforms-4\e0a812fb3533c4e14b055c447944071c\transformed\databinding-runtime-8.4.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.databinding:viewbinding:8.4.0] C:\Users\unPoulpe\.gradle\caches\transforms-4\df5ffdce71864e185b7d71e99a7d0880\transformed\viewbinding-8.4.0\AndroidManifest.xml:5:5-44
+MERGED from [androidx.databinding:viewbinding:8.4.0] C:\Users\unPoulpe\.gradle\caches\transforms-4\df5ffdce71864e185b7d71e99a7d0880\transformed\viewbinding-8.4.0\AndroidManifest.xml:5:5-44
 MERGED from [com.google.android.material:material:1.12.0] C:\Users\unPoulpe\.gradle\caches\transforms-4\75fa905ae4c1810e680a5616507a0811\transformed\material-1.12.0\AndroidManifest.xml:20:5-44
 MERGED from [com.google.android.material:material:1.12.0] C:\Users\unPoulpe\.gradle\caches\transforms-4\75fa905ae4c1810e680a5616507a0811\transformed\material-1.12.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.constraintlayout:constraintlayout:2.1.4] C:\Users\unPoulpe\.gradle\caches\transforms-4\b837ad81ff39873ba69b851967d25721\transformed\constraintlayout-2.1.4\AndroidManifest.xml:5:5-7:41

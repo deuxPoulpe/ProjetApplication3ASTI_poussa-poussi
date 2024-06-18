@@ -1,0 +1,6 @@
+com.example.poussapoussi.test.app-annotation-experimental-1.4.0-0 C:\Users\unPoulpe\.gradle\caches\transforms-4\05599256ab8815b3e070c174b0dbf238\transformed\annotation-experimental-1.4.0\res
+com.example.poussapoussi.test.app-core-1.5.0-1 C:\Users\unPoulpe\.gradle\caches\transforms-4\cdeaab977c8bc71778b5296d41352057\transformed\core-1.5.0\res
+com.example.poussapoussi.test.app-androidTest-2 C:\Users\unPoulpe\Desktop\InsaCVL2023\pjaf\app\build\generated\res\resValues\androidTest\debug
+com.example.poussapoussi.test.app-mergeDebugAndroidTestResources-3 C:\Users\unPoulpe\Desktop\InsaCVL2023\pjaf\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\merged.dir
+com.example.poussapoussi.test.app-mergeDebugAndroidTestResources-4 C:\Users\unPoulpe\Desktop\InsaCVL2023\pjaf\app\build\intermediates\incremental\debugAndroidTest\mergeDebugAndroidTestResources\stripped.dir
+com.example.poussapoussi.test.app-debugAndroidTest-5 C:\Users\unPoulpe\Desktop\InsaCVL2023\pjaf\app\build\intermediates\merged_res\debugAndroidTest\mergeDebugAndroidTestResources

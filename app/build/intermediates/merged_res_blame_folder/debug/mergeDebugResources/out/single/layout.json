@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-mergeDebugResources-32:\\layout\\fragment_grid.xml",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-35:\\layout\\fragment_grid.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-mergeDebugResources-32:\\layout\\activity_main.xml",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-35:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-mergeDebugResources-32:\\layout\\fragment_home_page.xml",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-35:\\layout\\fragment_home_page.xml"
+    },
+    {
+        "merged": "com.example.poussapoussi.app-mergeDebugResources-32:/layout/fragment_home_page.xml",
+        "source": "com.example.poussapoussi.app-main-35:/layout/fragment_home_page.xml"
+    }
+]

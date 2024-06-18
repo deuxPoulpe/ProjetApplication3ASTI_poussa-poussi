@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.poussapoussi.app-mergeDebugResources-29:/values-tr/values-tr.xml",
+            "outputFile": "com.example.poussapoussi.app-mergeDebugResources-31:/values-tr/values-tr.xml",
             "map": [
                 {
                     "source": "C:\\Users\\unPoulpe\\.gradle\\caches\\transforms-4\\28469acfb5c3169bc7cd127b83910fb3\\transformed\\appcompat-1.7.0\\res\\values-tr\\values-tr.xml",

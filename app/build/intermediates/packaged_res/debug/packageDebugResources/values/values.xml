@@ -1,8 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <color name="blue">#154daf</color>
+    <color name="orange">#d38208</color>
+    <color name="white">#FFFFFF</color>
+    <string name="_1_player">1 player</string>
+    <string name="_2_players">2 players</string>
     <string name="app_name">Poussapoussi</string>
+    <string name="game_logo">game_logo</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="ia_vs_ia">IA vs IA</string>
+    <string name="poussa_poussi">Poussa Poussi</string>
     <style name="Base.Theme.Poussapoussi" parent="Theme.Material3.DayNight.NoActionBar">
         
         
