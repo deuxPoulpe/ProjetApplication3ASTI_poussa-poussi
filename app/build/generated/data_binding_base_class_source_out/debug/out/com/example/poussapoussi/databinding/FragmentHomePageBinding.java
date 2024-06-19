@@ -32,13 +32,18 @@ public final class FragmentHomePageBinding implements ViewBinding {
   @NonNull
   public final Button player2;
 
+  @NonNull
+  public final Button rules;
+
   private FragmentHomePageBinding(@NonNull LinearLayout rootView, @NonNull TextView GameName,
-      @NonNull Button iavsia, @NonNull Button player1, @NonNull Button player2) {
+      @NonNull Button iavsia, @NonNull Button player1, @NonNull Button player2,
+      @NonNull Button rules) {
     this.rootView = rootView;
     this.GameName = GameName;
     this.iavsia = iavsia;
     this.player1 = player1;
     this.player2 = player2;
+    this.rules = rules;
   }
 
   @Override
@@ -92,8 +97,14 @@ public final class FragmentHomePageBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.rules;
+      Button rules = ViewBindings.findChildViewById(rootView, id);
+      if (rules == null) {
+        break missingId;
+      }
+
       return new FragmentHomePageBinding((LinearLayout) rootView, GameName, iavsia, player1,
-          player2);
+          player2, rules);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

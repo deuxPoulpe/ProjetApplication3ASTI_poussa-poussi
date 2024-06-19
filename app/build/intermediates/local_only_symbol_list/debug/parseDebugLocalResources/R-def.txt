@@ -1,11 +1,14 @@
 R_DEF: Internal format may change without notice
 local
+anim translate
 color blue
 color orange
 color white
 drawable background_gradient
 drawable blue_token
 drawable cell_border
+drawable cell_border_blue
+drawable cell_border_yellow
 drawable ic_launcher_background
 drawable ic_launcher_foreground
 drawable yellow_token
@@ -18,11 +21,13 @@ id main
 id mainMenu
 id player1
 id player2
+id rules
 id tokenGridLayout
 id wholeScreen
 layout activity_main
 layout fragment_grid
 layout fragment_home_page
+layout fragment_rules
 mipmap ic_launcher
 mipmap ic_launcher_round
 string _1_player

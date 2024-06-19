@@ -44,6 +44,14 @@
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-35:\\drawable\\ic_game_logo.xml"
     },
     {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-33:\\layout_fragment_rules.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-35:\\layout\\fragment_rules.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-33:\\drawable_cell_border_yellow.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-35:\\drawable\\cell_border_yellow.xml"
+    },
+    {
         "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-33:\\drawable_button_background_orange.xml.flat",
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-35:\\drawable\\button_background_orange.xml"
     },
@@ -64,6 +72,10 @@
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-35:\\mipmap-hdpi\\ic_launcher_round.webp"
     },
     {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-33:\\anim_translate.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-35:\\anim\\translate.xml"
+    },
+    {
         "merged": "com.example.poussapoussi.app-debug-33:/layout_fragment_home_page.xml.flat",
         "source": "com.example.poussapoussi.app-main-35:/layout/fragment_home_page.xml"
     },
@@ -82,6 +94,10 @@
     {
         "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-33:\\mipmap-mdpi_ic_launcher_round.webp.flat",
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-35:\\mipmap-mdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-33:\\drawable_cell_border_blue.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-35:\\drawable\\cell_border_blue.xml"
     },
     {
         "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-33:\\drawable_button_background_blue.xml.flat",

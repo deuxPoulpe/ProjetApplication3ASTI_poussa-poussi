@@ -1,5 +1,6 @@
 package myPackage;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -19,7 +20,9 @@ public class RandomAgent extends Agent {
         // On prend une cellule vide aléatoire
         int random = (int) (Math.random() * emptyCells.size());
 
-        System.out.println("RandomAgent: " + super.getColor() + " places token at " + emptyCells.get(random));
+
+        if (Settings.getInstance().getDisplayInTerminal())
+            System.out.println("RandomAgent: " + super.getColor() + " places token at " + emptyCells.get(random));
         super.getGrid().placeToken(super.getColor(), emptyCells.get(random));
     }
 
@@ -27,21 +30,30 @@ public class RandomAgent extends Agent {
      * Cette méthode permet de pousser un jeton aléatoire dans une direction aléatoire.
      * @return void
      */
-    public void pushToken() {
-        
+    public AnimationVariables pushToken() {
+
         // On récupère les coordonnées des jetons du joueur
         List<Coordinates> ownTokens = super.getOwnTokens();
 
-        // On prend un jeton aléatoire
-        int random = (int) (Math.random() * ownTokens.size());
-        Coordinates randomTokenCoords = ownTokens.get(random);
+        Coordinates randomTokenCoords;
+        int[] randomDirection;
+        do {
+            // On prend un jeton aléatoire
+            int random = (int) (Math.random() * ownTokens.size());
+            randomTokenCoords = ownTokens.get(random);
+            ownTokens.remove(random);
+
+            // On prend une direction aléatoire valide
+            randomDirection = getRandomDirection(randomTokenCoords);
+        }
+        while (randomDirection == null);
         
-        // On prend une direction aléatoire valide
-        int[] randomDirection = getRandomDirection(randomTokenCoords);
-        
-        System.out.println("RandomAgent: " + super.getColor() + " pushes token at " + randomTokenCoords + " in direction " + randomDirection[0] + ", " + randomDirection[1]);
-        super.getGrid().pushToken(super.getColor(), randomTokenCoords, randomDirection);
-        
+        if (Settings.getInstance().getDisplayInTerminal()) {
+            System.out.printf("RandomAgent: %c pushes token at %s ", super.getColor(), randomTokenCoords);
+            System.out.printf("in direction %d, %d\n", randomDirection[0], randomDirection[1]);
+        }
+
+        return super.getGrid().pushToken(super.getColor(), randomTokenCoords, randomDirection);
     }
 
     /**
@@ -68,7 +80,7 @@ public class RandomAgent extends Agent {
      */
     private int[] getRandomDirection(Coordinates coords) {
         // On initialise toutes les directions possibles dans une liste
-        int[][] directions = {{1, 0}, {0, 1}, {1, 1}, {1, -1}};
+        int[][] directions = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
         List<int[]> validDirections = new ArrayList<>();
         for (int[] direction : directions) {
             validDirections.add(direction);

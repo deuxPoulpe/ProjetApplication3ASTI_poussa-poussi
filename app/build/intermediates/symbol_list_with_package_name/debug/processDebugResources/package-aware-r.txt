@@ -43,6 +43,7 @@ anim m3_side_sheet_exit_to_right
 anim mtrl_bottom_sheet_slide_in
 anim mtrl_bottom_sheet_slide_out
 anim mtrl_card_lowers_interpolator
+anim translate
 animator design_appbar_state_list_animator
 animator design_fab_hide_motion_spec
 animator design_fab_show_motion_spec
@@ -2999,6 +3000,8 @@ drawable btn_radio_off_to_on_mtrl_animation
 drawable btn_radio_on_mtrl
 drawable btn_radio_on_to_off_mtrl_animation
 drawable cell_border
+drawable cell_border_blue
+drawable cell_border_yellow
 drawable design_fab_background
 drawable design_ic_visibility
 drawable design_ic_visibility_off
@@ -3480,6 +3483,7 @@ id right_icon
 id right_side
 id rounded
 id row_index_key
+id rules
 id save_non_transition_alpha
 id save_overlay_view
 id sawtooth
@@ -3749,6 +3753,7 @@ layout design_text_input_end_icon
 layout design_text_input_start_icon
 layout fragment_grid
 layout fragment_home_page
+layout fragment_rules
 layout ime_base_split_test_activity
 layout ime_secondary_split_test_activity
 layout m3_alert_dialog

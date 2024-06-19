@@ -36,4 +36,16 @@ public class Token {
         this.color = myColor;
         this.alignments = alignments;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        Token token = (Token) obj;
+        return color == token.color;
+    }
 }

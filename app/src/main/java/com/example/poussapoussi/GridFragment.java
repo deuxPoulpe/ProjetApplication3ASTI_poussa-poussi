@@ -6,9 +6,17 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import android.os.Handler;
+import android.os.Looper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.TranslateAnimation;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.util.Log;
@@ -30,17 +38,24 @@ import myPackage.*;
  */
 public class GridFragment extends Fragment {
     private FragmentGridBinding binding;
-    private int[] directionList;
 
     private Grid grid;
+    private Grid oldGrid;
     private Game game;
-
     private char choice;
-
+    private SwipeListener swipeListener;
     private boolean pushTurn = false;
     private boolean placeTurn = true;
 
+    private int removeTurnPlayer1 = 0;
+    private int removeTurnPlayer2 = 0;
+
+    private List<Coordinates> alignmentToRemovePlayer1 = new ArrayList<>();
+    private List<Coordinates> alignmentToRemovePlayer2 = new ArrayList<>();
+
     private boolean aiTurn = false;
+
+    private Coordinates coordinatesToPush = null;
 
     public GridFragment() {
         // Required empty public constructor
@@ -76,7 +91,10 @@ public class GridFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentGridBinding.inflate(inflater, container, false);
+        Settings.getInstance(true, false);
         this.grid = new Grid();
+
+        this.oldGrid = new Grid();
         this.game = new Game(this.grid);
         this.game.start(this.choice);
         changeColorToCurrentPlayer();
@@ -85,14 +103,20 @@ public class GridFragment extends Fragment {
             this.aiTurn = true;
         }
 
-        displayBorderGrid();
         displayTokenGrid();
+        displayBorderGrid(-1, -1);
         binding.mainMenu.setOnClickListener(new View.OnClickListener(){
                 @Override
                 public void onClick(View v) {
                         navigateToHomeFragment();
                    }
                 });
+        swipeListener = new SwipeListener(getContext(), this);
+        binding.wholeScreen.setOnTouchListener(swipeListener);
+        binding.tokenGridLayout.setOnTouchListener(swipeListener);
+        if (choice == '3' ){
+            DelayedTaskUtil.executeWithDelay(500, this::playAITurn);
+        }
         return binding.getRoot();
 
     }
@@ -105,7 +129,12 @@ public class GridFragment extends Fragment {
         }
     }
 
-    private void displayBorderGrid() {
+    /**
+     * Display the grid of borders in the GridLayout
+     * @param highlightX : x coordinate of the cell to highlight
+     * @param highlightY : y coordinate of the cell to highlight
+     */
+    private void displayBorderGrid(int highlightX, int highlightY) {
         GridLayout borderGridLayout = binding.borderGridLayout;
         borderGridLayout.removeAllViews();
 
@@ -119,7 +148,18 @@ public class GridFragment extends Fragment {
                 param.columnSpec = GridLayout.spec(i, 1f);
                 param.rowSpec = GridLayout.spec(j, 1f);
                 cell.setLayoutParams(param);
-                cell.setBackgroundResource(R.drawable.cell_border); // Add a drawable for cell border
+                if (grid.getGrid().containsKey(new Coordinates(i, j)) && i == highlightX && j == highlightY){
+                    if (grid.getGrid().get(new Coordinates(i, j)).getColor() == 'B') {
+                        cell.setBackgroundResource(R.drawable.cell_border_blue);
+                    }
+                    else {
+                        cell.setBackgroundResource(R.drawable.cell_border_yellow);
+                    }
+                }
+                else {
+                    cell.setBackgroundResource(R.drawable.cell_border); // Add a drawable for cell border
+                }
+
                 final int finalI = i;
                 final int finalJ = j;
                 cell.setClickable(true); // Make the cell clickable
@@ -132,6 +172,10 @@ public class GridFragment extends Fragment {
 
     private void handleCellClickPlace(int i, int j) {
         Coordinates coordinates = new Coordinates(i, j);
+        if(this.removeTurnPlayer1 > 0 || this.removeTurnPlayer2 > 0){
+            Toast.makeText(getContext(), "You can't place now need to remove token before", Toast.LENGTH_SHORT).show();
+            return;
+        }
         if (this.grid.getToken(coordinates) == null && placeTurn && !aiTurn) {
             try {
                 this.grid.placeToken(game.getColorOfCurrentPlayer(), coordinates);
@@ -141,97 +185,18 @@ public class GridFragment extends Fragment {
             }
         }
         else {
+            if (!placeTurn){
+                Toast.makeText(getContext(), "You can't place now", Toast.LENGTH_SHORT).show();
+            }
+            else if (aiTurn) {
+                Toast.makeText(getContext(), "It's not your turn", Toast.LENGTH_SHORT).show();
+            }
+            else {
             Toast.makeText(getContext(), "This cell is already occupied", Toast.LENGTH_SHORT).show();
+            }
         }
 
     }
-
-    @SuppressLint("ClickableViewAccessibility")
-    private void handleCellPush(int i, int j) {
-        Coordinates coordinates = new Coordinates(i, j);
-        Token pushedToken = this.grid.getToken(coordinates);
-
-        if (this.pushTurn && !aiTurn) {
-
-
-            binding.wholeScreen.setOnTouchListener(new OnTouchListener() {
-                @Override
-                public boolean onTouch(View v, MotionEvent event) {
-                    float initialX = 0, initialY = 0;
-                    int action = event.getActionMasked();
-
-                    switch (action) {
-
-                        case MotionEvent.ACTION_DOWN:
-                            initialX = event.getX();
-                            initialY = event.getY();
-
-
-                            // Log.d(TAG, "Action was DOWN");
-                            break;
-
-                        case MotionEvent.ACTION_MOVE:
-
-                            //Log.d(TAG, "Action was MOVE");
-                            break;
-
-                        case MotionEvent.ACTION_UP:
-                            float finalX = event.getX();
-                            float finalY = event.getY();
-
-
-                            //Log.d(TAG, "Action was UP");
-
-                            if (initialX < finalX) {
-                                // Log.d(TAG, "Left to Right swipe performed");
-                                directionList[0] = 1;
-                                directionList[1] = 0;
-                            }
-
-                            if (initialX > finalX) {
-                                // Log.d(TAG, "Right to Left swipe performed");
-                                directionList[0] = -1;
-                                directionList[1] = 0;
-                            }
-
-                            if (initialY < finalY) {
-                                // Log.d(TAG, "Up to Down swipe performed");
-                                directionList[0] = 0;
-                                directionList[1] = -1;
-                            }
-
-                            if (initialY > finalY) {
-                                // Log.d(TAG, "Down to Up swipe performed");
-                                directionList[0] = 0;
-                                directionList[1] = 1;
-                            }
-
-                            break;
-
-                        case MotionEvent.ACTION_CANCEL:
-                            //Log.d(TAG,"Action was CANCEL");
-                            break;
-
-                        case MotionEvent.ACTION_OUTSIDE:
-                            // Log.d(TAG, "Movement occurred outside bounds of current screen element");
-                            break;
-                    }
-
-                    return true;
-                }
-
-            });
-
-            this.grid.pushToken(pushedToken.getColor(), coordinates, directionList);
-            handleTurn();
-
-
-        }
-        else {
-            Toast.makeText(getContext(), "You can't push this token", Toast.LENGTH_SHORT).show();
-        }
-}
-
 
 
     public void changeColorToCurrentPlayer(){
@@ -245,37 +210,102 @@ public class GridFragment extends Fragment {
 
 
     public void handleTurn() {
-        if (this.placeTurn) {
-            if (this.aiTurn) {
-                //FAIRE JOUER L'IA ICI
-                // A COMPLETER
+        if (this.removeTurnPlayer1 == 0 && this.removeTurnPlayer2 == 0) {
+            if (this.placeTurn) {
+                this.pushTurn = true;
+                this.placeTurn = false;
             }
-            this.pushTurn = true;
-            this.placeTurn = false;
-        }
 
-        else if (this.pushTurn) {
-            if (this.aiTurn) {
-                //FAIRE JOUER L'IA ICI
-                // A COMPLETER
+            else if (this.pushTurn) {
+                this.pushTurn = false;
+                this.placeTurn = true;
+                checkWin();
+                if (this.choice == '2'){
+                    this.aiTurn = !this.aiTurn;
+                }
+                if (this.removeTurnPlayer1 == 0 && this.removeTurnPlayer2 == 0){
+                    game.switchPlayer();
+                    changeColorToCurrentPlayer();
+                }
+
             }
-            this.pushTurn = false;
-            this.placeTurn = true;
-            //verification si le joueur marque un point et a gagné
-            if (this.choice == '2'){
-                this.aiTurn = !this.aiTurn;
-            }
-            game.switchPlayer();
-            changeColorToCurrentPlayer();
         }
 
         displayTokenGrid();
+        displayBorderGrid( -1, -1);
+        if (this.aiTurn && this.removeTurnPlayer1 == 0 && this.removeTurnPlayer2 == 0) {
+            DelayedTaskUtil.executeWithDelay(500, this::playAITurn);
+        }
 
     }
 
+    public void checkWin() {
+        int gameState = game.updateScore();
+        if (gameState == 0) {
+            Toast.makeText(getContext(), "Blue wins", Toast.LENGTH_SHORT).show();
+            navigateToHomeFragment();
+        } else if (gameState == 1) {
+            Toast.makeText(getContext(), "Yellow wins", Toast.LENGTH_SHORT).show();
+            navigateToHomeFragment();
+        }
+        else {
+            int[] order = {0, 1}; // Player 1 first
 
-    @SuppressLint("ClickableViewAccessibility")
-    private void displayTokenGrid() {
+            if (game.getPlayer2().equals(game.getCurrentPlayer())) {
+                order[0] = 1;
+                order[1] = 0;
+            }
+
+            for (int i : order) {
+                for (List<Coordinates> alignment : grid.getAlignmentsOfFive().get(i)) {
+                    try {
+                        if (i == 0){
+                            if (choice == '3'){
+                                game.getPlayer1().removeTwoTokens(alignment);
+                            }
+                            else {
+                                this.removeTurnPlayer1 += 2;
+                                this.alignmentToRemovePlayer1.addAll(alignment);
+                            }
+                        }
+                        else{
+                            if (choice == '3' || choice == '2'){
+                                game.getPlayer2().removeTwoTokens(alignment);
+                            }
+                            else{
+                                this.removeTurnPlayer2 += 2;
+                                this.alignmentToRemovePlayer2.addAll(alignment);
+                            }
+                        }
+
+                    } catch (Exception e) {
+                        System.out.println(e.getMessage());
+                    }
+                }
+            }
+        }
+    }
+
+
+    public void playAITurn() {
+        game.getCurrentPlayer().placeToken();
+        displayTokenGrid();
+        oldGrid.setGrid(grid.copyGrid());
+
+        //wait for 1 second
+        DelayedTaskUtil.executeWithDelay(1000, () -> {
+            AnimationVariables animationVariables = game.getCurrentPlayer().pushToken();
+            this.pushTurn = true;
+            this.placeTurn = false;
+            animateTokenPush(animationVariables);
+        });
+    }
+
+    /**
+     * Display the grid of tokens in the GridLayout
+     *
+     */
+    public void displayTokenGrid() {
         GridLayout tokenGridLayout = binding.tokenGridLayout;
         tokenGridLayout.removeAllViews();
 
@@ -283,6 +313,7 @@ public class GridFragment extends Fragment {
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
+
                 ImageView cell = new ImageView(getContext());
                 GridLayout.LayoutParams param = new GridLayout.LayoutParams();
                 param.width = param.height = (getResources().getDisplayMetrics().widthPixels) / size;
@@ -298,7 +329,7 @@ public class GridFragment extends Fragment {
                     cell.setFocusable(true); // Make the cell focusable
                     int final_i = i;
                     int final_j = j;
-                    cell.setOnClickListener(v -> handleCellPush(final_i, final_j));
+                    cell.setOnClickListener(v -> handleCellClick(final_i, final_j));
 
 
                     if (token.getColor() == 'B') {
@@ -313,21 +344,139 @@ public class GridFragment extends Fragment {
         }
     }
 
+    public void handleCellClick(int i, int j) {
+        Coordinates coordinates = new Coordinates(i, j);
+
+        if (this.removeTurnPlayer1 > 0 && game.getCurrentPlayer().equals(game.getPlayer1())) {
+            if (this.grid.getToken(coordinates) != null && this.grid.getToken(coordinates).getColor() == 'B') {
+                if (this.alignmentToRemovePlayer1.contains(coordinates)) {
+                    this.alignmentToRemovePlayer1.remove(coordinates);
+                    this.grid.removeToken(coordinates);
+                    this.removeTurnPlayer1 -= 1;
+                    if (this.removeTurnPlayer1 == 0) {
+                        this.alignmentToRemovePlayer1.clear();
+                        game.switchPlayer();
+                        changeColorToCurrentPlayer();
+                        if (this.choice == '2'){
+                            handleTurn();
+                        }
+                    }
+                    displayTokenGrid();
+                }
+                else {
+                    Toast.makeText(getContext(), "This cell is not in an alignment of 5", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+            else {
+                Toast.makeText(getContext(), "This cell is not yours", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else if (this.removeTurnPlayer2 > 0 && game.getCurrentPlayer().equals(game.getPlayer2())){
+            if (this.grid.getToken(coordinates) != null && this.grid.getToken(coordinates).getColor() == 'Y') {
+                if (this.alignmentToRemovePlayer2.contains(coordinates)) {
+                    this.alignmentToRemovePlayer2.remove(coordinates);
+                    this.grid.removeToken(coordinates);
+                    this.removeTurnPlayer2 -= 1;
+                    if (this.removeTurnPlayer2 == 0) {
+                        this.alignmentToRemovePlayer2.clear();
+                        game.switchPlayer();
+                        changeColorToCurrentPlayer();
+                    }
+                    displayTokenGrid();
+                }
+                else {
+                    Toast.makeText(getContext(), "This cell is not in an alignment of 5", Toast.LENGTH_SHORT).show();
+                }
+
+            }
+            else {
+                Toast.makeText(getContext(), "This cell is not yours", Toast.LENGTH_SHORT).show();
+            }
+        }
+
+
+        if (this.grid.getToken(coordinates) != null && pushTurn && !aiTurn) {
+            if (this.grid.getToken(coordinates).getColor() != game.getColorOfCurrentPlayer()) {
+                Toast.makeText(getContext(), "This cell is not yours", Toast.LENGTH_SHORT).show();
+                return;
+            }
+            displayBorderGrid(i, j);
+
+            swipeListener.setWaitSlide(true);
+
+            this.coordinatesToPush = coordinates;
+        }
+        else {
+            if (aiTurn) {
+                Toast.makeText(getContext(), "It's not your turn", Toast.LENGTH_SHORT).show();
+            }
+            else if (!pushTurn) {
+                Toast.makeText(getContext(), "You can't push now", Toast.LENGTH_SHORT).show();
+            }
+            else {
+                Toast.makeText(getContext(), "This cell is empty", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+    }
+
+    public void makePushCurrentPlayer(int[] directions) {
+        oldGrid.setGrid(grid.copyGrid());
+        try {
+            AnimationVariables animationVariables = this.grid.pushToken(this.game.getColorOfCurrentPlayer(), this.coordinatesToPush, directions);
+            animateTokenPush(animationVariables);
+            displayBorderGrid(-1, -1);
+        } catch (IllegalArgumentException e) {
+            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            displayBorderGrid(-1, -1);
+        }
+
+
+    }
+
+    /**
+     * Animate the token push when a player pushes a token in a direction
+     * @param animationVariables : the variables needed for the animation
+     *                           (the tokens to animate, the number of cases to push, the directions)
+     *
+     */
+    public void animateTokenPush(AnimationVariables animationVariables) {
+        // Récupérer les positions des jetons avant et après le déplacement
+        HashMap<Coordinates, Token> oldPositions = oldGrid.getGrid();
+        HashMap<Coordinates, Token> newPositions = grid.getGrid();
+        // Récupérer la grille de jetons
+        GridLayout tokenGridLayout = binding.tokenGridLayout;
+
+        // Récupérer les jetons déplacés
+        HashMap<Coordinates, Token> tokenMoved = animationVariables.getTokensToAnimate();
+
+        // Récupérer les arguments de l'animation
+        int nbCaseToPush = animationVariables.getNbCasesToPush();
+        int directX = animationVariables.getDirections()[0];
+        int directY = animationVariables.getDirections()[1];
+
+        // Appliquer l'animation aux jetons déplacés
+        for (Coordinates oldCoordinates : tokenMoved.keySet()) {
+            int oldIndex = oldCoordinates.getX() * grid.getSize() + oldCoordinates.getY();
+            ImageView cell = (ImageView) tokenGridLayout.getChildAt(oldIndex);
+
+            // Appliquer l'animation
+            int translationX = (directX * cell.getWidth() * nbCaseToPush);
+            int translationY = (directY * cell.getHeight() * nbCaseToPush);
+
+            Animation animation = new TranslateAnimation(0, translationX, 0, translationY);
+            animation.setDuration(500); // durée de l'animation
+            animation.setFillAfter(true); // l'élément reste à la position finale après l'animation
+            cell.startAnimation(animation);
+        }
+
+        DelayedTaskUtil.executeWithDelay(500, this::handleTurn);
+    }
+
     public void printTest(String msg) {
         Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
     }
-
-    public void draggingDirection(int i, int j) {
-        //binding.wholeScreen.onDragEvent();
-    }
-
-
-    public void updateGrid(Grid newGrid) {
-        this.grid = newGrid;
-        displayTokenGrid();
-    }
-
-
 
 
 }

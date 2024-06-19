@@ -58,4 +58,22 @@
         android:backgroundTint="@color/blue"
         android:textColor="#FFFFFF"
         android:textSize="18sp" />
+
+
+    <Button
+        android:id="@+id/rules"
+        style="@style/Widget.MaterialComponents.Button.TextButton"
+        android:layout_height="wrap_content"
+        android:layout_width="match_parent"
+        android:layout_marginBottom="12dp"
+        android:paddingVertical="12dp"
+        android:textSize="18sp"
+        android:text="RULES"
+        android:backgroundTint="@color/orange"
+        android:textColor="#FFFFFF"
+
+
+
+
+        />
 </LinearLayout>

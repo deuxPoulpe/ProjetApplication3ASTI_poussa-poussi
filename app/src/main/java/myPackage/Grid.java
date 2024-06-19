@@ -41,7 +41,20 @@ public class Grid {
         this.grid = new HashMap<>();
     }
 
+
     // Methods
+
+    public boolean isFull() {
+        return this.grid.size() == this.size * this.size;
+    }
+
+    public HashMap<Coordinates, Token> copyGrid() {
+        HashMap<Coordinates, Token> copy = new HashMap<>();
+        for (Coordinates c : this.grid.keySet()) {
+            copy.put(c, this.grid.get(c));
+        }
+        return copy;
+    }
 
     public void placeToken(char color, Coordinates coordinates) {
         // Check if there is already a token at the given coordinates
@@ -49,7 +62,7 @@ public class Grid {
             throw new IllegalArgumentException("There is already a token at the given coordinates");
         }
 
-        if (!hasNeighbours(coordinates) && ( coordinates.getX() != 0 && coordinates.getX() != 7 && coordinates.getY() != 0 && coordinates.getY() != 7))
+        if (!hasNeighbours(coordinates) && ( coordinates.getX() != 0 && coordinates.getX() != size - 1 && coordinates.getY() != 0 && coordinates.getY() != size - 1))
         {
             throw new IllegalArgumentException("There is no neighbour at the given coordinates");
         }
@@ -111,7 +124,7 @@ public class Grid {
      * @throws IllegalArgumentException si les coordonnées ne contiennent pas de jeton, si la direction n'est pas U, D, R ou L ou si le jeton à déplacer n'est pas de la couleur donnée.
      * 
      */
-    public void pushToken(char color, Coordinates coordinates, int[] direction){
+    public AnimationVariables pushToken(char color, Coordinates coordinates, int[] direction){
         
         if (!this.grid.containsKey(coordinates)) {
             throw new IllegalArgumentException("There is no token at the given coordinates");
@@ -119,6 +132,14 @@ public class Grid {
 
         if (this.grid.get(coordinates).getColor() != color) {
             throw new IllegalArgumentException("You can only push your own tokens");
+        }
+
+        if (direction == null) {
+            throw new IllegalArgumentException("Direction is null");
+        }
+
+        if (direction[0] == 0 && direction[1] == 0) {
+            throw new IllegalArgumentException("Direction is not valid");
         }
 
         int coeffX = direction[0];
@@ -142,8 +163,10 @@ public class Grid {
             
         }
 
-        if (tokensMoveStart.equals(tokensMoveEnd)) {
-            throw new IllegalArgumentException("You are trying to push tokens in the same previous position");
+        if (Settings.getInstance().getAllowPushBack()) {
+            if (tokensMoveStart.equals(tokensMoveEnd)) {
+                throw new IllegalArgumentException("You are trying to push tokens in the same previous position");
+            }
         }
         
         for (Coordinates c : tokensToMove.keySet()) {
@@ -151,11 +174,15 @@ public class Grid {
             }
 
         for (Coordinates c : tokensToMove.keySet()) {
-            char tokenColor = tokensToMove.get(c).getColor();
-            placeToken(tokenColor, new Coordinates(c.getX() + nbEmptyCells * coeffX, c.getY() + nbEmptyCells * coeffY));
+            Token token = tokensToMove.get(c);
+            this.grid.put(new Coordinates(c.getX() + nbEmptyCells * coeffX, c.getY() + nbEmptyCells * coeffY), token);
             }
 
+
         this.tokensMoveStart = tokensToMove;
+
+        return new AnimationVariables(nbEmptyCells, direction, tokensToMove);
+
     }
     
     /**
@@ -199,7 +226,8 @@ public class Grid {
                         }
 
                         // print the alignment
-                        System.out.println(token.getColor() + " made an alignment of 5 !");
+                        if (Settings.getInstance().getDisplayInTerminal())
+                            System.out.println(token.getColor() + " made an alignment of 5 !");
                     }
                 }
             }

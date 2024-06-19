@@ -14,51 +14,53 @@ public class PlayerAgent extends Agent {
    
     public void placeToken() {
 
-        int result = 0;
+        List<Coordinates> emptyCells = super.getValidEmptyCells();
+
+        Coordinates placeCoords;
         do {
-            System.out.println(super.getColor() + " : Enter the coordinates of the token you want to place");
+            if (Settings.getInstance().getDisplayInTerminal())
+                System.out.println(super.getColor() + " : Enter the coordinates of the token you want to place");
 
 
             int x = scanner.nextInt();
             int y = scanner.nextInt();
             
-            Coordinates placeCoords = new Coordinates(x, y);
+            placeCoords = new Coordinates(x, y);
 
-            try {
-                super.getGrid().placeToken(super.getColor(), placeCoords);
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-                result = 1;
-            }
-        } while (result == 1);
+        } while (!emptyCells.contains(placeCoords));
+
+        super.getGrid().placeToken(super.getColor(), placeCoords);
     }
 
-    public void pushToken() {
+    public AnimationVariables pushToken() {
 
         int result = 0;
 
         do {
-            System.out.println(super.getColor() + " : Enter the coordinates of the token you want to push and the direction you want to push it in (U, D, L, R) put E to not push the token");
+            if (Settings.getInstance().getDisplayInTerminal())
+                System.out.println(super.getColor() + " : Enter the coordinates of the token you want to push and the direction you want to push it in (U, D, L, R) put E to not push the token");
 
             int x = scanner.nextInt();
             int y = scanner.nextInt();
             char pushDirection = scanner.next().charAt(0);
 
             if (pushDirection == 'E') {
-                return;
+                return new AnimationVariables();
             }
 
             int[] direction = inputToDirection(pushDirection);
             
             Coordinates pushCoords = new Coordinates(x, y);
             try {
-                super.getGrid().pushToken(super.getColor(), pushCoords, direction);
+                return super.getGrid().pushToken(super.getColor(), pushCoords, direction);
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
                 result = 1;
             }
 
         } while (result == 1);
+
+        return new AnimationVariables();
     }
 
     public void removeTwoTokens(List<Coordinates> alignment) {
@@ -68,7 +70,8 @@ public class PlayerAgent extends Agent {
 
             // Demande au joueur de retirer un jeton de l'alignement
             do {
-                System.out.println(super.getGrid().getToken(alignment.get(0)).getColor() + " : Enter the coordinates of the " + index + " token you want to remove");
+                if (Settings.getInstance().getDisplayInTerminal())
+                    System.out.println(super.getGrid().getToken(alignment.get(0)).getColor() + " : Enter the coordinates of the " + index + " token you want to remove");
                 try {
                     if (removeTokenFromAlignment(alignment) == 0) {
                         break;
@@ -81,7 +84,8 @@ public class PlayerAgent extends Agent {
             index = "second";
 
             // Affiche le plateau de jeu après que le joueur ait retiré un jeton
-            super.getGrid().display();
+            if (Settings.getInstance().getDisplayInTerminal())
+                super.getGrid().display();
         }
     }
 
@@ -99,30 +103,21 @@ public class PlayerAgent extends Agent {
         }
         
         int[] coeffs = new int[2];
-        switch (direction) {
-            case 'U':
-                coeffs[0] = 0;
-                coeffs[1] = -1;
-                break;
-            case 'D':
-                coeffs[0] = 0;
-                coeffs[1] = 1;
-                break;
-            case 'R':
-                coeffs[0] = 1;
-                coeffs[1] = 0;
-                break;
-            case 'L':
-                coeffs[0] = -1;
-                coeffs[1] = 0;
-                break;
+
+        if (direction == 'U') {
+            coeffs[0] = 0;
+            coeffs[1] = -1;
+        } else if (direction == 'D') {
+            coeffs[0] = 0;
+            coeffs[1] = 1;
+        } else if (direction == 'R') {
+            coeffs[0] = 1;
+            coeffs[1] = 0;
+        } else if (direction == 'L') {
+            coeffs[0] = -1;
+            coeffs[1] = 0;
         }
-        //switch (direction) {
-        //    case 'U' -> {coeffs[0] = 0; coeffs[1] = -1;}
-        //    case 'D' -> {coeffs[0] = 0; coeffs[1] = 1;}
-        //    case 'R' -> {coeffs[0] = 1; coeffs[1] = 0;}
-        //    case 'L' -> {coeffs[0] = -1; coeffs[1] = 0;}
-        //}
+
         return coeffs;
     }
     

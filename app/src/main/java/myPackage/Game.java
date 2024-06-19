@@ -26,6 +26,18 @@ public class Game {
         return currentPlayer.getColor();
     }
 
+    public Agent getCurrentPlayer() {
+        return currentPlayer;
+    }
+    
+    public Agent getPlayer1() {
+        return player1;
+    }
+    
+    public Agent getPlayer2() {
+        return player2;
+    }
+
     // Constructeur
 
     public Game(Grid myGrid) {
@@ -127,19 +139,19 @@ public class Game {
             order[1] = 0;
         }
         
-        for (int i : order) {
-            for (List<Coordinates> alignment : alignmentsOfFive.get(i)) {
-                try {
-                    if (i == 0)
-                        player1.removeTwoTokens(alignment);
-                    else
-                        player2.removeTwoTokens(alignment);
+        //for (int i : order) {
+        //    for (List<Coordinates> alignment : alignmentsOfFive.get(i)) {
+        //        try {
+        //            if (i == 0)
+        //                player1.removeTwoTokens(alignment);
+        //           else
+        //                player2.removeTwoTokens(alignment);
 
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-            }
-        }
+        //        } catch (Exception e) {
+        //            System.out.println(e.getMessage());
+        //        }
+        //    }
+        //}
         return -1;
     }
 
