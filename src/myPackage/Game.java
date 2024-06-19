@@ -36,7 +36,7 @@ public class Game {
             this.player2 = new PlayerAgent('Y');
         } else if (choice == '2') {
             this.player1 = new PlayerAgent('B');
-            this.player2 = new RandomAgent('Y');
+            this.player2 = new SmartAgent('Y', 1);
         } else {
             this.player1 = new RandomAgent('B');
             this.player2 = new RandomAgent('Y');

@@ -10,8 +10,6 @@ public abstract class Agent {
     private char color;
     private int score;
 
-    public abstract void placeToken(Grid grid);
-    public abstract void pushToken(Grid grid);
     public abstract void executeGameRound(Grid grid);
     public abstract void removeTwoTokens(Grid grid, List<Coordinates> alignment);
 

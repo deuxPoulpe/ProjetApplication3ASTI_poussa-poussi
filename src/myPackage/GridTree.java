@@ -85,6 +85,8 @@ public class GridTree {
                     PushAction pushAction = new PushAction(ownTokenCoords, direction);
                     GridTree child = new GridTree(this, pushGrid, emptyCellCoords, pushAction);
                     addChild(child);
+
+                    System.out.println("Child added: " + child.getPlaceCoordinates().toString() + " " + child.getPushAction().toString());
                 }
             }
         }

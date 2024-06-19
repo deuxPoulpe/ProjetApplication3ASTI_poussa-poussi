@@ -16,27 +16,26 @@ public class SmartAgent extends Agent{
         return weights;
     }
 
-    public void placeToken(Grid grid) {
-        // TODO Auto-generated method stub
-        
-        
-    }
-    
-    public void pushToken(Grid grid) {
-        // TODO Auto-generated method stub
-        
-    }
-
     public void executeGameRound(Grid grid) {
-        // TODO Auto-generated method stub
-        placeToken(grid);
+
+        // Calcule le meilleur coup à jouer
+        GridTree root = new GridTree(this, grid);
+        GridTree bestMove = evaluateBestMove(root, smartness, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+
+        // Place le jeton sur le plateau
+        grid.placeToken(getColor(), bestMove.getPlaceCoordinates());
+
         if (Settings.getInstance().getDisplayInTerminal())
             grid.display();
+
+        // Si le plateau n'est pas plein, on pousse le jeton choisi dans la direction choisie
         if (grid.isFull()) {
             if (Settings.getInstance().getDisplayInTerminal())
                 System.out.println("The grid is full. No more tokens can be pushed.");
         } else 
-            pushToken(grid);
+            grid.pushToken(super.getColor(), bestMove.getPushAction().getCoordinates(), bestMove.getPushAction().getDirection());
+
+
         if (Settings.getInstance().getDisplayInTerminal())
         grid.display();
        
@@ -86,6 +85,7 @@ public class SmartAgent extends Agent{
                 }
             }
             return bestChild;
+            
         } else { // Si c'est le tour du joueur minimisant
             GridTree bestChild = null;
             node.generateChildNodes();

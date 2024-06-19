@@ -25,5 +25,9 @@ public class PushAction {
     public void setDirection(int[] direction) {
         this.direction = direction;
     }
+
+    public String toString() {
+        return "PushAction [coordinates=" + coordinates.toString() + ", direction=" + direction + "]";
+    }
     
 }
