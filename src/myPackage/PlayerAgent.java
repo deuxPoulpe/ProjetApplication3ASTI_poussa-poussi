@@ -11,7 +11,20 @@ public class PlayerAgent extends Agent {
         super(myColor);
     }
 
-   
+    public void executeGameRound(Grid grid) {
+        placeToken(grid);
+        if (Settings.getInstance().getDisplayInTerminal())
+            grid.display();
+        if (grid.isFull()) {
+            if (Settings.getInstance().getDisplayInTerminal())
+                System.out.println("The grid is full. No more tokens can be pushed.");
+        } else 
+            pushToken(grid);
+        if (Settings.getInstance().getDisplayInTerminal())
+        grid.display();
+       
+    }
+
     public void placeToken(Grid grid) {
 
         List<Coordinates> emptyCells = super.getValidEmptyCells(grid);
