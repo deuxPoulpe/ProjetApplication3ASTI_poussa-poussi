@@ -1,11 +1,12 @@
 package myPackage;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class GridTree {
 
     private final GridTree parent;
-    private List<GridTree> children = null;
+    private List<GridTree> children = new ArrayList<>();
     private Grid grid;
     private Coordinates placeCoordinates;
     private PushAction pushAction;
@@ -85,8 +86,6 @@ public class GridTree {
                     PushAction pushAction = new PushAction(ownTokenCoords, direction);
                     GridTree child = new GridTree(this, pushGrid, emptyCellCoords, pushAction);
                     addChild(child);
-
-                    System.out.println("Child added: " + child.getPlaceCoordinates().toString() + " " + child.getPushAction().toString());
                 }
             }
         }
@@ -96,9 +95,6 @@ public class GridTree {
 
         // On récupère les alignements de chaque joueur
         int[][] alignmentCounts = grid.getAlignmentCounts(agent.getColor());
-
-        System.out.println("Self alignments: " + alignmentCounts[0][0] + " " + alignmentCounts[0][1] + " " + alignmentCounts[0][2] + " " + alignmentCounts[0][3]);
-        System.out.println("Opponent alignments: " + alignmentCounts[1][0] + " " + alignmentCounts[1][1] + " " + alignmentCounts[1][2] + " " + alignmentCounts[1][3]);
 
         // On calcule et retourne le score de la configuration de jeu
         heuristicValue = calculateScore(alignmentCounts[0], alignmentCounts[1]);

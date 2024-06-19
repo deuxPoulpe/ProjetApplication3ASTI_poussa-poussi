@@ -20,6 +20,8 @@ public class SmartAgent extends Agent{
 
         // Calcule le meilleur coup à jouer
         GridTree root = new GridTree(this, grid);
+        root.generateChildNodes();
+        
         GridTree bestMove = evaluateBestMove(root, smartness, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
 
         // Place le jeton sur le plateau
@@ -85,7 +87,7 @@ public class SmartAgent extends Agent{
                 }
             }
             return bestChild;
-            
+
         } else { // Si c'est le tour du joueur minimisant
             GridTree bestChild = null;
             node.generateChildNodes();
