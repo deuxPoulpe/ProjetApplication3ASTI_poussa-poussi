@@ -325,7 +325,47 @@ public class Grid {
         }
         System.out.println("──┘");
     }
-        
+     
+    public int[][] getAlignmentCounts(char color) {
+        // On initialise les compteurs d'alignements de  chaque joueur
+        int[] selfAlignmentsCount = new int[4];
+        int[] opponentAlignmentsCount = new int[4];
+
+        int[][] directions = {{1, 0}, {0, 1}, {1, 1}, {1, -1}};
+        Set<Coordinates> tokenSet = getHashMap().keySet();
+           
+        // On parcourt les jetons du plateau
+        for (Coordinates coords : tokenSet) {
+
+            // On récupère les alignements du jeton
+            for (int[] direction : directions) {
+
+                // Si le jeton n'est pas déjà dans l'alignement
+                if (!getToken(coords).getAlignments().contains(direction)) {
+
+                    Set<Coordinates> visited = new HashSet<>();
+                    List<Coordinates> alignment = getAlignment(coords, direction, visited);
+
+                    // On incrémente les compteurs d'alignements
+                    if (alignment.size() > 1) {
+                        if (getToken(coords).getColor() == color) {
+                            selfAlignmentsCount[alignment.size() - 2]++;
+                        } else {
+                            opponentAlignmentsCount[alignment.size() - 2]++;
+                        }
+
+                        // On ajoute les alignements à la liste des alignements des jetons
+                        for (Coordinates alignmentCoords : alignment) {
+                            getToken(alignmentCoords).addToAlignments(direction);
+                        }
+                    }
+                }
+
+            }
+            
+        }
+        return new int[][] {selfAlignmentsCount, opponentAlignmentsCount};
+    }
 }
 
 

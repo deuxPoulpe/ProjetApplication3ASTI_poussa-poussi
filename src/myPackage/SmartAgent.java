@@ -15,6 +15,10 @@ public class SmartAgent extends Agent{
         this.smartness = smartness;
     }
 
+    public int[] getWeights() {
+        return weights;
+    }
+
     public void placeToken(Grid grid) {
         // TODO Auto-generated method stub
         
@@ -26,111 +30,48 @@ public class SmartAgent extends Agent{
         
     }
 
+    public void executeRound(Grid grid) {
+        // TODO Auto-generated method stub
+        
+    }
+
     public void removeTwoTokens(Grid grid, List<Coordinates> alignment) {
         // TODO Auto-generated method stub
         
     }
 
-    public int evaluateGameConfiguration(Grid grid) {
-
-        // On récupère les alignements de chaque joueur
-        int[][] alignmentCounts = getAlignmentCounts(grid);
-
-        System.out.println("Self alignments: " + alignmentCounts[0][0] + " " + alignmentCounts[0][1] + " " + alignmentCounts[0][2] + " " + alignmentCounts[0][3]);
-        System.out.println("Opponent alignments: " + alignmentCounts[1][0] + " " + alignmentCounts[1][1] + " " + alignmentCounts[1][2] + " " + alignmentCounts[1][3]);
-
-        // On calcule et retourne le score de la configuration de jeu
-        return calculateScore(alignmentCounts[0], alignmentCounts[1]);
-    }
-
-    public int[][] getAlignmentCounts(Grid grid) {
-        // On initialise les compteurs d'alignements de  chaque joueur
-        int[] selfAlignmentsCount = new int[4];
-        int[] opponentAlignmentsCount = new int[4];
-
-        int[][] directions = {{1, 0}, {0, 1}, {1, 1}, {1, -1}};
-        Set<Coordinates> tokenSet = grid.getHashMap().keySet();
-           
-        // On parcourt les jetons du plateau
-        for (Coordinates coords : tokenSet) {
-
-            // On récupère les alignements du jeton
-            for (int[] direction : directions) {
-
-                // Si le jeton n'est pas déjà dans l'alignement
-                if (!grid.getToken(coords).getAlignments().contains(direction)) {
-
-                    Set<Coordinates> visited = new HashSet<>();
-                    List<Coordinates> alignment = grid.getAlignment(coords, direction, visited);
-
-                    // On incrémente les compteurs d'alignements
-                    if (alignment.size() > 1) {
-                        if (grid.getToken(coords).getColor() == super.getColor()) {
-                            selfAlignmentsCount[alignment.size() - 2]++;
-                        } else {
-                            opponentAlignmentsCount[alignment.size() - 2]++;
-                        }
-
-                        // On ajoute les alignements à la liste des alignements des jetons
-                        for (Coordinates alignmentCoords : alignment) {
-                            grid.getToken(alignmentCoords).addToAlignments(direction);
-                        }
-                    }
-                }
-
-            }
-            
-        }
-        return new int[][] {selfAlignmentsCount, opponentAlignmentsCount};
-    }
-
-    public int calculateScore(int[] selfAlignmentsCount, int[] opponentAlignmentsCount) {
-        int score = 0;
-        for (int i = 0; i < 4; i++) {
-            score += (selfAlignmentsCount[i] - opponentAlignmentsCount[i]) * weights[i];
-        }
-        return score;
-    }
-
-    public int[] minMaxAlphaBeta(Grid grid, int depth) {
-        int alpha = Integer.MIN_VALUE;
-        int beta = Integer.MAX_VALUE;
-
-        for (int i = 0; i < depth; i++) {
-
-        }
-        GridTree root = new GridTree(null, grid, null, null);
+    
 
     
-    }
 
-    public void generateChildNodes(GridTree node) {
+    
+
+    public GridTree minMaxAlphaBeta(GridTree node, int depth, int alpha, int beta, boolean maximizingPlayer) {
+        if (node.isLeaf() || depth == 0) {
+            node.calculateHeuristicValue();
+            return node;
+        }
         
-        // Pour chaque cellule vide
-        List<Coordinates> emptyCells = getValidEmptyCells(node.getGrid());
-        for (Coordinates emptyCellCoords : emptyCells) {
-
-            // On inialise un clone du plateau avec le jeton placé
-            Grid placeGrid = node.getGrid().clone();
-            placeGrid.placeToken(super.getColor(), emptyCellCoords);
-            
-            
-            // Pour chaque jeton du joueur sur le plateau cloné
-            List<Coordinates> ownTokens = super.getOwnTokensCoords(placeGrid);
-            for (Coordinates ownTokenCoords : ownTokens) {
-
-                // On itère sur les directions de poussée valides
-                List<int[]> validDirections = super.getValidPushDirections(placeGrid, ownTokenCoords);
-                for (int[] direction : validDirections) {
-
-                    // On effectue la poussée et on ajoute la grille en tant que fils du noeud
-                    Grid pushGrid = placeGrid.clone();
-                    pushGrid.pushToken(super.getColor(), ownTokenCoords, direction);
-                    PushAction pushAction = new PushAction(ownTokenCoords, direction);
-                    GridTree child = new GridTree(node, pushGrid, emptyCellCoords, pushAction);
-                    node.addChild(child);
+        if (maximizingPlayer) {
+            GridTree bestChild = null;
+            node.generateChildNodes();
+            for (GridTree child : node.getChildren()) {
+                GridTree nodeEval = minMaxAlphaBeta(child, depth - 1, alpha, beta, false);
+                nodeEval.calculateHeuristicValue();
+                if (bestChild == null || nodeEval.getHeuristicValue() < bestChild.getHeuristicValue()) {
+                    bestChild = nodeEval;
                 }
             }
-        }
+        }    
     }
+
+    public void alphaPruning(GridTree node, int alpha) {
+
+    }
+
+    public void betaPruning(GridTree node, int beta) {
+
+    }
+
+    
 }

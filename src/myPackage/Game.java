@@ -76,14 +76,16 @@ public class Game {
         if (Settings.getInstance().getDisplayInTerminal())
             grid.display();
 
-        if (!grid.isFull()) {
+        if (grid.isFull()) {
             if (Settings.getInstance().getDisplayInTerminal())
                 System.out.println("The grid is full. No more tokens can be pushed.");
+        }    
+        else
             currentPlayer.pushToken(grid);
 
-            if (Settings.getInstance().getDisplayInTerminal())
-                grid.display();
-        }
+        if (Settings.getInstance().getDisplayInTerminal())
+            grid.display();
+        
 
         // Phase de poussée
 
