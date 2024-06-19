@@ -19,21 +19,45 @@ public class MinMaxAgent extends Agent{
         // Calcule le meilleur coup à jouer
         GridTree root = new GridTree(this, grid);
         root.generateChildNodes();
+
+        if (root.getChildren().isEmpty()) System.out.println("No possible moves");
+        for (GridTree child : root.getChildren()) {
+            System.out.println(child);
+        }
         
+        // Calcule le meilleur coup à jouer pour suppressions de jetons ou pour placer un jeton
         GridTree bestMove = evaluateBestMove(root, smartness, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+        
+        // Si l'adversaire a formé un alignement de 5 jetons du joueur
+        if (bestMove.getRemovCoordinates().get(0).size() > 0) {
+
+            // Pour chaque alignement de 5 jetons du joueur formé par l'adversaire, on retire 2 jetons de l'alignement
+            for (Coordinates[] removCoords1 : bestMove.getRemovCoordinates().get(0)) {
+                grid.removeToken(removCoords1[0]);
+                grid.removeToken(removCoords1[1]);
+            }
+        }
 
         // Place le jeton sur le plateau
         grid.placeToken(getColor(), bestMove.getPlaceCoordinates());
-
+        
         if (Settings.getInstance().getDisplayInTerminal())
-            grid.display();
-
+        grid.display();
+        
         // Si le plateau n'est pas plein, on pousse le jeton choisi dans la direction choisie
         if (grid.isFull()) {
             if (Settings.getInstance().getDisplayInTerminal())
                 System.out.println("The grid is full. No more tokens can be pushed.");
         } else 
             grid.pushToken(super.getColor(), bestMove.getPushAction().getCoordinates(), bestMove.getPushAction().getDirection());
+
+        // Si un alignement de 5 jetons est formé, on retire 2 jetons de l'alignement
+        if (bestMove.getRemovCoordinates().get(1).size() > 0) {
+            for (Coordinates[] removCoords2 : bestMove.getRemovCoordinates().get(1)) {
+                grid.removeToken(removCoords2[0]);
+                grid.removeToken(removCoords2[1]);
+            }
+        }
 
         if (Settings.getInstance().getDisplayInTerminal())
         grid.display();

@@ -90,6 +90,6 @@ public class Game {
     public int checkScore() {
         // TODO: Implement this method
 
-        return 0;
+        return -1;
     }
 }

@@ -27,7 +27,8 @@ public class PushAction {
     }
 
     public String toString() {
-        return "PushAction [coordinates=" + coordinates.toString() + ", direction=" + direction + "]";
-    }
+        String strCoordinates = "Coordinates: " + coordinates + "\n";
+        String strDirection = "Direction: " + direction + "\n";
+        return strCoordinates + strDirection;}
     
 }

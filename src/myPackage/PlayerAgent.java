@@ -10,19 +10,26 @@ public class PlayerAgent extends Agent {
     public PlayerAgent(char myColor) {
         super(myColor);
     }
-
+    
     public void executeGameRound(Grid grid) {
+        
         placeToken(grid);
         if (Settings.getInstance().getDisplayInTerminal())
-            grid.display();
+        grid.display();
         if (grid.isFull()) {
             if (Settings.getInstance().getDisplayInTerminal())
-                System.out.println("The grid is full. No more tokens can be pushed.");
+            System.out.println("The grid is full. No more tokens can be pushed.");
         } else 
-            pushToken(grid);
+        pushToken(grid);
         if (Settings.getInstance().getDisplayInTerminal())
         grid.display();
-       
+        
+        // Pour chaque alignement de 5 jetons formé, on retire 2 jetons de l'alignement
+        for (List<Coordinates> alignment : grid.getAlignments(super.getColor(), 5)) {
+            if (alignment.size() >= 5) {
+                removeTwoTokens(grid, alignment);
+            }
+        }
     }
 
     public void placeToken(Grid grid) {
