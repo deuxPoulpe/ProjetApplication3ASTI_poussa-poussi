@@ -53,7 +53,10 @@ public class RandomAgent extends Agent {
         grid.pushToken(super.getColor(), randomTokenCoords, randomDirection);
     }
 
-
+    /**
+     * Cette méthode permet de placer un jeton et aprés de pousser sur le plateau au cas ou elle n'est pas pleine.
+     * @param grid le plateau de jeu.
+     */
     public void executeGameRound(Grid grid) {
         placeToken(grid);
         if (Settings.getInstance().getDisplayInTerminal())

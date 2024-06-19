@@ -99,6 +99,13 @@ public class Grid {
         return nbEmptyCells;
     }
  
+    /**
+     * Renvoie les jetons à déplacer dans une direction donnée à partir de coordonnées données.
+     * @param coordinate les coordonnées à partir desquelles chercher les jetons à déplacer.
+     * @param coeffX le coefficient de déplacement en x.
+     * @param coeffY le coefficient de déplacement en y.
+     * @return une liste des jetons à déplacer dans la direction donnée.
+     */
     public HashMap<Coordinates, Token> getTokensToMove(Coordinates coordinate, int coeffX, int coeffY) {
         
 
@@ -281,6 +288,9 @@ public class Grid {
         return false;
     }
 
+    /**
+     * Affiche le plateau de jeu en mode console.
+     */
     public void display() {
         for (int i = 0; i < this.size; i++) {
             System.out.print(i == 0 ? "   " + i : "   " + i);

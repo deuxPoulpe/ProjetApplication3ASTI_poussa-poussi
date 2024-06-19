@@ -11,6 +11,10 @@ public class PlayerAgent extends Agent {
         super(myColor);
     }
 
+     /**
+     * Cette méthode permet de placer un jeton et aprés de pousser sur le plateau au cas ou elle n'est pas pleine.
+     * @param grid le plateau de jeu.
+     */
     public void executeGameRound(Grid grid) {
         placeToken(grid);
         if (Settings.getInstance().getDisplayInTerminal())
@@ -25,6 +29,10 @@ public class PlayerAgent extends Agent {
        
     }
 
+    /**
+     * Cette méthode permet de placer un jeton sur le plateau.
+     * @param grid le plateau de jeu.
+     */
     public void placeToken(Grid grid) {
 
         List<Coordinates> emptyCells = super.getValidEmptyCells(grid);
@@ -45,6 +53,10 @@ public class PlayerAgent extends Agent {
         grid.placeToken(super.getColor(), placeCoords);
     }
 
+    /**
+     * Cette méthode permet de pousser un jeton sur le plateau.
+     * @param grid le plateau de jeu.
+     */
     public void pushToken(Grid grid) {
 
         int result = 0;
@@ -74,6 +86,11 @@ public class PlayerAgent extends Agent {
         } while (result == 1);
     }
 
+    /**
+     * Cette méthode permet de retirer deux jetons après un alignement de 5.
+     * @param grid le plateau de jeu.
+     * @param alignment l'alignement duquel retirer les jetons.
+     */
     public void removeTwoTokens(Grid grid, List<Coordinates> alignment) {
         String index = "first";
         for (int i = 0; i < 2; i++) {
@@ -122,7 +139,13 @@ public class PlayerAgent extends Agent {
         }
         return coeffs;
     }
-    
+    /**
+     * Cette méthode permet de retirer un jeton de l'alignement.
+     * @param grid le plateau de jeu.
+     * @param alignment l'alignement duquel retirer le jeton.
+     * @return 0 si le jeton a été retiré, 1 sinon.
+     * @throws Exception si les coordonnées saisies par le joueur ne sont pas dans l'alignement.
+     */
     public int removeTokenFromAlignment(Grid grid, List<Coordinates> alignment) throws Exception {
 
         int x = scanner.nextInt();
