@@ -1,9 +1,6 @@
 package myPackage;
 
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class SmartAgent extends Agent{
 
@@ -40,38 +37,71 @@ public class SmartAgent extends Agent{
         
     }
 
-    
+    public GridTree evaluateBestMove(GridTree node, int depth, int alpha, int beta, boolean maximizingPlayer) {
 
-    
-
-    
-
-    public GridTree minMaxAlphaBeta(GridTree node, int depth, int alpha, int beta, boolean maximizingPlayer) {
+        // Si le noeud est une feuille ou si la profondeur est nulle, on retourne le noeud
         if (node.isLeaf() || depth == 0) {
             node.calculateHeuristicValue();
             return node;
         }
-        
+    
+        // Si c'est le tour du joueur maximisant
         if (maximizingPlayer) {
             GridTree bestChild = null;
             node.generateChildNodes();
+    
+            // On initialise la meilleure valeur à un très petit nombre
+            int maxEval = Integer.MIN_VALUE;
+    
+            // On parcourt tous les coups possibles
             for (GridTree child : node.getChildren()) {
-                GridTree nodeEval = minMaxAlphaBeta(child, depth - 1, alpha, beta, false);
+                // On évalue le noeud enfant
+                GridTree nodeEval = evaluateBestMove(child, depth - 1, alpha, beta, false);
+    
+                // On calcule la valeur heuristique du noeud enfant
                 nodeEval.calculateHeuristicValue();
-                if (bestChild == null || nodeEval.getHeuristicValue() < bestChild.getHeuristicValue()) {
-                    bestChild = nodeEval;
+                int eval = nodeEval.getHeuristicValue();
+    
+                // On met à jour la meilleure valeur et le meilleur enfant
+                if (eval > maxEval) {
+                    maxEval = eval;
+                    bestChild = child;
+                }
+    
+                // Alpha prend la valeur du maximum entre alpha et la valeur de l'évaluation
+                alpha = Math.max(alpha, eval);
+                if (beta <= alpha) {
+                    break;
                 }
             }
-        }    
-    }
-
-    public void alphaPruning(GridTree node, int alpha) {
-
-    }
-
-    public void betaPruning(GridTree node, int beta) {
-
-    }
-
+            return bestChild;
+        } else { // Si c'est le tour du joueur minimisant
+            GridTree bestChild = null;
+            node.generateChildNodes();
     
+            // On initialise la meilleure valeur à un très grand nombre
+            int minEval = Integer.MAX_VALUE;
+    
+            for (GridTree child : node.getChildren()) {
+                GridTree nodeEval = evaluateBestMove(child, depth - 1, alpha, beta, true);
+    
+                // On calcule la valeur heuristique du noeud enfant
+                nodeEval.calculateHeuristicValue();
+                int eval = nodeEval.getHeuristicValue();
+    
+                // On met à jour la meilleure valeur et le meilleur enfant
+                if (eval < minEval) {
+                    minEval = eval;
+                    bestChild = child;
+                }
+    
+                // Beta prend la valeur du minimum entre beta et la valeur de l'évaluation
+                beta = Math.min(beta, eval);
+                if (beta <= alpha) {
+                    break;
+                }
+            }
+            return bestChild;
+        }
+    }
 }
