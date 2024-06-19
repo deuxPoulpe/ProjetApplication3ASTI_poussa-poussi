@@ -11,7 +11,6 @@ public abstract class Agent {
     private int score;
 
     public abstract void executeGameRound(Grid grid);
-    public abstract void removeTwoTokens(Grid grid, List<Coordinates> alignment);
 
     public char getColor() {
         return this.color;

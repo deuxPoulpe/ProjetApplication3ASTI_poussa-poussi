@@ -10,11 +10,12 @@ public class GridTree {
     private Grid grid;
     private Coordinates placeCoordinates;
     private PushAction pushAction;
+    private Coordinates[] removCoordinates = new Coordinates[2];
     private int heuristicValue;
-    private SmartAgent agent;
+    private MinMaxAgent agent;
 
     // Constructeur pour la racine de l'arbre
-    public GridTree(SmartAgent agent, Grid grid) {
+    public GridTree(MinMaxAgent agent, Grid grid) {
         this.agent = agent;
         this.grid = grid;
         this.parent = null;
@@ -27,6 +28,14 @@ public class GridTree {
         this.grid = grid;
         this.placeCoordinates = placeCoordinates;
         this.pushAction = pushAction;
+    }
+
+    // Constructeur pour les noeuds de l'arbre avec suppression de jetons
+    public GridTree(GridTree parent, Grid grid, Coordinates[] removCoordinates) {
+        this.agent = parent.agent;
+        this.parent = parent;
+        this.grid = grid;
+        this.removCoordinates = removCoordinates;
     }
 
     public int getHeuristicValue() {
@@ -43,6 +52,10 @@ public class GridTree {
 
     public PushAction getPushAction() {
         return pushAction;
+    }
+
+    public Coordinates[] getRemovCoordinates() {
+        return removCoordinates;
     }
 
     public GridTree getParent() {
@@ -62,6 +75,38 @@ public class GridTree {
     }
 
     public void generateChildNodes() {
+
+        GridTree node = null;
+
+        // Pour chaque alignement de 5 jetons du joueur
+        for (List<Coordinates> alignement : grid.getAlignments(agent.getColor(), 5)) {
+
+            // On incrémente le score du joueur
+            if (Settings.getInstance().getDisplayInTerminal())
+                System.out.println(agent.getColor() + " made an alignment of 5 !");
+            agent.incrementScore(1);
+            
+            for (Coordinates removCoords1 : alignement) {
+                for (Coordinates removCoords2 : alignement) {
+                    if (removCoords1 != removCoords2) {
+                        
+                        // On clone le plateau et on retire les deux jetons
+                        Grid removeGrid = grid.clone();
+                        removeGrid.removeToken(removCoords1);
+                        removeGrid.removeToken(removCoords2);
+                        
+                        // On ajoute la grille en tant que fils du noeud
+                        Coordinates[] coordsToRemove = {removCoords1, removCoords2};
+                        node = new GridTree(this, removeGrid, coordsToRemove);
+                        addChild(node);
+                    }
+                }
+            }
+        }
+
+        if (node == null) {
+            node = this;
+        }
         
         // Pour chaque cellule vide
         List<Coordinates> emptyCells = agent.getValidEmptyCells(grid);
@@ -84,7 +129,9 @@ public class GridTree {
                     Grid pushGrid = placeGrid.clone();
                     pushGrid.pushToken(agent.getColor(), ownTokenCoords, direction);
                     PushAction pushAction = new PushAction(ownTokenCoords, direction);
-                    GridTree child = new GridTree(this, pushGrid, emptyCellCoords, pushAction);
+
+                    // Sinon, on ajoute la grille en tant que fils du noeud
+                    GridTree child = new GridTree(node, pushGrid, emptyCellCoords, pushAction);
                     addChild(child);
                 }
             }
@@ -92,18 +139,30 @@ public class GridTree {
     }
 
     public void calculateHeuristicValue() {
+        int[] alignmentCounts = new int[4];
+        int[] opponentAlignmentCounts = new int[4];
 
         // On récupère les alignements de chaque joueur
-        int[][] alignmentCounts = grid.getAlignmentCounts(agent.getColor());
+        for (int i = 2; i < 6; i++) {
+            // joueur courant
+            alignmentCounts[i] = grid.getAlignments(agent.getColor(), i).size();
+
+            // adversaire
+            if (agent.getColor() == 'B') {
+                opponentAlignmentCounts[i] = grid.getAlignments('Y', i).size();
+            } else {
+                opponentAlignmentCounts[i] = grid.getAlignments('B', i).size();
+            }
+        }
 
         // On calcule et retourne le score de la configuration de jeu
-        heuristicValue = calculateScore(alignmentCounts[0], alignmentCounts[1]);
+        heuristicValue = calculateScore(alignmentCounts, alignmentCounts);
     }
 
-    public int calculateScore(int[] selfAlignmentsCount, int[] opponentAlignmentsCount) {
+    public int calculateScore(int[] alignmentCount, int[] opponentAlignmentCount) {
         int score = 0;
         for (int i = 0; i < 4; i++) {
-            score += (selfAlignmentsCount[i] - opponentAlignmentsCount[i]) * agent.getWeights()[i];
+            score += (alignmentCount[i] - opponentAlignmentCount[i]) * agent.getWeights()[i];
         }
         return score;
     }

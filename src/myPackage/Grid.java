@@ -180,12 +180,12 @@ public class Grid {
     /**
      * Renvoie les alignements de 5 jetons dans le plateau.
      * @return une liste des alignements de 5 jetons dans le plateau.
+     * @param specifiedColor la couleur des jetons à aligner.
+     * @param alignmentSize la taille de l'alignement à chercher.
      */
-    public List<List<List<Coordinates>>> getAlignmentsOfFive() {
+    public List<List<Coordinates>> getAlignments(char specifiedColor, int alignmentSize) {
 
-        List<List<List<Coordinates>>> result = new ArrayList<>();
-        result.add(new ArrayList<>()); // jetons Bleus
-        result.add(new ArrayList<>()); // jetons Jaunes
+        List<List<Coordinates>> result = new ArrayList<>();
 
         int [][] directions = {{0, 1}, {1, 0}, {1, 1}, {1, -1}};
 
@@ -194,6 +194,11 @@ public class Grid {
             Token token = this.grid.get(c);
             char color = token.getColor();
             
+            // if the token color doesn't match the specified color, skip
+            if (color != specifiedColor) {
+                continue;
+            }
+
             // for each direction
             for (int[] direction : directions) {
 
@@ -203,7 +208,7 @@ public class Grid {
                     // if there are 5 tokens in a row in this direction
                     Set<Coordinates> visited = new HashSet<>();
                     List<Coordinates> neighbours = getAlignment(c, direction, visited);
-                    if (neighbours.size() >= 5) {
+                    if (neighbours.size() == alignmentSize || alignmentSize > 5 && neighbours.size() > 5) {
                         
                         // set the aligment of the tokens to the direction
                         for (Coordinates neighbourCoordinates : neighbours) {
@@ -211,28 +216,18 @@ public class Grid {
                         }
 
                         // add the tokens to the result
-                        if (color == 'B') {
-                            result.get(0).add(neighbours);
-                        } else if (color == 'Y') {
-                            result.get(1).add(neighbours);
-                        }
-
-                        // print the alignment
-                        if (Settings.getInstance().getDisplayInTerminal())
-                            System.out.println(token.getColor() + " made an alignment of 5 !");
+                        result.add(neighbours);
                     }
                 }
             }
         }
         // for each token in all alignments, remove the alignment
-        for (List<List<Coordinates>> playerAlignments : result) {
-            for (List<Coordinates> alignment : playerAlignments) {
-                for (Coordinates c : alignment) {
-                    getToken(c).clearAlignments();
-                }
+        for (List<Coordinates> alignment : result) {
+            for (Coordinates c : alignment) {
+                getToken(c).clearAlignments();
             }
-            
         }
+        
         return result;
     }
 
@@ -325,49 +320,8 @@ public class Grid {
         }
         System.out.println("──┘");
     }
-     
-    public int[][] getAlignmentCounts(char color) {
-        // On initialise les compteurs d'alignements de  chaque joueur
-        int[] selfAlignmentsCount = new int[4];
-        int[] opponentAlignmentsCount = new int[4];
-
-        int[][] directions = {{1, 0}, {0, 1}, {1, 1}, {1, -1}};
-        Set<Coordinates> tokenSet = getHashMap().keySet();
-           
-        // On parcourt les jetons du plateau
-        for (Coordinates coords : tokenSet) {
-
-            // On récupère les alignements du jeton
-            for (int[] direction : directions) {
-
-                // Si le jeton n'est pas déjà dans l'alignement
-                if (!getToken(coords).getAlignments().contains(direction)) {
-
-                    Set<Coordinates> visited = new HashSet<>();
-                    List<Coordinates> alignment = getAlignment(coords, direction, visited);
-
-                    // On incrémente les compteurs d'alignements
-                    if (alignment.size() > 1) {
-                        if (getToken(coords).getColor() == color) {
-                            selfAlignmentsCount[alignment.size() - 2]++;
-                        } else {
-                            opponentAlignmentsCount[alignment.size() - 2]++;
-                        }
-
-                        // On ajoute les alignements à la liste des alignements des jetons
-                        for (Coordinates alignmentCoords : alignment) {
-                            getToken(alignmentCoords).addToAlignments(direction);
-                        }
-                    }
-                }
-
-            }
-            
-        }
-        return new int[][] {selfAlignmentsCount, opponentAlignmentsCount};
-    }
 }
-
+ 
 
 
 
