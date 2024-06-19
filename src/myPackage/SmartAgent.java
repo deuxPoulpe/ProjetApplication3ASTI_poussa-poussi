@@ -99,21 +99,19 @@ public class SmartAgent extends Agent{
         for (int i = 0; i < depth; i++) {
 
         }
-        GridTree root = new GridTree(null, grid);
+        GridTree root = new GridTree(null, grid, null, null);
 
     
     }
 
-    public HashMap<Coordinates, List<PushAction>>  getAllValidActions(Grid grid) {
-
-        HashMap<Coordinates, List<PushAction>> actions = new HashMap<>();
+    public void generateChildNodes(GridTree node) {
         
         // Pour chaque cellule vide
-        List<Coordinates> emptyCells = getValidEmptyCells(grid);
+        List<Coordinates> emptyCells = getValidEmptyCells(node.getGrid());
         for (Coordinates emptyCellCoords : emptyCells) {
 
             // On inialise un clone du plateau avec le jeton placé
-            Grid placeGrid = grid.clone();
+            Grid placeGrid = node.getGrid().clone();
             placeGrid.placeToken(super.getColor(), emptyCellCoords);
             
             
@@ -125,12 +123,14 @@ public class SmartAgent extends Agent{
                 List<int[]> validDirections = super.getValidPushDirections(placeGrid, ownTokenCoords);
                 for (int[] direction : validDirections) {
 
-                    // On ajoute l'action à la liste des actions possibles
+                    // On effectue la poussée et on ajoute la grille en tant que fils du noeud
+                    Grid pushGrid = placeGrid.clone();
+                    pushGrid.pushToken(super.getColor(), ownTokenCoords, direction);
                     PushAction pushAction = new PushAction(ownTokenCoords, direction);
-                    actions.get(emptyCellCoords).add(pushAction);
+                    GridTree child = new GridTree(node, pushGrid, emptyCellCoords, pushAction);
+                    node.addChild(child);
                 }
             }
         }
-        return actions;
     }
 }

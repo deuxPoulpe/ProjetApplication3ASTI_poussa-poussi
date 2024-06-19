@@ -7,14 +7,24 @@ public class GridTree {
     private final GridTree parent;
     private List<GridTree> children;
     private Grid grid;
+    private Coordinates placeCoordinates;
+    private PushAction pushAction;
 
-    public GridTree(GridTree parent, Grid grid) {
+    public GridTree(GridTree parent, Grid grid, Coordinates placeCoordinates, PushAction pushAction) {
         this.parent = parent;
         this.grid = grid;
     }
 
     public Grid getGrid() {
         return grid;
+    }
+
+    public Coordinates getPlaceCoordinates() {
+        return placeCoordinates;
+    }
+
+    public PushAction getPushAction() {
+        return pushAction;
     }
 
     public GridTree getParent() {
@@ -25,7 +35,7 @@ public class GridTree {
         return children;
     }
 
-    public void appendChild(GridTree child) {
+    public void addChild(GridTree child) {
         children.add(child);
     }
 }
