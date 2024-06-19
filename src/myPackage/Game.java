@@ -66,28 +66,13 @@ public class Game {
     }
 
     public void Round() {
-        // Phase de placement
+        // Avant placement du jeton
         if (grid.isFull()) {
             System.out.println("It's a draw.");
             System.exit(0);
         }
-        currentPlayer.placeToken(grid);
-
-        if (Settings.getInstance().getDisplayInTerminal())
-            grid.display();
-
-        if (grid.isFull()) {
-            if (Settings.getInstance().getDisplayInTerminal())
-                System.out.println("The grid is full. No more tokens can be pushed.");
-        }    
-        else
-            currentPlayer.pushToken(grid);
-
-        if (Settings.getInstance().getDisplayInTerminal())
-            grid.display();
-        
-
-        // Phase de poussée
+        // Placement et poussée du jeton
+        currentPlayer.executeGameRound(grid);
 
         // Vérification du score
         int gameState = updateScore();

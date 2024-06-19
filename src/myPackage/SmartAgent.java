@@ -27,10 +27,21 @@ public class SmartAgent extends Agent{
         
     }
 
-    public void executeRound(Grid grid) {
+    public void executeGameRound(Grid grid) {
         // TODO Auto-generated method stub
-        
+        placeToken(grid);
+        if (Settings.getInstance().getDisplayInTerminal())
+            grid.display();
+        if (grid.isFull()) {
+            if (Settings.getInstance().getDisplayInTerminal())
+                System.out.println("The grid is full. No more tokens can be pushed.");
+        } else 
+            pushToken(grid);
+        if (Settings.getInstance().getDisplayInTerminal())
+        grid.display();
+       
     }
+
 
     public void removeTwoTokens(Grid grid, List<Coordinates> alignment) {
         // TODO Auto-generated method stub

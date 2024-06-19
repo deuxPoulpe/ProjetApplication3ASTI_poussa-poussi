@@ -12,6 +12,7 @@ public abstract class Agent {
 
     public abstract void placeToken(Grid grid);
     public abstract void pushToken(Grid grid);
+    public abstract void executeGameRound(Grid grid);
     public abstract void removeTwoTokens(Grid grid, List<Coordinates> alignment);
 
     public char getColor() {

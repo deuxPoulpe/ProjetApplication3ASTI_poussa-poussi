@@ -53,6 +53,21 @@ public class RandomAgent extends Agent {
         grid.pushToken(super.getColor(), randomTokenCoords, randomDirection);
     }
 
+
+    public void executeGameRound(Grid grid) {
+        placeToken(grid);
+        if (Settings.getInstance().getDisplayInTerminal())
+            grid.display();
+        if (grid.isFull()) {
+            if (Settings.getInstance().getDisplayInTerminal())
+                System.out.println("The grid is full. No more tokens can be pushed.");
+        } else 
+            pushToken(grid);
+        if (Settings.getInstance().getDisplayInTerminal())
+        grid.display();
+       
+    }
+
     /**
      * Cette méthode permet de retirer deux jetons aléatoires d'une liste de jetons alignés.
      * @param alignment la liste des coordonnées des jetons alignés
