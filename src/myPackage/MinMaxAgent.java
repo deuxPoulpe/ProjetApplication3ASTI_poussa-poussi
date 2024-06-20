@@ -26,13 +26,9 @@ public class MinMaxAgent extends Agent{
         GridTree bestMove = evaluateBestMove(root, smartness, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
         System.out.println("Best move: \n" + bestMove + "\n");
 
-        // Si l'adversaire a formé un alignement de 5 jetons du joueur
-        if (bestMove.getRemovCoordinates().get(0).size() > 0) {
-
-            // Pour chaque alignement de 5 jetons du joueur formé par l'adversaire, on retire 2 jetons de l'alignement
-            for (Coordinates removCoords : bestMove.getRemovCoordinates().get(0)) {
-                grid.removeToken(removCoords);
-            }
+        // Pour chaque alignement de 5 jetons du joueur formé par l'adversaire, on retire 2 jetons de l'alignement
+        for (Coordinates removCoords : bestMove.getRemovCoordinates().get(0)) {
+            grid.removeToken(removCoords);
         }
 
         // Place le jeton sur le plateau
@@ -48,17 +44,13 @@ public class MinMaxAgent extends Agent{
         } else 
             grid.pushToken(super.getColor(), bestMove.getPushAction().getCoordinates(), bestMove.getPushAction().getDirection());
 
-        // Si un alignement de 5 jetons est formé, on retire 2 jetons de l'alignement
-        if (bestMove.getRemovCoordinates().get(1).size() > 0) {
-            for (Coordinates removCoords : bestMove.getRemovCoordinates().get(1)) {
-                grid.removeToken(removCoords);
-            }
+        // Pour chaque alignement de 5 jetons formé, on retire 2 jetons de l'alignement
+        for (Coordinates removCoords : bestMove.getRemovCoordinates().get(1)) {
+            grid.removeToken(removCoords);
         }
 
         if (Settings.getInstance().getDisplayInTerminal())
         grid.display();
-
-
     }
 
     public GridTree evaluateBestMove(GridTree node, int depth, int alpha, int beta, boolean maximizingPlayer) {

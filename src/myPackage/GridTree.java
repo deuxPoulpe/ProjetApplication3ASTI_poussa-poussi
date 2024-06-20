@@ -14,7 +14,7 @@ public class GridTree {
     private Coordinates placeCoordinates;
     private PushAction pushAction;
     private List<Set<Coordinates>> removCoordinates = new ArrayList<>(); // Première liste pour les coordonnées des jetons à retirer en début de tour, deuxième pour les jetons à retirer en fin de tour
-    private int heuristicValue;
+    private int heuristicValue = 0;
     private MinMaxAgent agent;
 
     // Constructeur pour la racine de l'arbre
@@ -29,7 +29,8 @@ public class GridTree {
     // Constructeur pour les noeuds de l'arbre
     public GridTree(GridTree myParent, Grid grid, Coordinates placeCoordinates, PushAction pushAction) {
         this.agent = myParent.agent;
-        this.removCoordinates = myParent.removCoordinates;
+        this.removCoordinates.add(myParent.removCoordinates.get(0));
+        this.removCoordinates.add(new HashSet<>());
         this.parent = myParent;
         this.grid = grid;
         this.placeCoordinates = placeCoordinates;
@@ -111,7 +112,7 @@ public class GridTree {
         }
 
         // On calcule et retourne le score de la configuration de jeu
-        heuristicValue = calculateScore(alignmentCounts, alignmentCounts);
+        heuristicValue += calculateScore(alignmentCounts, alignmentCounts);
     }
 
     public int calculateScore(int[] alignmentCount, int[] opponentAlignmentCount) {
@@ -256,13 +257,15 @@ public class GridTree {
                     if (removGrids.isEmpty()) {
                         GridTree child = new GridTree(this, pushGrid, placeCoordinates , pushAction);
                         childList.add(child);
-                    } else { // Sinon, on ajoute les grilles obtenues après avoir retiré tous les jetons à retirer en tant que fils du noeud
 
+                    // Sinon, on ajoute les grilles obtenues après avoir retiré tous les jetons à retirer en tant que fils du noeud
+                    } else { 
                         for (Set<Coordinates> coordsToRemoveSet : removGrids.keySet()) {
                             Grid currentGrid = removGrids.get(coordsToRemoveSet);
                             GridTree child = new GridTree(this, currentGrid, placeCoordinates, pushAction);
                             for (Coordinates coordsToRemove : coordsToRemoveSet) {
                                 child.removCoordinates.get(1).add(coordsToRemove);
+                                child.heuristicValue += coordsToRemoveSet.size() * agent.getWeights()[3];
                             }
                             childList.add(child);
                         }
@@ -285,3 +288,5 @@ public class GridTree {
     }
 
 }
+
+// Note : remplacer getRemovMap par getRemovChildren ???
