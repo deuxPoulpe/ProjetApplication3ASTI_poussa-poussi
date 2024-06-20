@@ -111,8 +111,11 @@ public class GridTree {
             }
         }
 
-        // On calcule et retourne le score de la configuration de jeu
+        // On calcule le score de la configuration de jeu
         heuristicValue += calculateScore(alignmentCounts, alignmentCounts);
+
+        // On ajoute le score des alignements de 5 jetons formés après la poussée
+        heuristicValue += removCoordinates.get(1).size() * agent.getWeights()[3] / 2;
     }
 
     public int calculateScore(int[] alignmentCount, int[] opponentAlignmentCount) {
@@ -265,7 +268,6 @@ public class GridTree {
                             GridTree child = new GridTree(this, currentGrid, placeCoordinates, pushAction);
                             for (Coordinates coordsToRemove : coordsToRemoveSet) {
                                 child.removCoordinates.get(1).add(coordsToRemove);
-                                child.heuristicValue += coordsToRemoveSet.size() * agent.getWeights()[3];
                             }
                             childList.add(child);
                         }
