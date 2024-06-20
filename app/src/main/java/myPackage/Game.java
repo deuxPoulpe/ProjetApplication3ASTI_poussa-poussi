@@ -38,6 +38,10 @@ public class Game {
         return player2;
     }
 
+    public int[] getScore() {
+        return score;
+    }
+
     // Constructeur
 
     public Game(Grid myGrid) {

@@ -1362,6 +1362,7 @@ color background_floating_material_dark
 color background_floating_material_light
 color background_material_dark
 color background_material_light
+color black
 color blue
 color bright_foreground_disabled_material_dark
 color bright_foreground_disabled_material_light
@@ -1423,6 +1424,7 @@ color error_color_material_dark
 color error_color_material_light
 color foreground_material_dark
 color foreground_material_light
+color grey
 color highlighted_text_material_dark
 color highlighted_text_material_light
 color m3_appbar_overlay_color
@@ -2989,7 +2991,7 @@ drawable abc_textfield_search_material
 drawable abc_vector_test
 drawable avd_hide_password
 drawable avd_show_password
-drawable background_gradient
+drawable background_border_grid
 drawable blue_token
 drawable btn_checkbox_checked_mtrl
 drawable btn_checkbox_checked_to_unchecked_mtrl_animation
@@ -3007,6 +3009,9 @@ drawable design_ic_visibility
 drawable design_ic_visibility_off
 drawable design_password_eye
 drawable design_snackbar_background
+drawable home_page_background
+drawable home_page_button_blue
+drawable home_page_button_orange
 drawable ic_arrow_back_black_24
 drawable ic_call_answer
 drawable ic_call_answer_low
@@ -3016,6 +3021,7 @@ drawable ic_call_decline
 drawable ic_call_decline_low
 drawable ic_clear_black_24
 drawable ic_clock_black_24dp
+drawable ic_computer
 drawable ic_keyboard_black_24dp
 drawable ic_launcher_background
 drawable ic_launcher_foreground
@@ -3026,6 +3032,7 @@ drawable ic_mtrl_checked_circle
 drawable ic_mtrl_chip_checked_black
 drawable ic_mtrl_chip_checked_circle
 drawable ic_mtrl_chip_close_circle
+drawable ic_player
 drawable ic_search_black_24
 drawable indeterminate_static
 drawable m3_avd_hide_password
@@ -3100,6 +3107,7 @@ drawable notification_template_icon_bg
 drawable notification_template_icon_low_bg
 drawable notification_tile_bg
 drawable notify_panel_notification_icon_bg
+drawable rounded_button
 drawable test_level_drawable
 drawable tooltip_frame_dark
 drawable tooltip_frame_light
@@ -3198,6 +3206,7 @@ id beginOnFirstDraw
 id beginning
 id bestChoice
 id blocking
+id blueTurn
 id borderGridLayout
 id bottom
 id bounce
@@ -3286,7 +3295,9 @@ id end
 id endToStart
 id enterAlways
 id enterAlwaysCollapsed
+id equipment_detail
 id escape
+id exit
 id exitUntilCollapsed
 id expand_activities_button
 id expanded_menu
@@ -3308,11 +3319,15 @@ id fragment_container
 id fragment_container_view_tag
 id frost
 id fullscreen_header
+id game_beginning
 id ghost_view
 id ghost_view_holder
+id goal
+id goal_detail
 id gone
 id graph
 id graph_wrap
+id gridBackground
 id gridContainer
 id group_divider
 id grouping
@@ -3378,6 +3393,7 @@ id material_timepicker_mode_button
 id material_timepicker_ok_button
 id material_timepicker_view
 id material_value_index
+id materials
 id matrix
 id message
 id middle
@@ -3413,6 +3429,7 @@ id mtrl_picker_text_input_range_start
 id mtrl_picker_title_text
 id mtrl_view_tag_bottom_padding
 id multiply
+id nameGame
 id navigation_bar_item_active_indicator_view
 id navigation_bar_item_icon_container
 id navigation_bar_item_icon_view
@@ -3450,6 +3467,7 @@ id open_search_view_search_prefix
 id open_search_view_status_bar_spacer
 id open_search_view_toolbar
 id open_search_view_toolbar_container
+id orangeTurn
 id outline
 id outward
 id overshoot
@@ -3469,6 +3487,7 @@ id player1
 id player2
 id position
 id postLayout
+id preambule
 id pressed
 id progress_circular
 id progress_horizontal
@@ -3488,6 +3507,7 @@ id save_non_transition_alpha
 id save_overlay_view
 id sawtooth
 id scale
+id scoreBoard
 id screen
 id scroll
 id scrollIndicatorDown
@@ -3530,6 +3550,7 @@ id spread
 id spread_inside
 id spring
 id square
+id squareLayout
 id src_atop
 id src_in
 id src_over
@@ -3596,6 +3617,8 @@ id transition_position
 id transition_scene_layoutid_cache
 id transition_transform
 id triangle
+id turn_detail
+id turns
 id unchecked
 id uniform
 id unlabeled
@@ -3612,6 +3635,8 @@ id visible
 id visible_removing_fragment_view_tag
 id west
 id wholeScreen
+id winnerBackground
+id winnerTextView
 id withText
 id with_icon
 id withinBounds

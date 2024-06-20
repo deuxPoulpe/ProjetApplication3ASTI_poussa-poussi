@@ -5,7 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.LinearLayout;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -18,10 +19,13 @@ import java.lang.String;
 
 public final class FragmentHomePageBinding implements ViewBinding {
   @NonNull
-  private final LinearLayout rootView;
+  private final RelativeLayout rootView;
 
   @NonNull
   public final TextView GameName;
+
+  @NonNull
+  public final ImageView gridBackground;
 
   @NonNull
   public final Button iavsia;
@@ -35,11 +39,12 @@ public final class FragmentHomePageBinding implements ViewBinding {
   @NonNull
   public final Button rules;
 
-  private FragmentHomePageBinding(@NonNull LinearLayout rootView, @NonNull TextView GameName,
-      @NonNull Button iavsia, @NonNull Button player1, @NonNull Button player2,
-      @NonNull Button rules) {
+  private FragmentHomePageBinding(@NonNull RelativeLayout rootView, @NonNull TextView GameName,
+      @NonNull ImageView gridBackground, @NonNull Button iavsia, @NonNull Button player1,
+      @NonNull Button player2, @NonNull Button rules) {
     this.rootView = rootView;
     this.GameName = GameName;
+    this.gridBackground = gridBackground;
     this.iavsia = iavsia;
     this.player1 = player1;
     this.player2 = player2;
@@ -48,7 +53,7 @@ public final class FragmentHomePageBinding implements ViewBinding {
 
   @Override
   @NonNull
-  public LinearLayout getRoot() {
+  public RelativeLayout getRoot() {
     return rootView;
   }
 
@@ -79,6 +84,12 @@ public final class FragmentHomePageBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.gridBackground;
+      ImageView gridBackground = ViewBindings.findChildViewById(rootView, id);
+      if (gridBackground == null) {
+        break missingId;
+      }
+
       id = R.id.iavsia;
       Button iavsia = ViewBindings.findChildViewById(rootView, id);
       if (iavsia == null) {
@@ -103,8 +114,8 @@ public final class FragmentHomePageBinding implements ViewBinding {
         break missingId;
       }
 
-      return new FragmentHomePageBinding((LinearLayout) rootView, GameName, iavsia, player1,
-          player2, rules);
+      return new FragmentHomePageBinding((RelativeLayout) rootView, GameName, gridBackground,
+          iavsia, player1, player2, rules);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

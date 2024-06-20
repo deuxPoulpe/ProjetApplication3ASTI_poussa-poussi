@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -18,6 +19,9 @@ import java.lang.Object;
 
 public abstract class FragmentGridBinding extends ViewDataBinding {
   @NonNull
+  public final TextView blueTurn;
+
+  @NonNull
   public final GridLayout borderGridLayout;
 
   @NonNull
@@ -27,20 +31,43 @@ public abstract class FragmentGridBinding extends ViewDataBinding {
   public final Button mainMenu;
 
   @NonNull
+  public final TextView orangeTurn;
+
+  @NonNull
+  public final TextView scoreBoard;
+
+  @NonNull
+  public final FrameLayout squareLayout;
+
+  @NonNull
   public final GridLayout tokenGridLayout;
 
   @NonNull
   public final ConstraintLayout wholeScreen;
 
+  @NonNull
+  public final FrameLayout winnerBackground;
+
+  @NonNull
+  public final TextView winnerTextView;
+
   protected FragmentGridBinding(Object _bindingComponent, View _root, int _localFieldCount,
-      GridLayout borderGridLayout, FrameLayout gridContainer, Button mainMenu,
-      GridLayout tokenGridLayout, ConstraintLayout wholeScreen) {
+      TextView blueTurn, GridLayout borderGridLayout, FrameLayout gridContainer, Button mainMenu,
+      TextView orangeTurn, TextView scoreBoard, FrameLayout squareLayout,
+      GridLayout tokenGridLayout, ConstraintLayout wholeScreen, FrameLayout winnerBackground,
+      TextView winnerTextView) {
     super(_bindingComponent, _root, _localFieldCount);
+    this.blueTurn = blueTurn;
     this.borderGridLayout = borderGridLayout;
     this.gridContainer = gridContainer;
     this.mainMenu = mainMenu;
+    this.orangeTurn = orangeTurn;
+    this.scoreBoard = scoreBoard;
+    this.squareLayout = squareLayout;
     this.tokenGridLayout = tokenGridLayout;
     this.wholeScreen = wholeScreen;
+    this.winnerBackground = winnerBackground;
+    this.winnerTextView = winnerTextView;
   }
 
   @NonNull

@@ -4,25 +4,73 @@ package com.example.poussapoussi.databinding;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
+import android.widget.Button;
+import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.viewbinding.ViewBinding;
+import androidx.viewbinding.ViewBindings;
 import com.example.poussapoussi.R;
 import java.lang.NullPointerException;
 import java.lang.Override;
+import java.lang.String;
 
 public final class FragmentRulesBinding implements ViewBinding {
   @NonNull
-  private final FrameLayout rootView;
+  private final ConstraintLayout rootView;
 
-  private FragmentRulesBinding(@NonNull FrameLayout rootView) {
+  @NonNull
+  public final TextView equipmentDetail;
+
+  @NonNull
+  public final Button exit;
+
+  @NonNull
+  public final TextView gameBeginning;
+
+  @NonNull
+  public final TextView goal;
+
+  @NonNull
+  public final TextView goalDetail;
+
+  @NonNull
+  public final TextView materials;
+
+  @NonNull
+  public final TextView nameGame;
+
+  @NonNull
+  public final TextView preambule;
+
+  @NonNull
+  public final TextView turnDetail;
+
+  @NonNull
+  public final TextView turns;
+
+  private FragmentRulesBinding(@NonNull ConstraintLayout rootView,
+      @NonNull TextView equipmentDetail, @NonNull Button exit, @NonNull TextView gameBeginning,
+      @NonNull TextView goal, @NonNull TextView goalDetail, @NonNull TextView materials,
+      @NonNull TextView nameGame, @NonNull TextView preambule, @NonNull TextView turnDetail,
+      @NonNull TextView turns) {
     this.rootView = rootView;
+    this.equipmentDetail = equipmentDetail;
+    this.exit = exit;
+    this.gameBeginning = gameBeginning;
+    this.goal = goal;
+    this.goalDetail = goalDetail;
+    this.materials = materials;
+    this.nameGame = nameGame;
+    this.preambule = preambule;
+    this.turnDetail = turnDetail;
+    this.turns = turns;
   }
 
   @Override
   @NonNull
-  public FrameLayout getRoot() {
+  public ConstraintLayout getRoot() {
     return rootView;
   }
 
@@ -43,10 +91,74 @@ public final class FragmentRulesBinding implements ViewBinding {
 
   @NonNull
   public static FragmentRulesBinding bind(@NonNull View rootView) {
-    if (rootView == null) {
-      throw new NullPointerException("rootView");
-    }
+    // The body of this method is generated in a way you would not otherwise write.
+    // This is done to optimize the compiled bytecode for size and performance.
+    int id;
+    missingId: {
+      id = R.id.equipment_detail;
+      TextView equipmentDetail = ViewBindings.findChildViewById(rootView, id);
+      if (equipmentDetail == null) {
+        break missingId;
+      }
 
-    return new FragmentRulesBinding((FrameLayout) rootView);
+      id = R.id.exit;
+      Button exit = ViewBindings.findChildViewById(rootView, id);
+      if (exit == null) {
+        break missingId;
+      }
+
+      id = R.id.game_beginning;
+      TextView gameBeginning = ViewBindings.findChildViewById(rootView, id);
+      if (gameBeginning == null) {
+        break missingId;
+      }
+
+      id = R.id.goal;
+      TextView goal = ViewBindings.findChildViewById(rootView, id);
+      if (goal == null) {
+        break missingId;
+      }
+
+      id = R.id.goal_detail;
+      TextView goalDetail = ViewBindings.findChildViewById(rootView, id);
+      if (goalDetail == null) {
+        break missingId;
+      }
+
+      id = R.id.materials;
+      TextView materials = ViewBindings.findChildViewById(rootView, id);
+      if (materials == null) {
+        break missingId;
+      }
+
+      id = R.id.nameGame;
+      TextView nameGame = ViewBindings.findChildViewById(rootView, id);
+      if (nameGame == null) {
+        break missingId;
+      }
+
+      id = R.id.preambule;
+      TextView preambule = ViewBindings.findChildViewById(rootView, id);
+      if (preambule == null) {
+        break missingId;
+      }
+
+      id = R.id.turn_detail;
+      TextView turnDetail = ViewBindings.findChildViewById(rootView, id);
+      if (turnDetail == null) {
+        break missingId;
+      }
+
+      id = R.id.turns;
+      TextView turns = ViewBindings.findChildViewById(rootView, id);
+      if (turns == null) {
+        break missingId;
+      }
+
+      return new FragmentRulesBinding((ConstraintLayout) rootView, equipmentDetail, exit,
+          gameBeginning, goal, goalDetail, materials, nameGame, preambule, turnDetail, turns);
+    }
+    String missingId = rootView.getResources().getResourceName(id);
+    throw new NullPointerException("Missing required view with ID: ".concat(missingId));
   }
 }

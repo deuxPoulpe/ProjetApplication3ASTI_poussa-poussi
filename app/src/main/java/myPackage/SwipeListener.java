@@ -50,7 +50,7 @@ public class SwipeListener implements View.OnTouchListener {
                 float valueX = x2 - x1;
                 float valueY = y2 - y1;
                 this.angleBetweenPoints = getAngle(x1, y1, x2, y2);
-
+                if ((Math.abs(valueX) > MIN_DISTANCE) || (Math.abs(valueY) > MIN_DISTANCE)) {
 
                      if(inRange(angleBetweenPoints, 0,45) || inRange(angleBetweenPoints, 315, 360)){
 
@@ -81,6 +81,7 @@ public class SwipeListener implements View.OnTouchListener {
                         this.directions[1] = 0;
                         this.waitslide = false;
                     }
+                }
                 myGridFragment.makePushCurrentPlayer(this.directions);
                 this.waitslide = false;
                 this.directions = new int[]{0, 0};

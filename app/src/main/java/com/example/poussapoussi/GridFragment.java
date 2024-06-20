@@ -1,5 +1,7 @@
 package com.example.poussapoussi;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.annotation.SuppressLint;
 import android.graphics.Color;
 import android.os.Bundle;
@@ -11,6 +13,9 @@ import java.util.List;
 
 import android.os.Handler;
 import android.os.Looper;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +25,7 @@ import android.view.animation.TranslateAnimation;
 import android.widget.GridLayout;
 import android.widget.ImageView;
 import android.util.Log;
+import android.widget.TextView;
 import android.widget.Toast;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -49,6 +55,8 @@ public class GridFragment extends Fragment {
 
     private int removeTurnPlayer1 = 0;
     private int removeTurnPlayer2 = 0;
+
+    private boolean finishGame = false;
 
     private List<Coordinates> alignmentToRemovePlayer1 = new ArrayList<>();
     private List<Coordinates> alignmentToRemovePlayer2 = new ArrayList<>();
@@ -93,11 +101,12 @@ public class GridFragment extends Fragment {
         binding = FragmentGridBinding.inflate(inflater, container, false);
         Settings.getInstance(true, false);
         this.grid = new Grid();
-
+        
         this.oldGrid = new Grid();
         this.game = new Game(this.grid);
         this.game.start(this.choice);
         changeColorToCurrentPlayer();
+        updateDisplayScore();
 
         if (this.choice == '3') {
             this.aiTurn = true;
@@ -201,52 +210,57 @@ public class GridFragment extends Fragment {
 
     public void changeColorToCurrentPlayer(){
         if (game.getColorOfCurrentPlayer() == 'B') {
-            binding.wholeScreen.setBackgroundColor(Color.parseColor("#1b4ca0"));
+            binding.wholeScreen.setBackgroundColor(Color.parseColor("#385ea0"));
         }
         else {
-            binding.wholeScreen.setBackgroundColor(Color.parseColor("#d17e02"));
+            binding.wholeScreen.setBackgroundColor(Color.parseColor("#ce9744"));
         }
     }
 
 
     public void handleTurn() {
-        if (this.removeTurnPlayer1 == 0 && this.removeTurnPlayer2 == 0) {
-            if (this.placeTurn) {
-                this.pushTurn = true;
-                this.placeTurn = false;
-            }
-
-            else if (this.pushTurn) {
-                this.pushTurn = false;
-                this.placeTurn = true;
-                checkWin();
-                if (this.choice == '2'){
-                    this.aiTurn = !this.aiTurn;
-                }
-                if (this.removeTurnPlayer1 == 0 && this.removeTurnPlayer2 == 0){
-                    game.switchPlayer();
-                    changeColorToCurrentPlayer();
+        if (!this.finishGame) {
+            if (this.removeTurnPlayer1 == 0 && this.removeTurnPlayer2 == 0) {
+                if (this.placeTurn) {
+                    this.pushTurn = true;
+                    this.placeTurn = false;
                 }
 
-            }
-        }
+                else if (this.pushTurn) {
+                    this.pushTurn = false;
+                    this.placeTurn = true;
+                    checkWin();
+                    if (this.choice == '2'){
+                        this.aiTurn = !this.aiTurn;
+                    }
+                    if (this.removeTurnPlayer1 == 0 && this.removeTurnPlayer2 == 0){
+                        game.switchPlayer();
+                        changeColorToCurrentPlayer();
+                    }
 
-        displayTokenGrid();
-        displayBorderGrid( -1, -1);
-        if (this.aiTurn && this.removeTurnPlayer1 == 0 && this.removeTurnPlayer2 == 0) {
-            DelayedTaskUtil.executeWithDelay(500, this::playAITurn);
+                }
+            }
+
+            displayTokenGrid();
+            displayBorderGrid( -1, -1);
+            if (this.aiTurn && this.removeTurnPlayer1 == 0 && this.removeTurnPlayer2 == 0) {
+                DelayedTaskUtil.executeWithDelay(500, this::playAITurn);
+            }
         }
 
     }
 
     public void checkWin() {
         int gameState = game.updateScore();
+        updateDisplayScore();
         if (gameState == 0) {
             Toast.makeText(getContext(), "Blue wins", Toast.LENGTH_SHORT).show();
-            navigateToHomeFragment();
+            this.finishGame = true;
+            displayWinner("Blue");
         } else if (gameState == 1) {
             Toast.makeText(getContext(), "Yellow wins", Toast.LENGTH_SHORT).show();
-            navigateToHomeFragment();
+            this.finishGame = true;
+            displayWinner("Orange");
         }
         else {
             int[] order = {0, 1}; // Player 1 first
@@ -286,6 +300,69 @@ public class GridFragment extends Fragment {
         }
     }
 
+    @SuppressLint("SetTextI18n")
+    public void updateDisplayScore() {
+        TextView scoreView = binding.scoreBoard;
+        int[] scores = game.getScore();
+        String scoreText = scores[0] + " • " + scores[1];
+
+        // Créez un SpannableString avec le texte du score
+        SpannableString spannableString = new SpannableString(scoreText);
+
+        // Appliquez la couleur bleue au premier score
+        spannableString.setSpan(new ForegroundColorSpan(Color.parseColor("#385ea0")), 0, 1, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        // Appliquez la couleur orange au deuxième score
+        spannableString.setSpan(new ForegroundColorSpan(Color.parseColor("#ce9744")), 1 + 3, scoreText.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+
+        // Définissez le texte coloré sur le TextView
+        scoreView.setText(spannableString);
+
+    }
+
+
+    @SuppressLint("SetTextI18n")
+    public void displayWinner(String winner) {
+
+        changeColorToCurrentPlayer();
+
+        // Mettez à jour le texte du TextView
+        TextView winnerTextView = binding.winnerTextView;
+        winnerTextView.setText("Winner: " + winner);
+
+        //change background color of the full screen with opacity
+        if (winner.equals("Blue")) {
+            binding.winnerBackground.setBackgroundColor(Color.parseColor("#BB385ea0"));
+        } else {
+            binding.winnerBackground.setBackgroundColor(Color.parseColor("#BBce9744"));
+        }
+
+
+
+        // Rendez le TextView visible
+        winnerTextView.setVisibility(View.VISIBLE);
+        animateWinnerTextView();
+        DelayedTaskUtil.executeWithDelay(10000, this::navigateToHomeFragment);
+
+    }
+
+    private void animateWinnerTextView() {
+        TextView winnerTextView = binding.winnerTextView;
+        // Créez des animations pour l'apparition (fade in) et l'agrandissement (scale up)
+        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(winnerTextView, "alpha", 0f, 1f);
+        fadeIn.setDuration(1000); // 1 seconde
+
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(winnerTextView, "scaleX", 0f, 1f);
+        scaleX.setDuration(1000); // 1 seconde
+
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(winnerTextView, "scaleY", 0f, 1f);
+        scaleY.setDuration(1000); // 1 seconde
+
+        // Combinez les animations dans un AnimatorSet
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(fadeIn, scaleX, scaleY);
+        animatorSet.start();
+    }
 
     public void playAITurn() {
         game.getCurrentPlayer().placeToken();
@@ -329,7 +406,7 @@ public class GridFragment extends Fragment {
                     cell.setFocusable(true); // Make the cell focusable
                     int final_i = i;
                     int final_j = j;
-                    cell.setOnClickListener(v -> handleCellClick(final_i, final_j));
+                    cell.setOnClickListener(v -> handleCellClick(final_i, final_j, cell));
 
 
                     if (token.getColor() == 'B') {
@@ -344,7 +421,7 @@ public class GridFragment extends Fragment {
         }
     }
 
-    public void handleCellClick(int i, int j) {
+    public void handleCellClick(int i, int j, ImageView cell) {
         Coordinates coordinates = new Coordinates(i, j);
 
         if (this.removeTurnPlayer1 > 0 && game.getCurrentPlayer().equals(game.getPlayer1())) {
@@ -402,6 +479,7 @@ public class GridFragment extends Fragment {
                 return;
             }
             displayBorderGrid(i, j);
+            cell.setOnTouchListener(swipeListener);
 
             swipeListener.setWaitSlide(true);
 

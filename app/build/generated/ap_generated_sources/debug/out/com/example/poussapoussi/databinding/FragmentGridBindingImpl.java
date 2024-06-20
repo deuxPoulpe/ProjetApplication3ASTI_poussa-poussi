@@ -15,9 +15,15 @@ public class FragmentGridBindingImpl extends FragmentGridBinding  {
         sIncludes = null;
         sViewsWithIds = new android.util.SparseIntArray();
         sViewsWithIds.put(R.id.mainMenu, 1);
-        sViewsWithIds.put(R.id.gridContainer, 2);
-        sViewsWithIds.put(R.id.borderGridLayout, 3);
-        sViewsWithIds.put(R.id.tokenGridLayout, 4);
+        sViewsWithIds.put(R.id.orangeTurn, 2);
+        sViewsWithIds.put(R.id.blueTurn, 3);
+        sViewsWithIds.put(R.id.scoreBoard, 4);
+        sViewsWithIds.put(R.id.gridContainer, 5);
+        sViewsWithIds.put(R.id.borderGridLayout, 6);
+        sViewsWithIds.put(R.id.tokenGridLayout, 7);
+        sViewsWithIds.put(R.id.squareLayout, 8);
+        sViewsWithIds.put(R.id.winnerBackground, 9);
+        sViewsWithIds.put(R.id.winnerTextView, 10);
     }
     // views
     // variables
@@ -26,15 +32,21 @@ public class FragmentGridBindingImpl extends FragmentGridBinding  {
     // Inverse Binding Event Handlers
 
     public FragmentGridBindingImpl(@Nullable androidx.databinding.DataBindingComponent bindingComponent, @NonNull View root) {
-        this(bindingComponent, root, mapBindings(bindingComponent, root, 5, sIncludes, sViewsWithIds));
+        this(bindingComponent, root, mapBindings(bindingComponent, root, 11, sIncludes, sViewsWithIds));
     }
     private FragmentGridBindingImpl(androidx.databinding.DataBindingComponent bindingComponent, View root, Object[] bindings) {
         super(bindingComponent, root, 0
-            , (android.widget.GridLayout) bindings[3]
-            , (android.widget.FrameLayout) bindings[2]
+            , (android.widget.TextView) bindings[3]
+            , (android.widget.GridLayout) bindings[6]
+            , (android.widget.FrameLayout) bindings[5]
             , (android.widget.Button) bindings[1]
-            , (android.widget.GridLayout) bindings[4]
+            , (android.widget.TextView) bindings[2]
+            , (android.widget.TextView) bindings[4]
+            , (android.widget.FrameLayout) bindings[8]
+            , (android.widget.GridLayout) bindings[7]
             , (androidx.constraintlayout.widget.ConstraintLayout) bindings[0]
+            , (android.widget.FrameLayout) bindings[9]
+            , (android.widget.TextView) bindings[10]
             );
         this.wholeScreen.setTag(null);
         setRootTag(root);
