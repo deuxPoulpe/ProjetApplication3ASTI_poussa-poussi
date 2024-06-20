@@ -1,5 +1,8 @@
 import myPackage.*;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Set;
+import java.util.ArrayList;
 
 
 public class BenchmarkMinMax {
@@ -11,12 +14,23 @@ public class BenchmarkMinMax {
         MinMaxAgent agent = new MinMaxAgent('Y', 1);
 
         Grid grid = new Grid();
+        // Crée un alignement de 5 jetons pour le joueur
+        grid.placeToken('Y', new Coordinates(0, 0));
+        grid.placeToken('Y', new Coordinates(0, 1));
+        grid.placeToken('Y', new Coordinates(0, 2));
+        grid.placeToken('Y', new Coordinates(0, 3));
+        grid.placeToken('Y', new Coordinates(0, 4));
 
         GridTree node = new GridTree(agent, grid);
+        HashMap<Set<Coordinates>, Grid> removGrids = node.getRemovMap(grid);
+        List<GridTree> children = new ArrayList<>();
+        for (Set<Coordinates> coordsToRemoveSet : removGrids.keySet()) {
+            GridTree child = new GridTree(agent, removGrids.get(coordsToRemoveSet));
+            child.getRemovCoordinates().get(1).addAll(coordsToRemoveSet);
+            children.add(child);
+        }
+        System.out.println("Children: " + children);
 
-        node.calculateHeuristicValue();
-
-        System.out.println("Heuristic value: " + node.getHeuristicValue());
 
     }
 

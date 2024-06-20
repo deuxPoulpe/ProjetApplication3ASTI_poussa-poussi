@@ -65,6 +65,10 @@ public class GridTree {
         return removCoordinates;
     }
 
+    public void setRemovCoordinates(List<Set<Coordinates>> removCoordinates) {
+        this.removCoordinates = removCoordinates;
+    }
+
     public List<GridTree> getChildren() {
         return children;
     }
@@ -162,11 +166,11 @@ public class GridTree {
      * @param inputGrid la grille sur laquelle retirer les jetons.
      * @return HashMap<Set<Coordinates>, Grid> contient toutes les combinaisons de deux jetons à retirer par alignement et la grille obtenue après les avoir retirés.
      */
-    private HashMap<Set<Coordinates>, Grid> getRemovMap(Grid inputGrid) {
+    public HashMap<Set<Coordinates>, Grid> getRemovMap(Grid inputGrid) {
         HashMap<Set<Coordinates>, Grid> gridMap = new HashMap<>();
         
         // Pour chaque alignement de 5 jetons du joueur
-        List<List<Coordinates>> alignments = grid.getAlignments(agent.getColor(), 5);
+        List<List<Coordinates>> alignments = inputGrid.getAlignments(agent.getColor(), 5);
         for (List<Coordinates> alignment : alignments) {
 
             // Générer toutes les combinaisons de deux jetons à retirer
@@ -252,9 +256,7 @@ public class GridTree {
                     for (Set<Coordinates> coordsToRemoveSet : removGrids.keySet()) {
                         Grid currentGrid = removGrids.get(coordsToRemoveSet);
                         GridTree child = new GridTree(this, currentGrid, placeCoordinates, pushAction);
-                        for (Coordinates coordsToRemove : coordsToRemoveSet) {
-                            child.removCoordinates.get(1).add(coordsToRemove);
-                        }
+                        child.removCoordinates.get(1).addAll(coordsToRemoveSet);
                         childList.add(child);
                     }
                 }
