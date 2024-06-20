@@ -3,7 +3,6 @@ package myPackage;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-import java.util.Set;
 
 public abstract class Agent {
 
@@ -26,34 +25,6 @@ public abstract class Agent {
 
     public Agent(char myColor) {
         this.color = myColor;
-    }
-
-    /**
-     * Cette méthode permet trouver les coordonnées des cellules vides du plateau.
-     * @return Set<Coordinates> qui contient les coordonnées des cellules vides du plateau.
-     */
-    public List<Coordinates> getValidEmptyCells (Grid grid) {
-        
-        // On récupère les coordonnées des cellules non vides
-        Set<Coordinates> nonEmptyCells = grid.getHashMap().keySet();
-
-        // On initialise un Set qui contiendra les coordonnées des cellules vides
-        List<Coordinates> emptyCells = new ArrayList<>();
-
-        // On parcourt le plateau pour trouver les cellules vides
-        int gridSize = grid.getSize();
-        for (int i = 0; i < gridSize; i++) {
-            for (int j = 0; j < gridSize; j++) {
-                Coordinates coords = new Coordinates(i, j);
-
-                // Si la cellule n'est pas dans le Set des cellules non vides, on l'ajoute au Set des cellules vides
-                if (!nonEmptyCells.contains(coords) && (grid.hasNeighbours(coords) || i == 0 || i == grid.getSize() - 1 || j == 0 || j == grid.getSize() - 1)) {
-                    emptyCells.add(coords);
-                }
-            }
-        }
-
-        return emptyCells;
     }
 
     /**

@@ -34,7 +34,7 @@ public class PlayerAgent extends Agent {
 
     public void placeToken(Grid grid) {
 
-        List<Coordinates> emptyCells = super.getValidEmptyCells(grid);
+        List<Coordinates> emptyCells = grid.getValidEmptyCells();
 
         Coordinates placeCoords;
         do {

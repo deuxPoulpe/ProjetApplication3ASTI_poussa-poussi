@@ -8,12 +8,12 @@ import java.util.Set;
 
 public class GridTree {
 
-    private final GridTree parent;
     private List<GridTree> children = new ArrayList<>();
     private Grid grid;
     private Coordinates placeCoordinates;
     private PushAction pushAction;
     private List<Set<Coordinates>> removCoordinates = new ArrayList<>(); // Première liste pour les coordonnées des jetons à retirer en début de tour, deuxième pour les jetons à retirer en fin de tour
+    private int pointCounter = 0;
     private int heuristicValue = 0;
     private MinMaxAgent agent;
 
@@ -21,28 +21,23 @@ public class GridTree {
     public GridTree(MinMaxAgent agent, Grid grid) {
         this.agent = agent;
         this.grid = grid;
-        this.parent = null;
         this.removCoordinates.add(new HashSet<>());
         this.removCoordinates.add(new HashSet<>());
     }
 
     // Constructeur pour les noeuds de l'arbre
-    public GridTree(GridTree myParent, Grid grid, Coordinates placeCoordinates, PushAction pushAction) {
-        this.agent = myParent.agent;
-        this.removCoordinates.add(myParent.removCoordinates.get(0));
+    public GridTree(GridTree parent, Grid grid, Coordinates placeCoordinates, PushAction pushAction) {
+
+        // attributs héréditaires
+        this.pointCounter = parent.pointCounter;
+        this.agent = parent.agent;
+        this.removCoordinates.add(parent.removCoordinates.get(0));
+
+        // attributs spécifiques
         this.removCoordinates.add(new HashSet<>());
-        this.parent = myParent;
         this.grid = grid;
         this.placeCoordinates = placeCoordinates;
         this.pushAction = pushAction;
-    }
-
-    // Constructeur pour les noeuds de l'arbre avec suppression de jetons
-    public GridTree(GridTree parent, Grid grid, List<Set<Coordinates>> removCoordinates) {
-        this.agent = parent.agent;
-        this.parent = parent;
-        this.grid = grid;
-        this.removCoordinates = removCoordinates;
     }
 
     public String toString() {
@@ -58,10 +53,6 @@ public class GridTree {
         return heuristicValue;
     }
 
-    public Grid getGrid() {
-        return grid;
-    }
-
     public Coordinates getPlaceCoordinates() {
         return placeCoordinates;
     }
@@ -74,16 +65,8 @@ public class GridTree {
         return removCoordinates;
     }
 
-    public GridTree getParent() {
-        return parent;
-    }
-
     public List<GridTree> getChildren() {
         return children;
-    }
-
-    public void setRemovCoordinates(List<Set<Coordinates>> removCoordinates) {
-        this.removCoordinates = removCoordinates;
     }
 
     public void addChild(GridTree child) {
@@ -92,6 +75,14 @@ public class GridTree {
 
     public boolean isLeaf() {
         return children == null;
+    }
+
+    public int calculateScore(int[] alignmentCount, int[] opponentAlignmentCount) {
+        int score = 0;
+        for (int i = 0; i < 4; i++) {
+            score += (alignmentCount[i] - opponentAlignmentCount[i]) * agent.getWeights()[i];
+        }
+        return score;
     }
 
     public void calculateHeuristicValue() {
@@ -111,19 +102,14 @@ public class GridTree {
             }
         }
 
-        // On calcule le score de la configuration de jeu
-        heuristicValue += calculateScore(alignmentCounts, alignmentCounts);
-
         // On ajoute le score des alignements de 5 jetons formés après la poussée
-        heuristicValue += removCoordinates.get(1).size() * agent.getWeights()[3] / 2;
-    }
+        pointCounter += removCoordinates.get(1).size() / 2;
 
-    public int calculateScore(int[] alignmentCount, int[] opponentAlignmentCount) {
-        int score = 0;
-        for (int i = 0; i < 4; i++) {
-            score += (alignmentCount[i] - opponentAlignmentCount[i]) * agent.getWeights()[i];
-        }
-        return score;
+        // On calcule la valeur heuristique des alignements de 2, 3, 4 et 5 jetons
+        int alignmentsScore = calculateScore(alignmentCounts, opponentAlignmentCounts);
+
+        // on calcule la valeur heuristique
+        heuristicValue = pointCounter * agent.getWeights()[3] + alignmentsScore;
     }
 
     /**
@@ -217,7 +203,7 @@ public class GridTree {
         // S'il n'y a pas de jetons à retirer
         if (removGrids.isEmpty()) {
             // Pour chaque cellule vide
-            List<Coordinates> emptyCells = agent.getValidEmptyCells(grid);
+            List<Coordinates> emptyCells = grid.getValidEmptyCells();
             for (Coordinates emptyCellCoords : emptyCells) {
                 childList.add(createPlaceChild(grid, emptyCellCoords));
             }
@@ -226,7 +212,7 @@ public class GridTree {
             for (Set<Coordinates> coordsToRemoveSet : removGrids.keySet()) {
                 // Pour chaque cellule vide de la grille obtenue après avoir retiré les jetons
                 Grid currentGrid = removGrids.get(coordsToRemoveSet);
-                List<Coordinates> emptyCells = agent.getValidEmptyCells(currentGrid);
+                List<Coordinates> emptyCells = currentGrid.getValidEmptyCells();
                 for (Coordinates emptyCellCoords : emptyCells) {
                     childList.add(createPlaceChild(currentGrid, emptyCellCoords));
                 }
@@ -238,43 +224,43 @@ public class GridTree {
 
     private List<GridTree> getPushChildren() {
             
-            List<GridTree> childList = new ArrayList<>();
-    
-            // Pour chaque jeton du joueur sur le plateau
-            List<Coordinates> ownTokens = agent.getOwnTokensCoords(grid);
-            for (Coordinates ownTokenCoords : ownTokens) {
-    
-                // Pour chaque direction de poussée valide
-                List<int[]> validDirections = agent.getValidPushDirections(grid, ownTokenCoords);
-                for (int[] direction : validDirections) {
-    
-                    // On effectue la poussée sur une copie du plateau
-                    Grid pushGrid = grid.clone();
-                    pushGrid.pushToken(agent.getColor(), ownTokenCoords, direction);
-                    PushAction pushAction = new PushAction(ownTokenCoords, direction);
+        List<GridTree> childList = new ArrayList<>();
 
-                    // On récupère les alignements de 5 jetons du joueur après la poussée
-                    HashMap<Set<Coordinates>, Grid> removGrids = getRemovMap(pushGrid);
-                    
-                    // Si aucun alignement de 5 de notre couleur n'a été formé, on ajoute la grille en tant que fils du noeud
-                    if (removGrids.isEmpty()) {
-                        GridTree child = new GridTree(this, pushGrid, placeCoordinates , pushAction);
-                        childList.add(child);
+        // Pour chaque jeton du joueur sur le plateau
+        List<Coordinates> ownTokens = agent.getOwnTokensCoords(grid);
+        for (Coordinates ownTokenCoords : ownTokens) {
 
-                    // Sinon, on ajoute les grilles obtenues après avoir retiré tous les jetons à retirer en tant que fils du noeud
-                    } else { 
-                        for (Set<Coordinates> coordsToRemoveSet : removGrids.keySet()) {
-                            Grid currentGrid = removGrids.get(coordsToRemoveSet);
-                            GridTree child = new GridTree(this, currentGrid, placeCoordinates, pushAction);
-                            for (Coordinates coordsToRemove : coordsToRemoveSet) {
-                                child.removCoordinates.get(1).add(coordsToRemove);
-                            }
-                            childList.add(child);
+            // Pour chaque direction de poussée valide
+            List<int[]> validDirections = agent.getValidPushDirections(grid, ownTokenCoords);
+            for (int[] direction : validDirections) {
+
+                // On effectue la poussée sur une copie du plateau
+                Grid pushGrid = grid.clone();
+                pushGrid.pushToken(agent.getColor(), ownTokenCoords, direction);
+                PushAction pushAction = new PushAction(ownTokenCoords, direction);
+
+                // On récupère les alignements de 5 jetons du joueur après la poussée
+                HashMap<Set<Coordinates>, Grid> removGrids = getRemovMap(pushGrid);
+                
+                // Si aucun alignement de 5 de notre couleur n'a été formé, on ajoute la grille en tant que fils du noeud
+                if (removGrids.isEmpty()) {
+                    GridTree child = new GridTree(this, pushGrid, placeCoordinates , pushAction);
+                    childList.add(child);
+
+                // Sinon, on ajoute les grilles obtenues après avoir retiré tous les jetons à retirer en tant que fils du noeud
+                } else { 
+                    for (Set<Coordinates> coordsToRemoveSet : removGrids.keySet()) {
+                        Grid currentGrid = removGrids.get(coordsToRemoveSet);
+                        GridTree child = new GridTree(this, currentGrid, placeCoordinates, pushAction);
+                        for (Coordinates coordsToRemove : coordsToRemoveSet) {
+                            child.removCoordinates.get(1).add(coordsToRemove);
                         }
+                        childList.add(child);
                     }
                 }
             }
-            return childList;
+        }
+        return childList;
     }
 
     public void generateChildNodes() {

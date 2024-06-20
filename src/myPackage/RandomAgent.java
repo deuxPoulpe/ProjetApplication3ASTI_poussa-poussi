@@ -13,7 +13,7 @@ public class RandomAgent extends Agent {
      * @return void
      */
     public void placeToken(Grid grid) {
-        List<Coordinates> emptyCells = super.getValidEmptyCells(grid);
+        List<Coordinates> emptyCells = grid.getValidEmptyCells();
 
         // On prend une cellule vide aléatoire
         int random = (int) (Math.random() * emptyCells.size());

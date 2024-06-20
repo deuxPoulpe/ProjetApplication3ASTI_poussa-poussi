@@ -327,6 +327,35 @@ public class Grid {
         }
         System.out.println("──┘");
     }
+
+
+    /**
+     * Cette méthode permet trouver les coordonnées des cellules vides du plateau.
+     * @return Set<Coordinates> qui contient les coordonnées des cellules vides du plateau.
+     */
+    public List<Coordinates> getValidEmptyCells () {
+        
+        // On récupère les coordonnées des cellules non vides
+        Set<Coordinates> nonEmptyCells = grid.keySet();
+
+        // On initialise un Set qui contiendra les coordonnées des cellules vides
+        List<Coordinates> emptyCells = new ArrayList<>();
+
+        // On parcourt le plateau pour trouver les cellules vides
+        for (int i = 0; i < size; i++) {
+            for (int j = 0; j < size; j++) {
+                Coordinates coords = new Coordinates(i, j);
+
+                // Si la cellule n'est pas dans le Set des cellules non vides, on l'ajoute au Set des cellules vides
+                if (!nonEmptyCells.contains(coords) && (hasNeighbours(coords) || i == 0 || i == size - 1 || j == 0 || j == size - 1)) {
+                    emptyCells.add(coords);
+                }
+            }
+        }
+
+        return emptyCells;
+    }
+
 }
  
 

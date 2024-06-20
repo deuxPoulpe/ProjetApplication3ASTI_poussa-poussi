@@ -3,7 +3,7 @@ package myPackage;
 public class MinMaxAgent extends Agent{
 
     private int smartness;
-    private final int[] weights = {1, 3, 9, 27};
+    private final int[] weights = {1, 3, 9, 50};
     
     public MinMaxAgent(char myColor, int smartness) {
         super(myColor);
@@ -15,14 +15,13 @@ public class MinMaxAgent extends Agent{
     }
 
     public void executeGameRound(Grid grid) {
+        
+        // Si le plateau est plein, on affiche un message d'erreur
+        if (grid.getSize() * grid.getSize() == grid.getHashMap().keySet().size()) System.out.println("No possible moves");
 
         // Calcule le meilleur coup à jouer
         GridTree root = new GridTree(this, grid);
         root.generateChildNodes();
-
-        if (root.getChildren().isEmpty()) System.out.println("No possible moves");
-        
-        // Calcule le meilleur coup à jouer pour suppressions de jetons ou pour placer un jeton
         GridTree bestMove = evaluateBestMove(root, smartness, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
         System.out.println("Best move: \n" + bestMove + "\n");
 
@@ -74,8 +73,7 @@ public class MinMaxAgent extends Agent{
                 // On évalue le noeud enfant
                 GridTree nodeEval = evaluateBestMove(child, depth - 1, alpha, beta, false);
     
-                // On calcule la valeur heuristique du noeud enfant
-                nodeEval.calculateHeuristicValue();
+                // On récupère la valeur heuristique du noeud enfant
                 int eval = nodeEval.getHeuristicValue();
     
                 // On met à jour la meilleure valeur et le meilleur enfant
@@ -102,8 +100,7 @@ public class MinMaxAgent extends Agent{
             for (GridTree child : node.getChildren()) {
                 GridTree nodeEval = evaluateBestMove(child, depth - 1, alpha, beta, true);
     
-                // On calcule la valeur heuristique du noeud enfant
-                nodeEval.calculateHeuristicValue();
+                // On récupère la valeur heuristique du noeud enfant
                 int eval = nodeEval.getHeuristicValue();
     
                 // On met à jour la meilleure valeur et le meilleur enfant
