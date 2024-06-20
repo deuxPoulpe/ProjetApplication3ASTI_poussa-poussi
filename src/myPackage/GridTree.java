@@ -270,11 +270,14 @@ public class GridTree {
         // On génère les fils pour placer un jeton
         for (GridTree placeChild : getPlaceChildren()) {
             // On génère les fils pour pousser un jeton
+            if (!Settings.getInstance().getMandatoryPush())
+                addChild(placeChild);
             for (GridTree pushChild : placeChild.getPushChildren()) {
                 // On ajoute le fils à la liste des enfants du noeud courant
                 addChild(pushChild);
             }
         }
+
     }
 
 }

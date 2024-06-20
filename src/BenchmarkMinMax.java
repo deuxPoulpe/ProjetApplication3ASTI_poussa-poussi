@@ -9,7 +9,7 @@ public class BenchmarkMinMax {
     public static void main(String[] args) throws Exception {
 
         // Initialisation des paramètres de jeu
-        Settings.getInstance(true, true);
+        Settings.getInstance(false, true, false);
 
         MinMaxAgent agent = new MinMaxAgent('Y', 1);
 

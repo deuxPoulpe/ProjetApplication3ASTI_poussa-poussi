@@ -6,7 +6,7 @@ public class App {
         Grid grid = new Grid();
 
         // Initialisation des paramètres de jeu
-        Settings.getInstance(true, true);
+        Settings.getInstance(true, true, false);
 
         Game game = new Game(grid);
 

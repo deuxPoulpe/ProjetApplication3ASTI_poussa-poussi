@@ -25,10 +25,14 @@ public class MinMaxAgent extends Agent{
         GridTree bestMove = evaluateBestMove(root, smartness, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
         System.out.println("Best move: \n" + bestMove + "\n");
 
+        // Phase de retrait 1
+
         // Pour chaque alignement de 5 jetons du joueur formé par l'adversaire, on retire 2 jetons de l'alignement
         for (Coordinates removCoords : bestMove.getRemovCoordinates().get(0)) {
             grid.removeToken(removCoords);
         }
+
+        // Phase de placement
 
         // Place le jeton sur le plateau
         grid.placeToken(getColor(), bestMove.getPlaceCoordinates());
@@ -36,12 +40,20 @@ public class MinMaxAgent extends Agent{
         if (Settings.getInstance().getDisplayInTerminal())
         grid.display();
         
+        // Phase de poussée
+
+        PushAction pushAction = bestMove.getPushAction();
         // Si le plateau n'est pas plein, on pousse le jeton choisi dans la direction choisie
-        if (grid.isFull()) {
+        if (grid.isFull()){
             if (Settings.getInstance().getDisplayInTerminal())
                 System.out.println("The grid is full. No more tokens can be pushed.");
+        } else if (pushAction == null) {
+            if (Settings.getInstance().getDisplayInTerminal())
+                System.out.println(super.getColor() + " : does not push any token");
         } else 
             grid.pushToken(super.getColor(), bestMove.getPushAction().getCoordinates(), bestMove.getPushAction().getDirection());
+
+        // Phase de retrait 2
 
         // Pour chaque alignement de 5 jetons formé, on retire 2 jetons de l'alignement
         for (Coordinates removCoords : bestMove.getRemovCoordinates().get(1)) {
