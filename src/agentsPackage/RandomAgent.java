@@ -2,9 +2,9 @@ package agentsPackage;
 
 import java.util.List;
 
-import myPackage.Coordinates;
-import myPackage.Grid;
-import myPackage.Settings;
+import gamePackage.Coordinates;
+import gamePackage.Grid;
+import gamePackage.Settings;
 
 public class RandomAgent extends Agent {
 

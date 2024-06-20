@@ -4,10 +4,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
-import myPackage.Coordinates;
-import myPackage.Grid;
-import myPackage.Settings;
-import myPackage.Token;
+import gamePackage.Coordinates;
+import gamePackage.Grid;
+import gamePackage.Settings;
+import gamePackage.Token;
 
 public abstract class Agent {
 

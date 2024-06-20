@@ -3,11 +3,11 @@ package iteratorsPackage;
 import java.util.NoSuchElementException;
 
 import agentsPackage.MinMaxAgent;
-import myPackage.CoordinateSetGridPair;
-import myPackage.Coordinates;
-import myPackage.Grid;
-import myPackage.GridTree;
-import myPackage.PushAction;
+import gamePackage.CoordinateSetGridPair;
+import gamePackage.Coordinates;
+import gamePackage.Grid;
+import gamePackage.GridTree;
+import gamePackage.PushAction;
 
 import java.util.Iterator;
 import java.util.List;

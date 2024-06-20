@@ -1,6 +1,6 @@
 package iteratorsPackage;
 
-import myPackage.GridTree;
+import gamePackage.GridTree;
 
 public class ChildIterator {
 

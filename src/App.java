@@ -1,4 +1,4 @@
-import myPackage.*;
+import gamePackage.*;
 
 
 public class App {

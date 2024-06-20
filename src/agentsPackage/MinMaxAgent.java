@@ -1,10 +1,10 @@
 package agentsPackage;
 
-import myPackage.Coordinates;
-import myPackage.Grid;
-import myPackage.GridTree;
-import myPackage.PushAction;
-import myPackage.Settings;
+import gamePackage.Coordinates;
+import gamePackage.Grid;
+import gamePackage.GridTree;
+import gamePackage.PushAction;
+import gamePackage.Settings;
 
 public class MinMaxAgent extends Agent{
 

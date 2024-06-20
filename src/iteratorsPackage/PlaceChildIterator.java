@@ -4,10 +4,10 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import myPackage.CoordinateSetGridPair;
-import myPackage.Coordinates;
-import myPackage.Grid;
-import myPackage.GridTree;
+import gamePackage.CoordinateSetGridPair;
+import gamePackage.Coordinates;
+import gamePackage.Grid;
+import gamePackage.GridTree;
 
 public class PlaceChildIterator implements Iterator<GridTree> {
     

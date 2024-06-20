@@ -7,9 +7,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import myPackage.CoordinateSetGridPair;
-import myPackage.Coordinates;
-import myPackage.Grid;
+import gamePackage.CoordinateSetGridPair;
+import gamePackage.Coordinates;
+import gamePackage.Grid;
 
 public class RemovGridIterator implements Iterator<CoordinateSetGridPair> {
     private Iterator<Set<Coordinates>> combinationsIterator;

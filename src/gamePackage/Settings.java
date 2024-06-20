@@ -1,4 +1,4 @@
-package myPackage;
+package gamePackage;
 
 public class Settings {
     

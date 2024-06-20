@@ -1,7 +1,7 @@
 import java.util.List;
 
 import agentsPackage.MinMaxAgent;
-import myPackage.*;
+import gamePackage.*;
 
 public class BenchmarkMinMax {
     private static int depth = 2; // Ajout d'une valeur pour la profondeur de recherche
