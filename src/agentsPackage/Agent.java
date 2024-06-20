@@ -1,8 +1,13 @@
-package myPackage;
+package agentsPackage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
+import myPackage.Coordinates;
+import myPackage.Grid;
+import myPackage.Settings;
+import myPackage.Token;
 
 public abstract class Agent {
 
@@ -25,27 +30,6 @@ public abstract class Agent {
 
     public Agent(char myColor) {
         this.color = myColor;
-    }
-
-    /**
-     * Cette méthode permet de récupérer les coordonnées des jetons du joueur.
-     * @return List<Coordinates> qui contient les coordonnées des jetons du joueur.
-     */
-    public List<Coordinates> getOwnTokensCoords (Grid grid) {
-
-        // On initialise une liste qui contiendra les coordonnées des jetons du joueur
-        List<Coordinates> ownTokens = new ArrayList<>();
-
-        // On parcourt l'ensemble des jetons du posés sur le plateau
-        for (Coordinates coords : grid.getHashMap().keySet()) {
-
-            // Si la couleur du jeton est celle du joueur, on l'ajoute à la liste des jetons du joueur
-            if (grid.getToken(coords).getColor() == this.color) {
-                ownTokens.add(coords);
-            }
-        }
-
-        return ownTokens;
     }
 
     /**

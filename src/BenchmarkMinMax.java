@@ -1,9 +1,11 @@
 import java.util.List;
+
+import agentsPackage.MinMaxAgent;
 import myPackage.*;
 
 public class BenchmarkMinMax {
     private static int depth = 2; // Ajout d'une valeur pour la profondeur de recherche
-    private static int numberOfTests = 1; // Ajout d'une valeur pour le nombre de tests
+    private static int numberOfTests = 100; // Ajout d'une valeur pour le nombre de tests
     private static int nbTokenPerPlayer = 10; // Ajout d'une valeur pour le nombre de jetons par joueur
     public static long averageDurationBestMove = 0;
 
@@ -31,7 +33,7 @@ public class BenchmarkMinMax {
 
     public static Grid generateRandomGrid(int nbTokenPerPlayer) {
         Grid grid = new Grid();
-        List<Coordinates> emptyCellCoords = grid.getValidEmptyCells();
+        List<Coordinates> emptyCellCoords = grid.getValidEmptyCoordinates();
         for (int i = 0; i < nbTokenPerPlayer; i++) {
             Coordinates randomCoords = emptyCellCoords.get((int) (Math.random() * emptyCellCoords.size()));
             grid.placeToken('Y', randomCoords);
@@ -62,9 +64,22 @@ public class BenchmarkMinMax {
         for (int i = 0; i < numberOfTests; i++) {
             Grid grid = generateRandomGrid(nbTokenPerPlayer);
             durations[i] = measureBestMove(grid, agent);
+
+            // Affiche une barre de progression
+            double progress = (double) (i + 1) / numberOfTests;
+            final int width = 50; // largeur de la barre de progression
+            System.out.print("\r[");
+            int j = 0;
+            for (; j < (int) (progress * width); j++) {
+                System.out.print("#");
+            }
+            for (; j < width; j++) {
+                System.out.print(" ");
+            }
+            System.out.print("] " + Math.round(progress * 100) + "% ");
         }
 
-        // Affiche la moyenne des durées d'exécution
+        // Retourne la moyenne des durées d'exécution
         long sum = 0;
         for (long duration : durations) {
             sum += duration;

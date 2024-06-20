@@ -1,7 +1,11 @@
-package myPackage;
+package agentsPackage;
 
 import java.util.List;
 import java.util.Scanner;
+
+import myPackage.Coordinates;
+import myPackage.Grid;
+import myPackage.Settings;
 
 public class PlayerAgent extends Agent {
 
@@ -52,7 +56,7 @@ public class PlayerAgent extends Agent {
 
     private void placeToken(Grid grid) {
 
-        List<Coordinates> emptyCells = grid.getValidEmptyCells();
+        List<Coordinates> emptyCells = grid.getValidEmptyCoordinates();
 
         Coordinates placeCoords;
         do {

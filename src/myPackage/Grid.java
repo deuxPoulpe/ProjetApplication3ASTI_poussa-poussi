@@ -6,22 +6,24 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.Stack;
+
 
 
 public class Grid {
 
     private final int size = 8;
-    private HashMap<Coordinates, Token> grid;
+    private HashMap<Coordinates, Token> map;
     private HashMap<Coordinates, Token> tokensMoveStart = new HashMap<>();
 
 
 
     public HashMap<Coordinates, Token> getHashMap() {
-        return this.grid;
+        return this.map;
     }
 
-    public void setGrid(HashMap<Coordinates, Token> grid) {
-        this.grid = grid;
+    public void setGrid(HashMap<Coordinates, Token> map) {
+        this.map = map;
     }
 
     public int getSize() {
@@ -29,7 +31,7 @@ public class Grid {
     }
 
     public Token getToken(Coordinates coordinates) {
-        return this.grid.get(coordinates);
+        return this.map.get(coordinates);
     }
 
     public HashMap<Coordinates, Token> getTokensMoveStart() {
@@ -38,31 +40,31 @@ public class Grid {
 
     // Constructors
     
-    public Grid(HashMap<Coordinates, Token> grid) {
-        this.grid = grid;
+    public Grid(HashMap<Coordinates, Token> map) {
+        this.map = map;
     }
 
     public Grid() {
-        this.grid = new HashMap<>();
+        this.map = new HashMap<>();
     }
 
     // Methods
 
     public Grid clone() {
         HashMap<Coordinates, Token> newGrid = new HashMap<>();
-        for (Coordinates c : this.grid.keySet()) {
-            newGrid.put(c, this.grid.get(c));
+        for (Coordinates c : map.keySet()) {
+            newGrid.put(c, map.get(c));
         }
         return new Grid(newGrid);
     }
 
     public boolean isFull() {
-        return this.grid.size() == this.size * this.size;
+        return map.size() == this.size * this.size;
     }
 
     public void placeToken(char color, Coordinates coordinates) {
         // Check if there is already a token at the given coordinates
-        if (this.grid.containsKey(coordinates)) {
+        if (map.containsKey(coordinates)) {
             throw new IllegalArgumentException("There is already a token at the given coordinates");
         }
 
@@ -71,11 +73,11 @@ public class Grid {
             throw new IllegalArgumentException("There is no neighbour at the given coordinates");
         }
         
-        this.grid.put(coordinates, new Token(color));
+        map.put(coordinates, new Token(color));
     }
 
     public void removeToken(Coordinates coordinates) {
-        this.grid.remove(coordinates);
+        map.remove(coordinates);
     }
 
     public void removeTokens(Collection<Coordinates> tokens) {
@@ -94,7 +96,7 @@ public class Grid {
     public int getNbEmptyCellsInDirection(Coordinates lastToken, int coeffX, int coeffY) {
         int nbEmptyCells = 0;
         Coordinates currentCoordinates = new Coordinates(lastToken.getX() + coeffX, lastToken.getY() + coeffY);
-        while (!this.grid.containsKey(currentCoordinates) &&
+        while (!map.containsKey(currentCoordinates) &&
          (currentCoordinates.getX() >= 0 && currentCoordinates.getX() <= 7 && currentCoordinates.getY() >= 0 && currentCoordinates.getY() <= 7)){
             currentCoordinates.setX(currentCoordinates.getX() + coeffX);
             currentCoordinates.setY(currentCoordinates.getY() + coeffY);
@@ -109,7 +111,7 @@ public class Grid {
     public HashMap<Coordinates, Token> getTokensToMove(Coordinates coordinate, int coeffX, int coeffY) {
         
 
-        if (!this.grid.containsKey(coordinate)) {
+        if (!map.containsKey(coordinate)) {
             throw new IllegalArgumentException("There is no token at the given coordinates");
         }
 
@@ -117,8 +119,8 @@ public class Grid {
         HashMap<Coordinates, Token> tokensToMove = new HashMap<>();
         Coordinates iterationsCoordinates = new Coordinates(coordinate.getX(), coordinate.getY());
         
-        while (this.grid.containsKey(iterationsCoordinates)) {
-            tokensToMove.put(new Coordinates(iterationsCoordinates.getX(), iterationsCoordinates.getY()), this.grid.get(iterationsCoordinates));
+        while (map.containsKey(iterationsCoordinates)) {
+            tokensToMove.put(new Coordinates(iterationsCoordinates.getX(), iterationsCoordinates.getY()), map.get(iterationsCoordinates));
             iterationsCoordinates.setX(iterationsCoordinates.getX() + coeffX);
             iterationsCoordinates.setY(iterationsCoordinates.getY() + coeffY);
         }
@@ -136,11 +138,11 @@ public class Grid {
      */
     public void pushToken(char color, Coordinates coordinates, int[] direction){
         
-        if (!this.grid.containsKey(coordinates)) {
+        if (!map.containsKey(coordinates)) {
             throw new IllegalArgumentException("There is no token at the given coordinates");
         }
 
-        if (this.grid.get(coordinates).getColor() != color) {
+        if (map.get(coordinates).getColor() != color) {
             throw new IllegalArgumentException("You can only push your own tokens");
         }
 
@@ -172,12 +174,12 @@ public class Grid {
         }
         
         for (Coordinates c : tokensToMove.keySet()) {
-            this.grid.remove(c);
+            map.remove(c);
             }
 
         for (Coordinates c : tokensToMove.keySet()) {
             char tokenColor = tokensToMove.get(c).getColor();
-            this.grid.put(new Coordinates(c.getX() + nbEmptyCells * coeffX, c.getY() + nbEmptyCells * coeffY), new Token(tokenColor));
+            map.put(new Coordinates(c.getX() + nbEmptyCells * coeffX, c.getY() + nbEmptyCells * coeffY), new Token(tokenColor));
             }
 
 
@@ -193,42 +195,45 @@ public class Grid {
     public List<List<Coordinates>> getAlignments(char specifiedColor, int alignmentSize) {
 
         List<List<Coordinates>> result = new ArrayList<>();
-
-        int [][] directions = {{0, 1}, {1, 0}, {1, 1}, {1, -1}};
-
-        // for each token in the grid
-        for (Coordinates c : this.grid.keySet()) {
-            Token token = this.grid.get(c);
+        int[][] directions = {{0, 1}, {1, 0}, {1, 1}, {1, -1}};
+        Set<Coordinates> visitedTokens = new HashSet<>();
+    
+        // Pour chaque jeton dans la grille
+        for (Coordinates c : map.keySet()) {
+            Token token = map.get(c);
             char color = token.getColor();
             
-            // if the token color doesn't match the specified color, skip
-            if (color != specifiedColor) {
+            // Si le jeton n'est pas de la couleur spécifiée ou a déjà été visité, on passe au suivant
+            if (color != specifiedColor || visitedTokens.contains(c)) {
                 continue;
             }
-
-            // for each direction
+    
+            // Pour chaque direction
             for (int[] direction : directions) {
 
-                // if the token is already aligned in this direction, skip
+                // Si le jeton n'est pas déjà aligné dans cette direction
                 if (!token.getAlignments().contains(direction)) {
 
-                    // if there are 5 tokens in a row in this direction
+                    // Trouver les voisins alignés dans cette direction
                     Set<Coordinates> visited = new HashSet<>();
                     List<Coordinates> neighbours = getAlignment(c, direction, visited);
-                    if (neighbours.size() == alignmentSize || alignmentSize > 5 && neighbours.size() > 5) {
+                    
+                    // Si le nombre de voisins alignés est suffisant
+                    if (neighbours.size() >= alignmentSize) {
                         
-                        // set the aligment of the tokens to the direction
+                        // Marquer tous les jetons alignés et les ajouter aux résultats
                         for (Coordinates neighbourCoordinates : neighbours) {
                             getToken(neighbourCoordinates).addToAlignments(direction);
+                            visitedTokens.add(neighbourCoordinates);
                         }
-
-                        // add the tokens to the result
+    
                         result.add(neighbours);
                     }
                 }
             }
         }
-        // for each token in all alignments, remove the alignment
+    
+        // Nettoyer les alignements des jetons avant de retourner le résultat
         for (List<Coordinates> alignment : result) {
             for (Coordinates c : alignment) {
                 getToken(c).clearAlignments();
@@ -237,33 +242,44 @@ public class Grid {
         
         return result;
     }
-
+    
     /**
      * Renvoie les jetons voisins d'un jeton donné dans une direction donnée.
      * @param coordinates les coordonnées du jeton à partir duquel chercher les voisins.
      * @param direction la direction dans laquelle chercher les voisins.
      * @param color la couleur des jetons voisins à chercher.
      * @return une liste des jetons voisins dans la direction donnée.
+     * 
+     * Complexité: O(n) où n est le nombre de jetons dans la direction donnée.
      */
     public List<Coordinates> getAlignment(Coordinates coordinates, int direction[], Set<Coordinates> visited) {
-        
-        // Initialise la liste des voisins dans l'allignement et les deux hypothétiques voisins directs
-        List<Coordinates> neighbours = new ArrayList<>();
-        Coordinates neighbour1 = new Coordinates(coordinates.getX() + direction[0], coordinates.getY() + direction[1]);
-        Coordinates neighbour2 = new Coordinates(coordinates.getX() - direction[0], coordinates.getY() - direction[1]);
-        Coordinates[] neighboursArray = {neighbour1, neighbour2};
+            // Initialiser les structures de données
+            List<Coordinates> neighbours = new ArrayList<>();
+            Stack<Coordinates> stack = new Stack<>();
+            
+            // Commencer par les coordonnées initiales
+            stack.push(coordinates);
 
-        // Pour chaqun des deux voisins directs, si le voisin n'a pas déjà été visité et si le voisin est de la couleur donnée, on l'ajoute à la liste des voisins et on continue la recherche dans la même direction
-        for (Coordinates neighbour : neighboursArray) {
-            if (!visited.contains(neighbour) && grid.get(neighbour) != null && grid.get(neighbour).getColor() == getToken(coordinates).getColor()) {
-                neighbours.add(neighbour);
-                visited.add(neighbour);
-                neighbours.addAll(getAlignment(neighbour, direction, visited));
+            // Parcourir les coordonnées jusqu'à ce que la pile soit vide
+            while (!stack.isEmpty()) {
+                Coordinates current = stack.pop();
+
+                // Parcourir les voisins de la coordonnée actuelle
+                for (int i = -1; i <= 1; i += 2) {
+                    Coordinates neighbour = new Coordinates(current.getX() + i * direction[0], current.getY() + i * direction[1]);
+
+                    // Vérifier les conditions pour ajouter le voisin à la liste
+                    if (!visited.contains(neighbour) && map.get(neighbour) != null && map.get(neighbour).getColor() == getToken(current).getColor()) {
+                        neighbours.add(neighbour);
+                        visited.add(neighbour);
+                        stack.push(neighbour);
+                    }
+                }
             }
-        } 
 
-        return neighbours;
-    }
+            // Retourner la liste des voisins
+            return neighbours;
+        }
 
     /**
      * Vérifie si une case a des voisins.
@@ -275,7 +291,7 @@ public class Grid {
         for (int[] direction : directions)
         {
             Coordinates neighbour = new Coordinates(coordinates.getX()+direction[0], coordinates.getY()+direction[1]);
-            if (this.grid.get(neighbour) != null)
+            if (map.get(neighbour) != null)
             {
                 return true;
             }
@@ -299,8 +315,8 @@ public class Grid {
             System.out.print(i + "│");
             for (int j = 0; j < this.size; j++) {
                 Coordinates c = new Coordinates(j, i);
-                if (this.grid.containsKey(c)) {
-                    if (this.grid.get(c).getColor() == 'B') {
+                if (map.containsKey(c)) {
+                    if (map.get(c).getColor() == 'B') {
                         System.out.print("\u001B[34m███\u001B[0m");
                     } else {
                         System.out.print("\u001B[33m███\u001B[0m");
@@ -328,15 +344,14 @@ public class Grid {
         System.out.println("──┘");
     }
 
-
     /**
      * Cette méthode permet trouver les coordonnées des cellules vides du plateau.
      * @return Set<Coordinates> qui contient les coordonnées des cellules vides du plateau.
      */
-    public List<Coordinates> getValidEmptyCells () {
+    public List<Coordinates> getValidEmptyCoordinates () {
         
         // On récupère les coordonnées des cellules non vides
-        Set<Coordinates> nonEmptyCells = grid.keySet();
+        Set<Coordinates> nonEmptyCells = map.keySet();
 
         // On initialise un Set qui contiendra les coordonnées des cellules vides
         List<Coordinates> emptyCells = new ArrayList<>();
@@ -354,6 +369,28 @@ public class Grid {
         }
 
         return emptyCells;
+    }
+
+    
+    /**
+     * Cette méthode permet de récupérer les coordonnées des jetons du joueur.
+     * @return List<Coordinates> qui contient les coordonnées des jetons du joueur.
+     */
+    public List<Coordinates> getColorTokenCoordinates (char color) {
+
+        // On initialise une liste qui contiendra les coordonnées des jetons du joueur
+        List<Coordinates> ownTokens = new ArrayList<>();
+
+        // On parcourt l'ensemble des jetons du posés sur le plateau
+        for (Coordinates coords : map.keySet()) {
+
+            // Si la couleur du jeton est celle du joueur, on l'ajoute à la liste des jetons du joueur
+            if (getToken(coords).getColor()  == color) {
+                ownTokens.add(coords);
+            }
+        }
+
+        return ownTokens;
     }
 
 }

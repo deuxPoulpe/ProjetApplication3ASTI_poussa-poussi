@@ -1,6 +1,11 @@
 package myPackage;
 import java.util.Scanner;
 
+import agentsPackage.Agent;
+import agentsPackage.MinMaxAgent;
+import agentsPackage.PlayerAgent;
+import agentsPackage.RandomAgent;
+
 
 public class Game {
 

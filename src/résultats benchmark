@@ -1,3 +1,5 @@
+Avant optimisations
+
 Élagages : Alpha-Bêta
 Heuristique : poids pour chaque taille d'alignement
-Durée moyenne pour 200 tests avec 10 jetons par joueur
+Durée moyenne pour 100 tests avec 10 jetons par joueur : 5027ms

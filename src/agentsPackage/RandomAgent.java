@@ -1,6 +1,10 @@
-package myPackage;
+package agentsPackage;
 
 import java.util.List;
+
+import myPackage.Coordinates;
+import myPackage.Grid;
+import myPackage.Settings;
 
 public class RandomAgent extends Agent {
 
@@ -13,7 +17,7 @@ public class RandomAgent extends Agent {
      * @return void
      */
     public void placeToken(Grid grid) {
-        List<Coordinates> emptyCells = grid.getValidEmptyCells();
+        List<Coordinates> emptyCells = grid.getValidEmptyCoordinates();
 
         // On prend une cellule vide aléatoire
         int random = (int) (Math.random() * emptyCells.size());
@@ -30,7 +34,7 @@ public class RandomAgent extends Agent {
     public void pushToken(Grid grid) {
 
         // On récupère les coordonnées des jetons du joueur
-        List<Coordinates> ownTokens = super.getOwnTokensCoords(grid);
+        List<Coordinates> ownTokens = grid.getColorTokenCoordinates(getColor());
 
         Coordinates randomTokenCoords;
         int[] randomDirection;
