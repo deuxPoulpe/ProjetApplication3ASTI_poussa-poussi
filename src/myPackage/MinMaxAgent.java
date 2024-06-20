@@ -14,6 +14,10 @@ public class MinMaxAgent extends Agent{
         return weights;
     }
 
+    public int getSmartness() {
+        return smartness;
+    }
+
     public void executeGameRound(Grid grid) {
         
         // Si le plateau est plein, on affiche un message d'erreur

@@ -1,37 +1,32 @@
-import myPackage.*;
 import java.util.List;
-import java.util.HashMap;
-import java.util.Set;
-import java.util.ArrayList;
-
+import myPackage.*;
 
 public class BenchmarkMinMax {
+    private static int depth = 2; // Ajout d'une valeur pour la profondeur de recherche
+    private static int numberOfTests = 200; // Ajout d'une valeur pour le nombre de tests
+    private static int nbTokenPerPlayer = 5; // Ajout d'une valeur pour le nombre de jetons par joueur
+    public static long averageDurationBestMove = 0;
+
     public static void main(String[] args) throws Exception {
 
         // Initialisation des paramètres de jeu
-        Settings.getInstance(false, true, false);
+        Settings.getInstance(true, true, false);
+        
+        MinMaxAgent agent = new MinMaxAgent('Y', depth);
+        averageDurationBestMove = benchmarkBestMove(agent);
+        
+        display();
+    }
 
-        MinMaxAgent agent = new MinMaxAgent('Y', 1);
-
-        Grid grid = new Grid();
-        // Crée un alignement de 5 jetons pour le joueur
-        grid.placeToken('Y', new Coordinates(0, 0));
-        grid.placeToken('Y', new Coordinates(0, 1));
-        grid.placeToken('Y', new Coordinates(0, 2));
-        grid.placeToken('Y', new Coordinates(0, 3));
-        grid.placeToken('Y', new Coordinates(0, 4));
-
-        GridTree node = new GridTree(agent, grid);
-        HashMap<Set<Coordinates>, Grid> removGrids = node.getRemovMap(grid);
-        List<GridTree> children = new ArrayList<>();
-        for (Set<Coordinates> coordsToRemoveSet : removGrids.keySet()) {
-            GridTree child = new GridTree(agent, removGrids.get(coordsToRemoveSet));
-            child.getRemovCoordinates().get(1).addAll(coordsToRemoveSet);
-            children.add(child);
-        }
-        System.out.println("Children: " + children);
-
-
+    public static void display() {
+        String title = "\nBenchmark MinMax";
+        String strDepth = "Depth: " + depth;
+        String strNumberOfTests = "Number of tests: " + numberOfTests;
+        String strNbTokenPerPlayer = "Number of tokens per player: " + nbTokenPerPlayer;
+        String strDurationMinMax = "Average duration per test: " + averageDurationBestMove + " ms";
+        String separator = "-------------------------";
+        String result = title + "\n" + strDepth + "\n" + strNumberOfTests + "\n" + strNbTokenPerPlayer + "\n" + strDurationMinMax + "\n" + separator;
+        System.out.println(result);
     }
 
     public static Grid generateRandomGrid(int nbTokenPerPlayer) {
@@ -42,26 +37,32 @@ public class BenchmarkMinMax {
             grid.placeToken('Y', randomCoords);
             emptyCellCoords.remove(randomCoords);
         }
+        for (int j=0; j< nbTokenPerPlayer; j++) {
+            Coordinates randomCoords = emptyCellCoords.get((int) (Math.random() * emptyCellCoords.size())); 
+            grid.placeToken('B', randomCoords);
+            emptyCellCoords.remove(randomCoords);
+        }
+
         return grid;
     }
 
-    public static long measureBestMove(Grid grid, MinMaxAgent agent, int depth) {
+    public static long measureBestMove(Grid grid, MinMaxAgent agent) {
         long startTime = System.nanoTime();
-        // Ajoutez le deuxième argument nécessaire pour la méthode evaluateBestMove
         GridTree root = new GridTree(agent, grid);
-        GridTree bestMove = agent.evaluateBestMove(root, depth, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-        System.out.println("Best move : " + bestMove.toString());
+        agent.evaluateBestMove(root, agent.getSmartness(), Integer.MIN_VALUE, Integer.MAX_VALUE, true);
         long endTime = System.nanoTime();
         long duration = (endTime - startTime) / 1000000;
         return duration;
     }
 
-    public static long benchmarkMinMax(Grid grid, MinMaxAgent agent, int depth, int numberOfTests) {
+    public static long benchmarkBestMove(MinMaxAgent agent) {
 
         // Exécute le benchmark
         long[] durations = new long[numberOfTests];
-        for (int i = 0; i < numberOfTests; i++)
-            measureBestMove(grid, agent, depth);
+        for (int i = 0; i < numberOfTests; i++) {
+            Grid grid = generateRandomGrid(nbTokenPerPlayer);
+            durations[i] = measureBestMove(grid, agent);
+        }
 
         // Affiche la moyenne des durées d'exécution
         long sum = 0;
@@ -71,5 +72,4 @@ public class BenchmarkMinMax {
         long average = sum / numberOfTests;
         return average;
     }
-    
 }
