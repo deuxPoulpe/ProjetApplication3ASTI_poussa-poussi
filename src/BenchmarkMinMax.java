@@ -3,8 +3,8 @@ import myPackage.*;
 
 public class BenchmarkMinMax {
     private static int depth = 2; // Ajout d'une valeur pour la profondeur de recherche
-    private static int numberOfTests = 200; // Ajout d'une valeur pour le nombre de tests
-    private static int nbTokenPerPlayer = 5; // Ajout d'une valeur pour le nombre de jetons par joueur
+    private static int numberOfTests = 1; // Ajout d'une valeur pour le nombre de tests
+    private static int nbTokenPerPlayer = 10; // Ajout d'une valeur pour le nombre de jetons par joueur
     public static long averageDurationBestMove = 0;
 
     public static void main(String[] args) throws Exception {
@@ -25,7 +25,7 @@ public class BenchmarkMinMax {
         String strNbTokenPerPlayer = "Number of tokens per player: " + nbTokenPerPlayer;
         String strDurationMinMax = "Average duration per test: " + averageDurationBestMove + " ms";
         String separator = "-------------------------";
-        String result = title + "\n" + strDepth + "\n" + strNumberOfTests + "\n" + strNbTokenPerPlayer + "\n" + strDurationMinMax + "\n" + separator;
+        String result = title + "\n" + separator + "\n" + strDepth + "\n" + strNumberOfTests + "\n" + strNbTokenPerPlayer + "\n" + strDurationMinMax + "\n" + separator;
         System.out.println(result);
     }
 

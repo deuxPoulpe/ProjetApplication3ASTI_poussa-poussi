@@ -125,6 +125,8 @@ public class GridTree {
      * @param startIndex l'index à partir duquel commencer à générer les combinaisons.
      * @param current l'ensemble actuel de coordonnées qui forme une combinaison.
      * @param result la liste de tous les ensembles de coordonnées qui forment une combinaison.
+     * 
+     * Complexité : O(nCk) où n est la taille de la liste et k est la taille des combinaisons à générer.
      */
     private void getCombinationsHelper(List<Coordinates> list, int k, int startIndex, Set<Coordinates> current, List<Set<Coordinates>> result) {
         // Si la taille de l'ensemble actuel est égale à k, alors nous avons une combinaison valide.
@@ -190,6 +192,12 @@ public class GridTree {
         return gridMap;
     }
 
+    /**
+     * Crée un fils du noeud courant pour placer un jeton à une coordonnée donnée.
+     * @param grid la grille sur laquelle placer le jeton.
+     * @param coords les coordonnées où placer le jeton.
+     * @return le fils qui contient la grille obtenue après avoir placé le jeton, et les coordonnées où le jeton a été placé.
+     */
     private GridTree createPlaceChild(Grid grid, Coordinates coords) {
         // On inialise un clone du plateau avec le jeton placé
         Grid placeGrid = grid.clone();
@@ -197,6 +205,10 @@ public class GridTree {
         return new GridTree(this, placeGrid, coords, null);
     }
 
+    /**
+     * Forme la liste d toutes les possibilités de placement de jetons pour le joueur courant.
+     * @return la liste des fils contenant les grilles obtenues après avoir placé un jeton à chaque coordonnée vide, et les coordonnées où le jeton a été placé.
+     */
     private List<GridTree> getPlaceChildren() {
 
         List<GridTree> childList = new ArrayList<>();
@@ -226,6 +238,10 @@ public class GridTree {
         return childList;
     }
 
+    /**
+     * Forme la liste de toutes les possibilités de poussée de jetons pour le joueur courant.
+     * @return la liste des fils contenant les grilles obtenues après avoir poussé un jeton dans chaque direction possible, et les coordonnées du jeton poussé.
+     */
     private List<GridTree> getPushChildren() {
             
         List<GridTree> childList = new ArrayList<>();
@@ -265,6 +281,11 @@ public class GridTree {
         return childList;
     }
 
+    /**
+     * Génère les fils du noeud courant.
+     * 
+     * Ajoute les fils pour placer un jeton, puis les fils pour pousser un jeton.
+     */
     public void generateChildNodes() {
 
         // On génère les fils pour placer un jeton
