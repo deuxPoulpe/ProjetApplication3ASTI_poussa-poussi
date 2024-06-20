@@ -89,7 +89,7 @@ public class PlayerAgent extends Agent {
             // Demande au joueur de retirer un jeton de l'alignement
             do {
                 if (Settings.getInstance().getDisplayInTerminal())
-                    System.out.println(grid.getToken(alignment.get(0)).getColor() + " : Enter the coordinates of the " + index + " token you want to remove");
+                    System.out.println(super.getColor() + " : Enter the coordinates of the " + index + " token you want to remove");
                 try {
                     if (removeTokenFromAlignment(grid, alignment) == 0) {
                         break;

@@ -1,6 +1,7 @@
 package myPackage;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -75,6 +76,12 @@ public class Grid {
 
     public void removeToken(Coordinates coordinates) {
         this.grid.remove(coordinates);
+    }
+
+    public void removeTokens(Collection<Coordinates> tokens) {
+        for (Coordinates c : tokens) {
+            removeToken(c);
+        }
     }
 
     /**
