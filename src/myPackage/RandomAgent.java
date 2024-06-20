@@ -94,7 +94,8 @@ public class RandomAgent extends Agent {
         // On initialise toutes les directions possibles dans une liste
         List<int[]> validDirections = super.getValidPushDirections(grid, coords);
 
-        do {
+        while (validDirections.size() > 0) {
+        
             // On prend une direction aléatoire
             int random = (int) (Math.random() * validDirections.size());
             int[] randomDirection = validDirections.get(random);
@@ -106,7 +107,7 @@ public class RandomAgent extends Agent {
 
             // Sinon, on la retire de la liste des directions possibles
             validDirections.remove(random);
-        } while (validDirections.size() > 0);
+        }
 
         // If no valid direction is found, return null
         return null;
