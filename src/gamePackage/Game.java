@@ -1,4 +1,4 @@
-package myPackage;
+package gamePackage;
 import java.util.Scanner;
 
 import agentsPackage.Agent;
