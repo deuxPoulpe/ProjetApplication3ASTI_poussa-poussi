@@ -72,10 +72,10 @@ public class Game {
         currentPlayer.executeGameRound(grid);
 
         if (!isFirstRound) {
-            // Determine the previous player
+            // Determiner le joueur précédent
             Agent previousPlayer = (currentPlayer == player1) ? player2 : player1;
 
-            // Update the scores based on the points and gifts
+            // Mettre à jour le score du joueur précédent en se basant sur les points obtenus dans le tour précédent et les points qu'il a donné à l'adversaire
             int ownPoints = previousPlayer.getownPoints();
             int rivalGift = currentPlayer.getrivalGift();
             previousPlayer.setScore(previousPlayer.getScore() + ownPoints - rivalGift);
@@ -103,19 +103,20 @@ public class Game {
             System.out.println("The game is ongoing");
         }
     }
- 
+    // Verification si un joueur a gagné. True si l'un a gagné, false sinon
+    boolean player1Wins =  player1.getScore() > player2.getScore() && player1.getScore() >= 2; 
+    boolean player2Wins = player1.getScore() < player2.getScore() && player2.getScore() >= 2;
+    
+
+    /*
+     * 0: Draw
+     * 1: Player 1 wins
+     * 2: Player 2 wins
+     * 3: The game is ongoing
+     */
     public int checkScore() {
-        if (grid.isFull())
-        {
-            return 0;
-        }
-        else
-        {
-            if (player1.getScore() > player2.getScore() && player1.getScore() >= 2) {
-                return 1;
-            } else {
-                return (player1.getScore() < player2.getScore() && player2.getScore() >= 2) ? 2 : 3;
-            }
-        }
+       
+        return  grid.isFull() ? 0 : (player1Wins ? 1 : player2Wins ? 2 : 3);
+   
     }
 }
