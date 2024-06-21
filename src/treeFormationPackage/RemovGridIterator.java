@@ -1,4 +1,4 @@
-package iteratorsPackage;
+package treeFormationPackage;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import gamePackage.CoordinateSetGridPair;
 import gamePackage.Coordinates;
 import gamePackage.Grid;
 
@@ -16,17 +15,13 @@ public class RemovGridIterator implements Iterator<CoordinateSetGridPair> {
     private CoordinateSetGridPair currentPair;
 
     public RemovGridIterator(Grid grid, List<List<Coordinates>> alignments) {
-        this.currentPair.setGrid(grid);
-        this.currentPair.setCoordinates(new HashSet<>());
+        currentPair = new CoordinateSetGridPair(null, grid);
         combinationsIterator = new CombinationIterator(alignments);
     }
 
     @Override
     public boolean hasNext() {
-        if (combinationsIterator != null && combinationsIterator.hasNext()) {
-            return true;
-        }
-        return false;
+        return combinationsIterator != null && combinationsIterator.hasNext();
     }
 
     @Override
@@ -34,6 +29,7 @@ public class RemovGridIterator implements Iterator<CoordinateSetGridPair> {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
+
 
         // On itère sur la prochaine combinaison.
         Set<Coordinates> combination = combinationsIterator.next();
@@ -51,10 +47,10 @@ public class RemovGridIterator implements Iterator<CoordinateSetGridPair> {
         return currentPair;
     }
 
-    public class CombinationIterator implements Iterator<Set<Coordinates>> {
+    private class CombinationIterator implements Iterator<Set<Coordinates>> {
         private List<List<Coordinates>> alignments;
         private int alignmentsSize;
-        private int maxIndex = binomialCoefficient(alignmentsSize, 2); // le nombre total de combinaisons possibles
+        private int maxIndex = (int) Math.pow(binomialCoefficient(5, 2), alignmentsSize); // le nombre total de combinaisons possibles
         private int currentIndex;
 
         public CombinationIterator(List<List<Coordinates>> alignments) {
@@ -65,7 +61,7 @@ public class RemovGridIterator implements Iterator<CoordinateSetGridPair> {
 
         @Override
         public boolean hasNext() {
-            // On vérifie si l'index courant est inférieur à 2Cn où n est la taille de la liste d'alignements.
+            // On vérifie si l'index courant est inférieur à 2C5^n où n est la taille de la liste d'alignements.
             return currentIndex < maxIndex;
         }
 
@@ -135,23 +131,31 @@ public class RemovGridIterator implements Iterator<CoordinateSetGridPair> {
         }
 
         /**
-         * Calcule le coefficient binomial, également connu sous le nom de "nombre de combinaisons" ou "combinaison de n parmi k".
-         * Le coefficient binomial est le nombre de façons de choisir k éléments parmi un ensemble de n éléments, sans tenir compte de l'ordre.
-         * 
+         * Calcule le coefficient binomial C(n, k) en utilisant la programmation dynamique.
+         *
+         * L'algorithme utilise un tableau dp pour stocker les coefficients binomiaux intermédiaires.
+         * Pour chaque i de 1 à n, il met à jour le tableau dp pour refléter les coefficients binomiaux de i.
+         * Il utilise le fait que C(i, j) = C(i-1, j-1) + C(i-1, j) pour mettre à jour le tableau dp.
+         *
+         * Complexité temporelle : O(n*k), où n est le premier argument et k le second.
+         * Complexité spatiale : O(k), où k est le second argument.
+         *
          * @param n le nombre total d'éléments
          * @param k le nombre d'éléments à choisir
-         * @return le coefficient binomial, c'est-à-dire le nombre de façons de choisir k éléments parmi n
-         * 
-         * Complexité : O(nCk) où n est le nombre total d'éléments et k est le nombre d'éléments à choisir.
+         * @return le coefficient binomial C(n, k)
          */
         private int binomialCoefficient(int n, int k) {
-            // Si k est 0 ou égal à n, il n'y a qu'une seule façon de choisir les éléments
-            if (k == 0 || k == n) {
-                return 1;
+            int dp[] = new int[k + 1];
+
+            // nC0 is 1
+            dp[0] = 1;  
+
+            for (int i = 1; i <= n; i++) {
+                // Compute next row of pascal triangle using the previous row
+                for (int j = Math.min(i, k); j > 0; j--)
+                    dp[j] = dp[j] + dp[j-1];
             }
-            // Sinon, le coefficient binomial peut être calculé en utilisant la formule récursive :
-            // C(n, k) = C(n-1, k-1) + C(n-1, k)
-            return binomialCoefficient(n - 1, k - 1) + binomialCoefficient(n - 1, k);
+            return dp[k];
         }
 
     }

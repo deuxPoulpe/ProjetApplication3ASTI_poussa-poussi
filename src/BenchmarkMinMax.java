@@ -2,9 +2,10 @@ import java.util.List;
 
 import agentsPackage.MinMaxAgent;
 import gamePackage.*;
+import treeFormationPackage.GridTree;
 
 public class BenchmarkMinMax {
-    private static int depth = 2; // Ajout d'une valeur pour la profondeur de recherche
+    private static int depth = 1; // Ajout d'une valeur pour la profondeur de recherche
     private static int numberOfTests = 100; // Ajout d'une valeur pour le nombre de tests
     private static int nbTokenPerPlayer = 10; // Ajout d'une valeur pour le nombre de jetons par joueur
     public static long averageDurationBestMove = 0;
@@ -15,9 +16,27 @@ public class BenchmarkMinMax {
         Settings.getInstance(true, true, false);
         
         MinMaxAgent agent = new MinMaxAgent('Y', depth);
-        averageDurationBestMove = benchmarkBestMove(agent);
+        // averageDurationBestMove = benchmarkBestMove(agent);
         
-        display();
+        // display();
+
+        Grid grid = new Grid();
+
+        // Grille avec un alignement de push optimal
+        grid.placeToken('Y', new Coordinates(0, 0));
+        grid.placeToken('Y', new Coordinates(1, 0));
+        grid.placeToken('Y', new Coordinates(2, 0));
+        grid.placeToken('Y', new Coordinates(3, 0));
+        grid.placeToken('Y', new Coordinates(4, 0));
+
+        grid.display();
+        
+        GridTree root = new GridTree(agent, grid);
+        GridTree bestMove = agent.evaluateBestMove(root, agent.getSmartness(), Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+
+        System.out.println("Best move: \n" + bestMove + "\n");
+        bestMove.getGrid().display();
+
     }
 
     public static void display() {

@@ -1,4 +1,4 @@
-package gamePackage;
+package treeFormationPackage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,7 +7,9 @@ import java.util.Set;
 import java.util.NoSuchElementException;
 
 import agentsPackage.MinMaxAgent;
-import iteratorsPackage.ChildIterator;
+import gamePackage.Coordinates;
+import gamePackage.Grid;
+import gamePackage.PushAction;
 
 public class GridTree {
 
@@ -17,10 +19,11 @@ public class GridTree {
     private ChildIterator childIterator;
     private int heuristicValue = 0;
     private int pointCounter = 0;
+    private int depth = 0;
 
     // Actions du noeud
     private Coordinates placeCoordinates;
-    private PushAction pushAction;
+    private PushAction pushAction = null;
     private List<Set<Coordinates>> removCoordinates = new ArrayList<>(); // Première liste pour les coordonnées des jetons à retirer en début de tour, deuxième pour les jetons à retirer en fin de tour
     
 
@@ -31,6 +34,7 @@ public class GridTree {
         this.removCoordinates.add(new HashSet<>());
         this.removCoordinates.add(new HashSet<>());
         this.childIterator = new ChildIterator(this);
+        this.depth = 0;
     }
 
     // Constructeur pour les noeuds de l'arbre
@@ -49,13 +53,19 @@ public class GridTree {
         this.childIterator = new ChildIterator(this);
     }
 
+    @Override
     public String toString() {
         String strRemovCoordinates1 = "Tokens to remove first: " + removCoordinates.get(0) + "\n";
         String strPlaceCoordinates = "Place coordinates: " + placeCoordinates + "\n";
-        String strPushAction = "Push action: " + pushAction;
-        String strRemovCoordinates2 = "Tokens to remove second: " + removCoordinates.get(1);
+        String strPushAction = "Push action: " + pushAction + "\n";
+        String strRemovCoordinates2 = "Tokens to remove second: " + removCoordinates.get(1) + "\n";
+        String strDepth = "Depth: " + depth + "\n";
 
-        return strRemovCoordinates1 + strPlaceCoordinates + strPushAction + strRemovCoordinates2;
+        return strRemovCoordinates1 + strPlaceCoordinates + strPushAction + strRemovCoordinates2 + strDepth;
+    }
+
+    public int getDepth() {
+        return depth;
     }
 
     public Grid getGrid() {
@@ -86,8 +96,16 @@ public class GridTree {
         this.grid = grid;
     }
 
+    public void setPushAction(PushAction pushAction) {
+        this.pushAction = pushAction;
+    }
+
     public void setRemovCoordinates(List<Set<Coordinates>> removCoordinates) {
         this.removCoordinates = removCoordinates;
+    }
+
+    public void setDepth(int depth) {
+        this.depth = depth;
     }
 
     public int calculateScore(int[] alignmentCount, int[] opponentAlignmentCount) {
@@ -134,6 +152,10 @@ public class GridTree {
         try {
             return childIterator.next();
         } catch (NoSuchElementException e) {
+            return null;
+        }
+        catch (Exception e) {
+            e.printStackTrace();
             return null;
         }
     }

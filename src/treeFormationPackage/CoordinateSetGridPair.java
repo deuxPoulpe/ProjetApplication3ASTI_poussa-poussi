@@ -1,6 +1,9 @@
-package gamePackage;
+package treeFormationPackage;
 
 import java.util.Set;
+
+import gamePackage.Coordinates;
+import gamePackage.Grid;
 
 public class CoordinateSetGridPair {
 
@@ -26,5 +29,9 @@ public class CoordinateSetGridPair {
 
     public void setGrid(Grid grid) {
         this.grid = grid;
+    }
+
+    public String toString() {
+        return "Coordinates: " + coordinates + "\n" + "Grid: " + grid;
     }
 }

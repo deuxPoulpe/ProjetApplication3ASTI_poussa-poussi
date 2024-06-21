@@ -65,7 +65,7 @@ public class Grid {
     public void placeToken(char color, Coordinates coordinates) {
         // Check if there is already a token at the given coordinates
         if (map.containsKey(coordinates)) {
-            throw new IllegalArgumentException("There is already a token at the given coordinates");
+            throw new IllegalArgumentException("Attempted to place at" + coordinates + " but there is already a token there");
         }
 
         if (!hasNeighbours(coordinates) && ( coordinates.getX() != 0 && coordinates.getX() != size - 1 && coordinates.getY() != 0 && coordinates.getY() != size - 1))
@@ -371,7 +371,6 @@ public class Grid {
         return emptyCells;
     }
 
-    
     /**
      * Cette méthode permet de récupérer les coordonnées des jetons du joueur.
      * @return List<Coordinates> qui contient les coordonnées des jetons du joueur.
@@ -391,6 +390,47 @@ public class Grid {
         }
 
         return ownTokens;
+    }
+
+
+    /**
+     * Cette méthode permet vérifier si une direction est valide pour pousser un jeton.
+     * @param coordinates les coordonnées du jeton à pousser
+     * @param direction la direction aléatoire
+     * @return int[] qui contient les coefficients de la direction aléatoire valide
+     */
+    public boolean isValidPushDirection(Coordinates coordinates, int[] direction) {
+        try {
+            int coeffX = direction[0];
+            int coeffY = direction[1];
+
+            // On récupère les jetons à déplacer
+            HashMap<Coordinates, Token> tokensToMove = getTokensToMove(coordinates, coeffX, coeffY);
+
+            // On récupère les coordonnées du dernier jeton à déplacer
+            Coordinates lastToken = new Coordinates(coordinates.getX() + (tokensToMove.size() - 1) * coeffX, coordinates.getY() + (tokensToMove.size() - 1) * coeffY);
+
+            // On récupère le nombre de cellules vides dans la direction donnée
+            int nbEmptyCells = getNbEmptyCellsInDirection(lastToken, coeffX, coeffY);
+
+            // On simule le déplacement des jetons
+            HashMap<Coordinates, Token> tokensMoveEnd = new HashMap<>();
+            for (Coordinates c : tokensToMove.keySet()) {
+                tokensMoveEnd.put(new Coordinates(c.getX() + nbEmptyCells * coeffX, c.getY() + nbEmptyCells * coeffY), tokensToMove.get(c));
+            }
+            
+            if (Settings.getInstance().getAllowPushBack()) {
+                // Si la direction fait pousser les jetons dans la même position qu'au tour d'avant, on la retire de la liste des directions valides
+                if (getTokensMoveStart().equals(tokensMoveEnd)) {
+                    return false;
+                }
+            }
+        }
+        catch (IllegalArgumentException e) {
+            // Si la direction fait pousser contre un bord du plateau, on la retire de la liste des directions valides
+            return false;
+        }
+        return true;
     }
 
 }

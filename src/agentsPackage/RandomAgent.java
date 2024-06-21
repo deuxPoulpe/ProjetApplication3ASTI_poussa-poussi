@@ -105,7 +105,7 @@ public class RandomAgent extends Agent {
             int[] randomDirection = validDirections.get(random);
 
             // Si la direction est valide, on la retourne
-            if (super.isValidPushDirection(grid, coords, randomDirection)) {
+            if (grid.isValidPushDirection(coords, randomDirection)) {
                 return randomDirection;
             }
 

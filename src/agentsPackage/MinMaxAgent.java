@@ -2,9 +2,9 @@ package agentsPackage;
 
 import gamePackage.Coordinates;
 import gamePackage.Grid;
-import gamePackage.GridTree;
 import gamePackage.PushAction;
 import gamePackage.Settings;
+import treeFormationPackage.GridTree;
 
 public class MinMaxAgent extends Agent{
 
@@ -32,7 +32,6 @@ public class MinMaxAgent extends Agent{
         // Calcule le meilleur coup à jouer
         GridTree root = new GridTree(this, grid);
         GridTree bestMove = evaluateBestMove(root, smartness, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-        System.out.println("Best move: \n" + bestMove + "\n");
 
         // Phase de retrait 1
 
@@ -73,6 +72,15 @@ public class MinMaxAgent extends Agent{
         grid.display();
     }
 
+    /**
+     * Cette méthode permet d'évaluer le meilleur coup à jouer.
+     * @param node
+     * @param depth
+     * @param alpha
+     * @param beta
+     * @param maximizingPlayer
+     * @return GridTree
+     */
     public GridTree evaluateBestMove(GridTree node, int depth, int alpha, int beta, boolean maximizingPlayer) {
 
         // Si le noeud est une feuille ou si la profondeur est nulle, on retourne le noeud
@@ -91,6 +99,10 @@ public class MinMaxAgent extends Agent{
             // On parcourt tous les coups possibles
             GridTree child;
             while ((child = node.getNextChild()) != null) {
+
+                // On calcule la profondeur du noeud enfant
+                child.setDepth(node.getDepth() + 1);
+
                 // On évalue le noeud enfant
                 GridTree nodeEval = evaluateBestMove(child, depth - 1, alpha, beta, false);
 
