@@ -2,7 +2,9 @@ import java.util.List;
 
 import agentsPackage.MinMaxAgent;
 import gamePackage.*;
-import treeFormationPackage.GridTree;
+import treeFormationPackage.ChildIterator;
+import treeFormationPackage.ActionTree;
+import treeFormationPackage.PushChildIterator;
 
 public class BenchmarkMinMax {
     private static int depth = 1; // Ajout d'une valeur pour la profondeur de recherche
@@ -15,26 +17,39 @@ public class BenchmarkMinMax {
         // Initialisation des paramètres de jeu
         Settings.getInstance(true, true, false);
         
-        MinMaxAgent agent = new MinMaxAgent('Y', depth);
         // averageDurationBestMove = benchmarkBestMove(agent);
         
         // display();
-
+        
         Grid grid = new Grid();
-
+        
         // Grille avec un alignement de push optimal
         grid.placeToken('Y', new Coordinates(0, 0));
-        grid.placeToken('Y', new Coordinates(1, 0));
-        grid.placeToken('Y', new Coordinates(2, 0));
-        grid.placeToken('Y', new Coordinates(5, 0));
-
+        grid.placeToken('Y', new Coordinates(0, 1));
+        grid.placeToken('Y', new Coordinates(0, 2));
+        grid.placeToken('Y', new Coordinates(0, 4));
+        
         grid.display();
         
-        GridTree root = new GridTree(agent, grid);
-        GridTree bestMove = agent.evaluateBestMove(root, agent.getSmartness(), Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+        MinMaxAgent agent = new MinMaxAgent('Y', depth);
+        ActionTree root = new ActionTree(agent, grid);
+        // GridTree bestMove = agent.evaluateBestMove(root, agent.getSmartness(), Integer.MIN_VALUE, Integer.MAX_VALUE, true);
 
-        System.out.println("Best move: \n" + bestMove + "\n");
-        bestMove.getGrid().display();
+        // System.out.println("Best move: \n" + bestMove + "\n");
+        // bestMove.getGrid().display();
+
+        PushChildIterator it = new PushChildIterator(root);
+        while (it.hasNext()) {
+            ActionTree child = it.next();
+            System.out.println(child);
+            child.getGrid().display();
+        }
+
+        // Coordinates pushCoords = new Coordinates(0, 2);
+        // int[] direction = {0, 1};
+        // PushAction pushAction = new PushAction(pushCoords, direction);
+        // boolean isPushValid = grid.isValidPushAction(pushAction, 'Y');
+        // System.out.println("Is push valid? " + isPushValid);
 
     }
 
@@ -68,7 +83,7 @@ public class BenchmarkMinMax {
 
     public static long measureBestMove(Grid grid, MinMaxAgent agent) {
         long startTime = System.nanoTime();
-        GridTree root = new GridTree(agent, grid);
+        ActionTree root = new ActionTree(agent, grid);
         agent.evaluateBestMove(root, agent.getSmartness(), Integer.MIN_VALUE, Integer.MAX_VALUE, true);
         long endTime = System.nanoTime();
         long duration = (endTime - startTime) / 1000000;

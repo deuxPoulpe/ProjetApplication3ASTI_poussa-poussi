@@ -6,7 +6,8 @@ import gamePackage.Coordinates;
 import gamePackage.Grid;
 import gamePackage.PushAction;
 import gamePackage.Settings;
-import treeFormationPackage.GridTree;
+import treeFormationPackage.ChildIterator;
+import treeFormationPackage.ActionTree;
 
 public class MinMaxAgent extends Agent{
 
@@ -32,8 +33,8 @@ public class MinMaxAgent extends Agent{
         if (grid.getSize() * grid.getSize() == grid.getHashMap().keySet().size()) System.out.println("No possible moves");
         
         // Calcule le meilleur coup à jouer
-        GridTree root = new GridTree(this, grid);
-        GridTree bestMove = evaluateBestMove(root, smartness, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+        ActionTree root = new ActionTree(this, grid);
+        ActionTree bestMove = evaluateBestMove(root, smartness, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
         
         // Phase de retrait 1
 
@@ -68,7 +69,7 @@ public class MinMaxAgent extends Agent{
         } else if (pushAction == null) {
             message = getColor() + " : does not push any token";
         } else {
-            grid.pushToken(super.getColor(), bestMove.getPushAction().getCoordinates(), bestMove.getPushAction().getDirection());
+            grid.pushToken(bestMove.getPushAction(), getColor());
             message = getColor() + " : pushes token at " + pushAction.getCoordinates().toString() + " in direction " + pushAction.getDirection().toString();
         }
         if (Settings.getInstance().getDisplayInTerminal())
@@ -103,30 +104,32 @@ public class MinMaxAgent extends Agent{
      * @param maximizingPlayer
      * @return GridTree
      */
-    public GridTree evaluateBestMove(GridTree node, int depth, int alpha, int beta, boolean maximizingPlayer) {
+    public ActionTree evaluateBestMove(ActionTree node, int depth, int alpha, int beta, boolean maximizingPlayer) {
+
+        ChildIterator childIterator = new ChildIterator(node);
 
         // Si le noeud est une feuille ou si la profondeur est nulle, on retourne le noeud
-        if (depth == 0 || !node.getChildIterator().hasNext()) {
+        if (depth == 0 || !childIterator.hasNext()) {
             node.calculateHeuristicValue();
             return node;
         }
 
         // Si c'est le tour du joueur maximisant
         if (maximizingPlayer) {
-            GridTree bestChild = null;
+            ActionTree bestChild = null;
 
             // On initialise la meilleure valeur à un très petit nombre
             int maxEval = Integer.MIN_VALUE;
 
-            // On parcourt tous les coups possibles
-            GridTree child;
-            while ((child = node.getNextChild()) != null) {
+            // On parcourt le prochain enfant
+            ActionTree child = childIterator.next();
+            while (childIterator.hasNext()) {
 
                 // On calcule la profondeur du noeud enfant
                 child.setDepth(node.getDepth() + 1);
 
                 // On évalue le noeud enfant
-                GridTree nodeEval = evaluateBestMove(child, depth - 1, alpha, beta, false);
+                ActionTree nodeEval = evaluateBestMove(child, depth - 1, alpha, beta, false);
 
                 // On récupère la valeur heuristique du noeud enfant
                 int eval = nodeEval.getHeuristicValue();
@@ -146,14 +149,14 @@ public class MinMaxAgent extends Agent{
             return bestChild;
 
         } else { // Si c'est le tour du joueur minimisant
-            GridTree bestChild = null;
+            ActionTree bestChild = null;
 
             // On initialise la meilleure valeur à un très grand nombre
             int minEval = Integer.MAX_VALUE;
 
-            GridTree child;
-            while ((child = node.getNextChild()) != null) {
-                GridTree nodeEval = evaluateBestMove(child, depth - 1, alpha, beta, true);
+            ActionTree child = childIterator.next();
+            while (childIterator.hasNext()) {
+                ActionTree nodeEval = evaluateBestMove(child, depth - 1, alpha, beta, true);
 
                 // On récupère la valeur heuristique du noeud enfant
                 int eval = nodeEval.getHeuristicValue();

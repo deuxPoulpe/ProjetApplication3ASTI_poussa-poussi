@@ -4,19 +4,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.NoSuchElementException;
 
 import agentsPackage.MinMaxAgent;
 import gamePackage.Coordinates;
 import gamePackage.Grid;
 import gamePackage.PushAction;
 
-public class GridTree {
+public class ActionTree {
 
     // Caractéristiques du noeud
     private MinMaxAgent agent;
     private Grid grid;
-    private ChildIterator childIterator;
     private int heuristicValue = 0;
     private int pointCounter = 0;
     private int depth = 0;
@@ -28,17 +26,16 @@ public class GridTree {
     
 
     // Constructeur pour la racine de l'arbre
-    public GridTree(MinMaxAgent agent, Grid grid) {
+    public ActionTree(MinMaxAgent agent, Grid grid) {
         this.agent = agent;
         this.grid = grid;
         this.removCoordinates.add(new HashSet<>());
         this.removCoordinates.add(new HashSet<>());
-        this.childIterator = new ChildIterator(this);
         this.depth = 0;
     }
 
     // Constructeur pour les noeuds de l'arbre
-    public GridTree(GridTree parent, Grid grid, Coordinates placeCoordinates, PushAction pushAction) {
+    public ActionTree(ActionTree parent, Grid grid, Coordinates placeCoordinates, PushAction pushAction) {
 
         // attributs héréditaires
         this.pointCounter = parent.pointCounter;
@@ -50,14 +47,13 @@ public class GridTree {
         this.grid = grid;
         this.placeCoordinates = placeCoordinates;
         this.pushAction = pushAction;
-        this.childIterator = new ChildIterator(this);
     }
 
     @Override
     public String toString() {
         String strRemovCoordinates1 = "Tokens to remove first: " + removCoordinates.get(0) + "\n";
         String strPlaceCoordinates = "Place coordinates: " + placeCoordinates + "\n";
-        String strPushAction = "Push action: " + pushAction + "\n";
+        String strPushAction = "Push action: \n" + pushAction;
         String strRemovCoordinates2 = "Tokens to remove second: " + removCoordinates.get(1) + "\n";
         String strDepth = "Depth: " + depth + "\n";
 
@@ -90,10 +86,6 @@ public class GridTree {
 
     public List<Set<Coordinates>> getRemovCoordinates() {
         return removCoordinates;
-    }
-
-    public ChildIterator getChildIterator() {
-        return childIterator;
     }
 
     public void setGrid(Grid grid) {
@@ -145,23 +137,6 @@ public class GridTree {
 
         // on calcule la valeur heuristique
         heuristicValue = pointCounter * agent.getWeights()[3] + alignmentsScore;
-    }
-
-    /**
-     * Génère les fils du noeud courant.
-     * 
-     * Ajoute les fils pour placer un jeton, puis les fils pour pousser un jeton.
-     */
-    public GridTree getNextChild() {
-        try {
-            return childIterator.next();
-        } catch (NoSuchElementException e) {
-            return null;
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
 }

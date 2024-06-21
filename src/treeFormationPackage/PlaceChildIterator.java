@@ -6,13 +6,13 @@ import java.util.NoSuchElementException;
 import gamePackage.Coordinates;
 import gamePackage.Grid;
 
-public class PlaceChildIterator implements Iterator<GridTree> {
+public class PlaceChildIterator implements Iterator<ActionTree> {
     
-    private GridTree node;
+    private ActionTree node;
     private EmptyCoordIterator emptyCoordIterator;
     private Coordinates currentPlaceCoordinates;
 
-    public PlaceChildIterator(GridTree myNode) {
+    public PlaceChildIterator(ActionTree myNode) {
         this.node = myNode;
         Grid grid = myNode.getGrid();
         this.emptyCoordIterator = new EmptyCoordIterator(grid);
@@ -29,7 +29,7 @@ public class PlaceChildIterator implements Iterator<GridTree> {
     }
 
     @Override
-    public GridTree next() {
+    public ActionTree next() {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
@@ -44,7 +44,7 @@ public class PlaceChildIterator implements Iterator<GridTree> {
      * @param coords les coordonnées où placer le jeton.
      * @return le fils qui contient la grille obtenue après avoir placé le jeton, et les coordonnées où le jeton a été placé.
      */
-    private GridTree createPlaceChild(Grid grid) {
+    private ActionTree createPlaceChild(Grid grid) {
 
         // On récupère la prochaine coordonnée vide.
         currentPlaceCoordinates = emptyCoordIterator.next();
@@ -53,6 +53,6 @@ public class PlaceChildIterator implements Iterator<GridTree> {
         Grid placeGrid = grid.clone();
         placeGrid.placeToken(node.getAgent().getColor(), currentPlaceCoordinates);
 
-        return new GridTree(node, placeGrid, currentPlaceCoordinates, null);
+        return new ActionTree(node, placeGrid, currentPlaceCoordinates, null);
     }
 }

@@ -8,13 +8,13 @@ import gamePackage.Settings;
 
 public class ChildIterator {
 
-    private GridTree node;
+    private ActionTree node;
     private PlaceChildIterator placeChildIterator;
     private PushChildIterator pushChildIterator;
     private RemovGridIterator removGridIterator;
     private boolean isPushPhase = false;
     
-    public ChildIterator(GridTree myNode) {
+    public ChildIterator(ActionTree myNode) {
         this.node = myNode;
         this.placeChildIterator = new PlaceChildIterator(myNode);
     }
@@ -32,7 +32,7 @@ public class ChildIterator {
         return pushChildIterator.hasNext();
     }
 
-    public GridTree next() {
+    public ActionTree next() {
 
         // Si on est en phase de placement
         if (!isPushPhase) {
@@ -47,12 +47,12 @@ public class ChildIterator {
          if (removGridIterator == null || !removGridIterator.hasNext()) {
 
             // On crée un fils pour placer ou pousser un jeton
-            GridTree child = createChild(node.getGrid());
+            ActionTree child = createChild(node.getGrid());
 
             // On met à jour l'itérateur de combinaisons de jetons à retirer
             Grid childGrid = child.getGrid();
             List<List<Coordinates>> childAlignmentsOfFive = childGrid.getAlignments(node.getAgent().getColor(), 5);
-            RemovGridIterator removGridIterator = new RemovGridIterator(childGrid, childAlignmentsOfFive);
+            removGridIterator = new RemovGridIterator(childGrid, childAlignmentsOfFive);
 
             // Si on doit retirer des jetons
             if (removGridIterator.hasNext()) {
@@ -67,46 +67,52 @@ public class ChildIterator {
         
         // Si un allignement de 5 a été formé par l'itération précédente, On retire la prochaine combinaison de jetons
         CoordinateSetGridPair remCoordinateSetGridPair = removGridIterator.next();
-        
-        // On met à jour la grille du noeud courant
-        node.setGrid(remCoordinateSetGridPair.getGrid());
-        
-        // On crée un fils pour placer ou pousser un jeton
-        GridTree child = createChild(remCoordinateSetGridPair.getGrid());
+        Grid remGrid = remCoordinateSetGridPair.getGrid();
 
+        boolean isRoot = node.getDepth() == 0 && node.getPlaceCoordinates() == null;
+
+        // On met à jour la grille du noeud courant
+        if (isRoot) node.setGrid(remGrid);
+
+        // On crée un fils pour placer ou pousser un jeton
+        ActionTree child = createChild(remGrid);
+        
         // Si on est en début de tour, on met la combinaison de jetons à retirer dans la première case, sinon dans la deuxième
-        int index = node.getDepth() == 0 && node.getPlaceCoordinates() == null ? 0 : 1;
+        int index = isRoot ? 0 : 1;
         child.getRemovCoordinates().set(index, remCoordinateSetGridPair.getCoordinates());
 
         return child;
     }
 
-    private GridTree createChild(Grid grid) {
-
-        // Si on est en phase de placement
-        if (!isPushPhase) {
-            isPushPhase = true;
-            GridTree child = placeChildIterator.next();
-
-            // On met à jour l'itérateur de poussée sur le nouveau placement
-            pushChildIterator = new PushChildIterator(child);
-
-            if (!Settings.getInstance().getMandatoryPush())
-                return child;
+    private ActionTree createChild(Grid grid) {
+        // Vérifie si on doit passer à un nouveau placement
+        if (!isPushPhase || !pushChildIterator.hasNext()) {
+            if (placeChildIterator.hasNext()) {
+                // Obtient le prochain placement
+                ActionTree child = placeChildIterator.next();
+                // Initialise l'itérateur de poussée pour ce nouveau placement
+                pushChildIterator = new PushChildIterator(child);
+                // Passe en phase de poussée
+                isPushPhase = true;
+                // Retourne le placement si les poussées ne sont pas obligatoires
+                if (!Settings.getInstance().getMandatoryPush()) {
+                    return child;
+                }
+            } else {
+                // Si aucun autre placement n'est disponible, termine l'itération
+                return null;
+            }
         }
-        // Sinon, on est en phase de poussée
 
-        // On réinitialise les coordonnées à supprimer
-        node.getRemovCoordinates().set(1, null);
-
-        // Si on a exploré toutes les poussées pour le placement actuel, on passe au placement suivant
-        if (!pushChildIterator.hasNext()) {
+        // Si on est en phase de poussée et qu'il reste des poussées à traiter
+        if (isPushPhase && pushChildIterator.hasNext()) {
+            return pushChildIterator.next();
+        } else {
+            // Si toutes les poussées pour le placement actuel ont été traitées,
+            // réinitialise pour traiter le prochain placement
             isPushPhase = false;
-            return next();
+            // Appelle récursivement createChild pour passer au prochain placement
+            return createChild(grid);
         }
-
-        // Sinon, on retourne un fils pour pousser le jeton courant dans la direction courante
-        return pushChildIterator.next();
-
     }
 }

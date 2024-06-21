@@ -16,7 +16,7 @@ public class Grid {
 
     private final int size = 8;
     private HashMap<Coordinates, Token> map;
-    private HashMap<Coordinates, Token> tokensMoveStart = new HashMap<>();
+    private HashMap<Coordinates, Token> previousMovedTokens = new HashMap<>();
 
 
 
@@ -36,8 +36,8 @@ public class Grid {
         return this.map.get(coordinates);
     }
 
-    public HashMap<Coordinates, Token> getTokensMoveStart() {
-        return this.tokensMoveStart;
+    public HashMap<Coordinates, Token> getmovedTokens() {
+        return this.previousMovedTokens;
     }
 
     // Constructors
@@ -63,6 +63,7 @@ public class Grid {
     public boolean isFull() {
         return map.size() == this.size * this.size;
     }
+
 
     public void placeToken(char color, Coordinates coordinates) {
         // Check if there is already a token at the given coordinates
@@ -95,13 +96,14 @@ public class Grid {
      * @param coeffY le coefficient de déplacement en y.
      * @return le nombre de cellules vides dans la direction donnée.
      */
-    public int getNbEmptyCellsInDirection(Coordinates lastToken, int coeffX, int coeffY) {
+    public int countEmptyCellsInDirection(Coordinates coordinates, int[] direction) {
+
         int nbEmptyCells = 0;
-        Coordinates currentCoordinates = new Coordinates(lastToken.getX() + coeffX, lastToken.getY() + coeffY);
+        Coordinates currentCoordinates = new Coordinates(coordinates.getX() + direction[0], coordinates.getY() + direction[1]);
+
         while (!map.containsKey(currentCoordinates) &&
-         (currentCoordinates.getX() >= 0 && currentCoordinates.getX() <= 7 && currentCoordinates.getY() >= 0 && currentCoordinates.getY() <= 7)){
-            currentCoordinates.setX(currentCoordinates.getX() + coeffX);
-            currentCoordinates.setY(currentCoordinates.getY() + coeffY);
+            (currentCoordinates.getX() >= 0 && currentCoordinates.getX() <= 7 && currentCoordinates.getY() >= 0 && currentCoordinates.getY() <= 7)) {
+            currentCoordinates = new Coordinates(currentCoordinates.getX() + direction[0], currentCoordinates.getY() + direction[1]);
             nbEmptyCells++; 
         }
         if (nbEmptyCells == 0) {
@@ -109,85 +111,116 @@ public class Grid {
         }
         return nbEmptyCells;
     }
- 
-    public HashMap<Coordinates, Token> getTokensToMove(Coordinates coordinate, int coeffX, int coeffY) {
-        
 
-        if (!map.containsKey(coordinate)) {
+    public HashMap<Coordinates, Token> getTokensToMove(PushAction pushAction, char color) {
+
+        Coordinates coordinates = pushAction.getCoordinates();
+        int[] direction = pushAction.getDirection();
+
+        // Si les coordonnées ne contiennent pas de jeton, on lève une exception
+        if (!map.keySet().contains(coordinates) || map.get(coordinates) == null) {
             throw new IllegalArgumentException("There is no token at the given coordinates");
         }
 
+        // Si le jeton est de la mauvaise couleur, on lève une exception
+        else if (map.get(coordinates).getColor() != color) {
+            throw new IllegalArgumentException("The token at the given coordinates is not of the right color");
+        }
 
         HashMap<Coordinates, Token> tokensToMove = new HashMap<>();
-        Coordinates iterationsCoordinates = new Coordinates(coordinate.getX(), coordinate.getY());
+        Coordinates iterationsCoordinates = new Coordinates(coordinates.getX(), coordinates.getY());
         
+        // On récupère les jetons à déplacer
         while (map.containsKey(iterationsCoordinates)) {
             tokensToMove.put(new Coordinates(iterationsCoordinates.getX(), iterationsCoordinates.getY()), map.get(iterationsCoordinates));
-            iterationsCoordinates.setX(iterationsCoordinates.getX() + coeffX);
-            iterationsCoordinates.setY(iterationsCoordinates.getY() + coeffY);
+            iterationsCoordinates = new Coordinates(iterationsCoordinates.getX() + direction[0], iterationsCoordinates.getY() + direction[1]);
         }
         
         return tokensToMove;
     }
+   
+    public HashMap<Coordinates, Token> getMovedTokens(PushAction pushAction, HashMap<Coordinates, Token> tokensToMove) {
 
-    /**
-     * Déplace un jeton dans une direction donnée.
-     * @param color la couleur du jeton à déplacer.
-     * @param coordinates les coordonnées du jeton à déplacer.
-     * @param direction la direction dans laquelle déplacer le jeton.
-     * @throws IllegalArgumentException si les coordonnées ne contiennent pas de jeton, si la direction n'est pas U, D, R ou L ou si le jeton à déplacer n'est pas de la couleur donnée.
-     * 
-     */
-    public void pushToken(char color, Coordinates coordinates, int[] direction){
-        
-        if (!map.containsKey(coordinates)) {
-            throw new IllegalArgumentException("There is no token at the given coordinates");
+        int[] direction = pushAction.getDirection();
+        Coordinates coordinates = pushAction.getCoordinates();
+
+        // On récupère les coordonnées du dernier des jetons à déplacer
+        Coordinates lastToken = new Coordinates(coordinates.getX() + (tokensToMove.size() - 1) * direction[0], coordinates.getY() + (tokensToMove.size() - 1) * direction[1]); 
+
+        // On calcule la distance de déplacement
+        int distance;
+        try {
+            distance = countEmptyCellsInDirection(lastToken, direction);
+        } catch (IllegalArgumentException e) {
+            distance = 0;
         }
 
-        if (map.get(coordinates).getColor() != color) {
-            throw new IllegalArgumentException("You can only push your own tokens");
+        // Si la distance est nulle, on lève une exception
+        if (distance == 0) {
+            throw new IllegalArgumentException("There is no empty cell in this direction");
         }
 
-        int coeffX = direction[0];
-        int coeffY = direction[1];
+        // On instancie le vecteur de déplacement
+        int [] movementVector = {distance * direction[0], distance * direction[1]};
 
-        HashMap<Coordinates, Token> tokensToMove = getTokensToMove(coordinates, coeffX, coeffY);
-
-        Coordinates lastToken = new Coordinates(coordinates.getX() + (tokensToMove.size() - 1) * coeffX, coordinates.getY() + (tokensToMove.size() - 1) * coeffY);
-        int nbEmptyCells = getNbEmptyCellsInDirection(lastToken, coeffX, coeffY);
-
-        
-        // remove the tokens to move from the grid
-        
-        // place the tokens to move in the new coordinates
-
-        HashMap<Coordinates, Token> tokensMoveEnd = new HashMap<>();
-
+        // On met à jour la position des jetons à déplacer
+        HashMap <Coordinates, Token> tokensMoved = new HashMap<>();
         for (Coordinates c : tokensToMove.keySet()) {
 
-            tokensMoveEnd.put(new Coordinates(c.getX() + nbEmptyCells * coeffX, c.getY() + nbEmptyCells * coeffY), tokensToMove.get(c));
-            
+            // On récupère les jetons à déplacer et on calcule leurs nouvelles coordonnées
+            Token token = tokensToMove.get(c);
+            Coordinates newTokenCoordinates = new Coordinates(c.getX() + movementVector[0], c.getY() + movementVector[1]);
+
+            // On place le jeton aux nouvelles coordonnées
+            tokensMoved.put(newTokenCoordinates, token);
         }
 
-        if (Settings.getInstance().getAllowPushBack()) {
-            if (tokensMoveStart.equals(tokensMoveEnd)) {
+        if (!Settings.getInstance().getAllowPushBack()) {
+            if (previousMovedTokens.equals(tokensMoved)) {
                 throw new IllegalArgumentException("You are trying to push tokens in the same previous position");
             }
         }
-        
+    
+        return tokensMoved;
+
+    }
+
+    public boolean isValidPushAction(PushAction pushAction, char color) {
+
+        // On instancie parresseusement la map des coordonnées des jetons déplacés
+        HashMap<Coordinates, Token> movedTokens;
+
+        // Vérifie si une exception est levée lors de la récupération des jetons déplacés
+        try {
+            HashMap<Coordinates, Token> tokensToMove = getTokensToMove(pushAction, color);
+            movedTokens = tokensToMove == null ? null : getMovedTokens(pushAction, tokensToMove);
+        } 
+        catch (IllegalArgumentException e) {
+            return false;
+        }
+        return movedTokens != null;
+    }
+
+    public void pushToken(PushAction pushAction, char color) {
+
+        HashMap<Coordinates, Token> tokensToMove = getTokensToMove(pushAction, color);
+
+        // On supprime les jetons à déplacer de la grille
         for (Coordinates c : tokensToMove.keySet()) {
             map.remove(c);
-            }
+        }
 
-        for (Coordinates c : tokensToMove.keySet()) {
-            char tokenColor = tokensToMove.get(c).getColor();
-            map.put(new Coordinates(c.getX() + nbEmptyCells * coeffX, c.getY() + nbEmptyCells * coeffY), new Token(tokenColor));
-            }
+        HashMap<Coordinates, Token> movedTokens = getMovedTokens(pushAction, tokensToMove);
 
+        // On place les jetons à déplacer dans la nouvelle position
+        for (Coordinates c : movedTokens.keySet()) {
+            map.put(c, movedTokens.get(c));
+        }
 
-        this.tokensMoveStart = tokensToMove;
+        // On met à jour les jetons déplacés
+        previousMovedTokens = movedTokens;
     }
-    
+ 
     /**
      * Renvoie les alignements de 5 jetons dans le plateau.
      * @return une liste des alignements de 5 jetons dans le plateau.
@@ -394,52 +427,10 @@ public class Grid {
         return ownTokens;
     }
 
-
-    /**
-     * Cette méthode permet vérifier si une direction est valide pour pousser un jeton.
-     * @param coordinates les coordonnées du jeton à pousser
-     * @param direction la direction aléatoire
-     * @return int[] qui contient les coefficients de la direction aléatoire valide
-     */
-    public boolean isValidPushDirection(Coordinates coordinates, int[] direction) {
-        try {
-            int coeffX = direction[0];
-            int coeffY = direction[1];
-
-            // On récupère les jetons à déplacer
-            HashMap<Coordinates, Token> tokensToMove = getTokensToMove(coordinates, coeffX, coeffY);
-
-            // On récupère les coordonnées du dernier jeton à déplacer
-            Coordinates lastToken = new Coordinates(coordinates.getX() + (tokensToMove.size() - 1) * coeffX, coordinates.getY() + (tokensToMove.size() - 1) * coeffY);
-
-            // On récupère le nombre de cellules vides dans la direction donnée
-            int nbEmptyCells = getNbEmptyCellsInDirection(lastToken, coeffX, coeffY);
-
-            // On simule le déplacement des jetons
-            HashMap<Coordinates, Token> tokensMoveEnd = new HashMap<>();
-            for (Coordinates c : tokensToMove.keySet()) {
-                tokensMoveEnd.put(new Coordinates(c.getX() + nbEmptyCells * coeffX, c.getY() + nbEmptyCells * coeffY), tokensToMove.get(c));
-            }
-            
-            if (Settings.getInstance().getAllowPushBack()) {
-                // Si la direction fait pousser les jetons dans la même position qu'au tour d'avant, on la retire de la liste des directions valides
-                if (getTokensMoveStart().equals(tokensMoveEnd)) {
-                    return false;
-                }
-            }
-        }
-        catch (IllegalArgumentException e) {
-            // Si la direction fait pousser contre un bord du plateau, on la retire de la liste des directions valides
-            return false;
-        }
-        return true;
-    }
-
     public boolean hasColorInDirection(Coordinates coords, int[] direction, char color) {
 
         // On vérifie si la cellule est sur un bord du plateau
-        boolean isOnBorder = coords.getX() == 0 || coords.getX() == size - 1 || coords.getY() == 0 || coords.getY() == size - 1;
-        if (isOnBorder) {
+        if (isOnBorder(coords)) {
             return false;
         }
         // Si les prochaines coordonnées sont dans le plateau et que la couleur est celle du joueur, on retourne vrai
@@ -452,7 +443,7 @@ public class Grid {
     }
 
     public boolean isAllignedWithColor (Coordinates coords, char color) {
-        int[][] directions = {{0, 1}, {1, 0}, {1, 1}, {1, -1}};
+        int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
 
         // On vérifie s'il y a un jeton de la couleur donnée dans chaque direction
         for (int[] direction : directions) {
@@ -476,6 +467,10 @@ public class Grid {
             }
         }
         return false;
+    }
+
+    public boolean isOnBorder(Coordinates coordinates) {
+        return coordinates.getX() == 0 || coordinates.getX() == size - 1 || coordinates.getY() == 0 || coordinates.getY() == size - 1;
     }
 }
  

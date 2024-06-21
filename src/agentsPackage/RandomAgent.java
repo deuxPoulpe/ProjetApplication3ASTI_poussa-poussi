@@ -4,6 +4,7 @@ import java.util.List;
 
 import gamePackage.Coordinates;
 import gamePackage.Grid;
+import gamePackage.PushAction;
 import gamePackage.Settings;
 
 public class RandomAgent extends Agent {
@@ -54,7 +55,8 @@ public class RandomAgent extends Agent {
             System.out.printf("in direction %d, %d\n", randomDirection[0], randomDirection[1]);
         }
 
-        grid.pushToken(super.getColor(), randomTokenCoords, randomDirection);
+        PushAction pushAction = new PushAction(randomTokenCoords, randomDirection);
+        grid.pushToken(pushAction, getColor());
     }
 
 
@@ -104,8 +106,10 @@ public class RandomAgent extends Agent {
             int random = (int) (Math.random() * validDirections.size());
             int[] randomDirection = validDirections.get(random);
 
+            PushAction pushAction = new PushAction(coords, randomDirection);
+
             // Si la direction est valide, on la retourne
-            if (grid.isValidPushDirection(coords, randomDirection)) {
+            if (grid.isValidPushAction(pushAction, getColor())) {
                 return randomDirection;
             }
 

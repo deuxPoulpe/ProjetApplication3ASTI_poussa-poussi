@@ -5,6 +5,7 @@ import java.util.List;
 
 import gamePackage.Coordinates;
 import gamePackage.Grid;
+import gamePackage.PushAction;
 
 public abstract class Agent {
 
@@ -34,9 +35,14 @@ public abstract class Agent {
         int[][] directions = {{1, 0}, {0, 1}, {-1, 0}, {0, -1}};
         List<int[]> validDirections = new ArrayList<>();
         for (int[] direction : directions) {
-            if (grid.isValidPushDirection(coordinates, direction)) {
-                validDirections.add(direction);
+            PushAction pushAction = new PushAction(coordinates, direction);
+            try {
+                grid.getMovedTokens(pushAction, grid.getTokensToMove(pushAction, color));
             }
+            catch (Exception e) {
+                continue;
+            }
+            validDirections.add(direction);
         }
         return validDirections;
     }

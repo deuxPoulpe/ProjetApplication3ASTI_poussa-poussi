@@ -5,6 +5,7 @@ import java.util.Scanner;
 
 import gamePackage.Coordinates;
 import gamePackage.Grid;
+import gamePackage.PushAction;
 import gamePackage.Settings;
 
 public class PlayerAgent extends Agent {
@@ -93,10 +94,12 @@ public class PlayerAgent extends Agent {
             }
 
             int[] direction = inputToDirection(pushDirection);
-            
             Coordinates pushCoords = new Coordinates(x, y);
+
+            PushAction pushAction = new PushAction(pushCoords, direction);
+
             try {
-                grid.pushToken(super.getColor(), pushCoords, direction);
+                grid.pushToken(pushAction, getColor());
             } catch (IllegalArgumentException e) {
                 System.out.println(e.getMessage());
                 result = 1;
