@@ -10,6 +10,24 @@ public class MinMaxAgent extends Agent{
 
     private int smartness;
     private final int[] weights = {1, 3, 9, 50};
+    private int rivalGift = 0;
+    private int ownPoints = 0;
+
+    public int getrivalGift() {
+        return rivalGift;
+    }
+
+    public int getownPoints() {
+        return ownPoints;
+    }
+
+    public int setrivalGift(int rivalGift) {
+        return this.rivalGift = rivalGift;
+    }
+
+    public int setownPoints(int ownPoints) {
+        return this.ownPoints = ownPoints;
+    }
     
     public MinMaxAgent(char myColor, int smartness) {
         super(myColor);
@@ -34,6 +52,9 @@ public class MinMaxAgent extends Agent{
         GridTree bestMove = evaluateBestMove(root, smartness, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
 
         // Phase de retrait 1
+
+        rivalGift =  bestMove.getRemovCoordinates().get(0).size() / 2;
+
 
         // Pour chaque alignement de 5 jetons du joueur formé par l'adversaire, on retire 2 jetons de l'alignement
         for (Coordinates removCoords : bestMove.getRemovCoordinates().get(0)) {
@@ -62,6 +83,8 @@ public class MinMaxAgent extends Agent{
             grid.pushToken(super.getColor(), bestMove.getPushAction().getCoordinates(), bestMove.getPushAction().getDirection());
 
         // Phase de retrait 2
+
+        ownPoints = bestMove.getRemovCoordinates().get(1).size() / 2;
 
         // Pour chaque alignement de 5 jetons formé, on retire 2 jetons de l'alignement
         for (Coordinates removCoords : bestMove.getRemovCoordinates().get(1)) {

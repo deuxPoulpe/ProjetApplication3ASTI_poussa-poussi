@@ -1,10 +1,8 @@
 package gamePackage;
-import java.util.Scanner;
-
 import agentsPackage.Agent;
 import agentsPackage.MinMaxAgent;
 import agentsPackage.PlayerAgent;
-import agentsPackage.RandomAgent;
+import java.util.Scanner;
 
 
 public class Game {
@@ -42,14 +40,13 @@ public class Game {
             this.player1 = new PlayerAgent('B');
             this.player2 = new MinMaxAgent('Y', 2);
         } else {
-            this.player1 = new RandomAgent('B');
+            this.player1 = new MinMaxAgent('B', 1);
             this.player2 = new MinMaxAgent('Y', 1);
         }
         currentPlayer = player1;
     }
 
     public void run() {
-        
         while (true) {
             Round();
 
@@ -61,40 +58,64 @@ public class Game {
                 System.exit(0);
             }
 
-            if (currentPlayer == player1) {
-                currentPlayer = player2;
-            } else {
-                currentPlayer = player1;
-            }
+            currentPlayer = (currentPlayer == player1) ? player2 : player1;
         }
     }
 
     public void Round() {
-        // Avant placement du jeton
         if (grid.isFull()) {
             System.out.println("It's a draw.");
             System.exit(0);
         }
-        // Placement et poussée du jeton
+
         currentPlayer.executeGameRound(grid);
 
-        // Vérification du score
+        // Après l'exécution du tour, enregistrer les points marqués par le joueur précédent
+        if (currentPlayer == player1) {
+            // Mettre à jour le score pour le joueur 1
+            int ownPoints = player1.getownPoints();
+            player1.setScore(player1.getScore() + ownPoints - player2.getrivalGift());
+        } else {
+            // Mettre à jour le score pour le joueur 2
+            int ownPoints = player2.getownPoints();
+            player2.setScore(player2.getScore() + ownPoints - player1.getrivalGift());
+        }
+
+        player1.resetPoints();
+        player2.resetPoints();
+
         int gameState = checkScore();
-        if (Settings.getInstance().getDisplayInTerminal())
+        if (Settings.getInstance().getDisplayInTerminal()) {
             System.out.println("Score: B = " + player1.getScore() + " Y = " + player2.getScore());
+        }
 
         if (gameState == 0) {
-            System.out.println("B wins");
+            System.out.println("It's a draw.");
             System.exit(0);
         } else if (gameState == 1) {
+            System.out.println("B wins");
+            System.exit(0);
+        } else if (gameState == 2) {
             System.out.println("Y wins");
             System.exit(0);
+        } else if (gameState == 3) {
+            System.out.println("The game is ongoing");
         }
     }
  
     public int checkScore() {
-        // TODO: Implement this method
-
-        return -1;
+        if (grid.isFull())
+        {
+            return 0;
+        }
+        else
+        {
+            if (player1.getScore() > player2.getScore() && player1.getScore() >= 2) {
+                return 1;
+            } else if (player1.getScore() < player2.getScore() && player2.getScore() >= 2) {
+                return 2;
+            } else 
+                return 3;
+        }
     }
 }

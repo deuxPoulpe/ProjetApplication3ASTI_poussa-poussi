@@ -1,11 +1,10 @@
 package agentsPackage;
 
-import java.util.List;
-import java.util.Scanner;
-
 import gamePackage.Coordinates;
 import gamePackage.Grid;
 import gamePackage.Settings;
+import java.util.List;
+import java.util.Scanner;
 
 public class PlayerAgent extends Agent {
 
@@ -23,6 +22,8 @@ public class PlayerAgent extends Agent {
         for (List<Coordinates> alignment : grid.getAlignments(super.getColor(), 5)) {
             if (alignment.size() >= 5) {
                 removeTwoTokens(grid, alignment);
+                rivalGift = rivalGift++;
+                
             }
         }
 
@@ -50,6 +51,7 @@ public class PlayerAgent extends Agent {
         for (List<Coordinates> alignment : grid.getAlignments(super.getColor(), 5)) {
             if (alignment.size() >= 5) {
                 removeTwoTokens(grid, alignment);
+                ownPoints = ownPoints++;
             }
         }
     }
