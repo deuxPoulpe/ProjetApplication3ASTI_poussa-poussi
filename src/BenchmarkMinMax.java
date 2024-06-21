@@ -3,6 +3,7 @@ import java.util.List;
 import agentsPackage.MinMaxAgent;
 import gamePackage.*;
 import treeFormationPackage.ChildIterator;
+import treeFormationPackage.PlaceChildIterator;
 import treeFormationPackage.ActionTree;
 
 public class BenchmarkMinMax {
@@ -23,32 +24,17 @@ public class BenchmarkMinMax {
         Grid grid = new Grid();
         
         // Grille avec un alignement de push optimal
-        grid.placeToken('Y', new Coordinates(0, 0));
-        grid.placeToken('Y', new Coordinates(0, 1));
-        grid.placeToken('Y', new Coordinates(0, 2));
-        grid.placeToken('Y', new Coordinates(0, 4));
+        // grid.placeToken('Y', new Coordinates(0, 0));
         
         grid.display();
         
         MinMaxAgent agent = new MinMaxAgent('Y', depth);
         ActionTree root = new ActionTree(agent, grid);
-        // GridTree bestMove = agent.evaluateBestMove(root, agent.getSmartness(), Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+        ActionTree bestMove = agent.evaluateBestMove(root, agent.getSmartness(), Integer.MIN_VALUE, Integer.MAX_VALUE, true);
 
-        // System.out.println("Best move: \n" + bestMove + "\n");
-        // bestMove.getGrid().display();
+        System.out.println("Best move: \n" + bestMove + "\n");
+        bestMove.getGrid().display();
 
-        ChildIterator it = new ChildIterator(root);
-        while (it.hasNext()) {
-            ActionTree child = it.next();
-            System.out.println(child);
-            child.getGrid().display();
-        }
-
-        // Coordinates pushCoords = new Coordinates(0, 2);
-        // int[] direction = {0, 1};
-        // PushAction pushAction = new PushAction(pushCoords, direction);
-        // boolean isPushValid = grid.isValidPushAction(pushAction, 'Y');
-        // System.out.println("Is push valid? " + isPushValid);
 
     }
 

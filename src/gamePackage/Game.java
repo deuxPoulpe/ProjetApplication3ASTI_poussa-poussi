@@ -41,8 +41,8 @@ public class Game {
             this.player1 = new PlayerAgent('B');
             this.player2 = new MinMaxAgent('Y', 4);
         } else {
-            this.player1 = new MinMaxAgent('B', 3);
-            this.player2 = new MinMaxAgent('Y', 5);
+            this.player1 = new MinMaxAgent('B', 1);
+            this.player2 = new MinMaxAgent('Y', 1);
         }
         currentPlayer = player1;
     }
