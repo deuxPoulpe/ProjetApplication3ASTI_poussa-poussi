@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
+import treeFormationPackage.EmptyCoordIterator;
+
 
 
 public class Grid {
@@ -433,6 +435,48 @@ public class Grid {
         return true;
     }
 
+    public boolean hasColorInDirection(Coordinates coords, int[] direction, char color) {
+
+        // On vérifie si la cellule est sur un bord du plateau
+        boolean isOnBorder = coords.getX() == 0 || coords.getX() == size - 1 || coords.getY() == 0 || coords.getY() == size - 1;
+        if (isOnBorder) {
+            return false;
+        }
+        // Si les prochaines coordonnées sont dans le plateau et que la couleur est celle du joueur, on retourne vrai
+        Coordinates nextCoords = new Coordinates(coords.getX() + direction[0], coords.getY() + direction[1]);
+        if (map.keySet().contains(nextCoords) && map.get(nextCoords).getColor() == color) {
+            return true;
+        }
+        // Sinon on continue de vérifier dans la même direction
+        return hasColorInDirection(nextCoords, direction, color);
+    }
+
+    public boolean isAllignedWithColor (Coordinates coords, char color) {
+        int[][] directions = {{0, 1}, {1, 0}, {1, 1}, {1, -1}};
+
+        // On vérifie s'il y a un jeton de la couleur donnée dans chaque direction
+        for (int[] direction : directions) {
+            if (hasColorInDirection(coords, direction, color)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public boolean hasValidPush(char color) {
+        EmptyCoordIterator emptyCoordIterator = new EmptyCoordIterator(this);
+
+        // Tant qu'il reste des cellules vides à explorer
+        while (emptyCoordIterator.hasNext()) {
+
+            // On vérifie si la cellule vide est alignée avec un jeton du joueur
+            Coordinates emptyCoordinates = emptyCoordIterator.next();
+            if (isAllignedWithColor(emptyCoordinates, color)) {
+                return true;
+            }
+        }
+        return false;
+    }
 }
  
 

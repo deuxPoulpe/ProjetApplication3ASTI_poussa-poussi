@@ -26,8 +26,7 @@ public class BenchmarkMinMax {
         grid.placeToken('Y', new Coordinates(0, 0));
         grid.placeToken('Y', new Coordinates(1, 0));
         grid.placeToken('Y', new Coordinates(2, 0));
-        grid.placeToken('Y', new Coordinates(3, 0));
-        grid.placeToken('Y', new Coordinates(4, 0));
+        grid.placeToken('Y', new Coordinates(5, 0));
 
         grid.display();
         

@@ -4,6 +4,7 @@ import java.util.List;
 
 import gamePackage.Coordinates;
 import gamePackage.Grid;
+import gamePackage.Settings;
 
 public class ChildIterator {
 
@@ -25,10 +26,10 @@ public class ChildIterator {
         }
         // Si on est en phase de placement
         if (!isPushPhase) {
-            return pushChildIterator.hasNext();
+            return placeChildIterator.hasNext();
         }
         // Si on est en phase de poussée
-        return placeChildIterator.hasNext();
+        return pushChildIterator.hasNext();
     }
 
     public GridTree next() {
@@ -89,7 +90,9 @@ public class ChildIterator {
 
             // On met à jour l'itérateur de poussée sur le nouveau placement
             pushChildIterator = new PushChildIterator(child);
-            return child;
+
+            if (!Settings.getInstance().getMandatoryPush())
+                return child;
         }
         // Sinon, on est en phase de poussée
 

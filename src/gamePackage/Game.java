@@ -4,7 +4,6 @@ import java.util.Scanner;
 import agentsPackage.Agent;
 import agentsPackage.MinMaxAgent;
 import agentsPackage.PlayerAgent;
-import agentsPackage.RandomAgent;
 
 
 public class Game {
@@ -40,10 +39,10 @@ public class Game {
             this.player2 = new PlayerAgent('Y');
         } else if (choice == '2') {
             this.player1 = new PlayerAgent('B');
-            this.player2 = new MinMaxAgent('Y', 2);
+            this.player2 = new MinMaxAgent('Y', 4);
         } else {
-            this.player1 = new RandomAgent('B');
-            this.player2 = new MinMaxAgent('Y', 1);
+            this.player1 = new MinMaxAgent('B', 1);
+            this.player2 = new MinMaxAgent('Y', 3);
         }
         currentPlayer = player1;
     }

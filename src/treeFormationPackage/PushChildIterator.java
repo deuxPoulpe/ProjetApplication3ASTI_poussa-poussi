@@ -27,7 +27,7 @@ public class PushChildIterator {
 
     public PushChildIterator(GridTree myNode) {
         this.node = myNode;
-        this.ownTokenCoordsIterator = myNode.getGrid().getColorTokenCoordinates(myNode.getAgent().getColor()).iterator();
+        this.ownTokenCoordsIterator = new ColorTokenCoordsIterator(myNode.getGrid(), myNode.getAgent().getColor());
         this.currentPushAction = new PushAction(null, null);
         if (ownTokenCoordsIterator.hasNext()) {
             currentPushAction.setCoordinates(ownTokenCoordsIterator.next());
@@ -35,9 +35,8 @@ public class PushChildIterator {
     }
 
     public boolean hasNext() {
-
-        // TODO: Inexact, on peut ne pas avoir de jetons à pousser sans que la grille soit pleine.
-        return !node.getGrid().isFull();
+        // Si on a encore des jetons à pousser ou des directions de poussée à explorer, on a encore des fils à explorer.
+        return node.getGrid().hasValidPush(node.getAgent().getColor());
     }
     
     public GridTree next() {
@@ -94,5 +93,45 @@ public class PushChildIterator {
 
         // Sinon, on réessaie avec la prochaine action de poussée
         return createPushChild(grid);
+    }
+
+    private class ColorTokenCoordsIterator implements Iterator<Coordinates> {
+        private Grid grid;
+        private char color;
+        private Iterator<Coordinates> tokenCoordsIterator;
+        private Coordinates nextMatchingCoordinate;
+
+        public ColorTokenCoordsIterator(Grid grid, char color) {
+            this.grid = grid;
+            this.color = color;
+            this.tokenCoordsIterator = grid.getHashMap().keySet().iterator();
+            findNext(); // Initialise le premier élément correspondant
+        }
+
+        private void findNext() {
+            while (tokenCoordsIterator.hasNext()) {
+                Coordinates current = tokenCoordsIterator.next();
+                if (grid.getToken(current).getColor() == color) {
+                    nextMatchingCoordinate = current;
+                    return;
+                }
+            }
+            nextMatchingCoordinate = null; // Aucun autre élément correspondant
+        }
+
+        @Override
+        public boolean hasNext() {
+            return nextMatchingCoordinate != null;
+        }
+
+        @Override
+        public Coordinates next() {
+            if (nextMatchingCoordinate == null) {
+                throw new NoSuchElementException();
+            }
+            Coordinates currentMatchingCoordinate = nextMatchingCoordinate;
+            findNext(); // Prépare le prochain élément correspondant pour le prochain appel
+            return currentMatchingCoordinate;
+        }
     }
 }

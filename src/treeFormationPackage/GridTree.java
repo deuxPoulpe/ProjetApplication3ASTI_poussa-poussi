@@ -92,6 +92,10 @@ public class GridTree {
         return removCoordinates;
     }
 
+    public ChildIterator getChildIterator() {
+        return childIterator;
+    }
+
     public void setGrid(Grid grid) {
         this.grid = grid;
     }
