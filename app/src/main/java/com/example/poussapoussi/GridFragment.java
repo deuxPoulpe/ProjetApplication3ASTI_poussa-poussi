@@ -32,7 +32,6 @@ import androidx.core.view.WindowInsetsCompat;
 import android.view.View.OnTouchListener;
 import android.view.MotionEvent;
 
-
 import com.example.poussapoussi.databinding.FragmentGridBinding;
 import myPackage.*;
 
@@ -44,6 +43,8 @@ import myPackage.*;
  */
 public class GridFragment extends Fragment {
     private FragmentGridBinding binding;
+
+    private boolean allowToPrintMessages = false;
 
     private Grid grid;
     private Grid oldGrid;
@@ -64,11 +65,11 @@ public class GridFragment extends Fragment {
     private boolean aiTurn = false;
 
     private Coordinates coordinatesToPush = null;
+    private Object MotionEvent;
 
     public GridFragment() {
         // Required empty public constructor
     }
-
 
     /**
      * Use this factory method to create a new instance of
@@ -76,7 +77,6 @@ public class GridFragment extends Fragment {
      *
      * @return A new instance of fragment GridFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static GridFragment newInstance(char choice) {
         GridFragment fragment = new GridFragment();
         Bundle args = new Bundle();
@@ -84,24 +84,54 @@ public class GridFragment extends Fragment {
         fragment.setArguments(args);
         return fragment;
     }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             this.choice = getArguments().getChar("choice");
         }
-
     }
-
-
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentGridBinding.inflate(inflater, container, false);
         Settings.getInstance(true, false);
+
+        initSkipButton();
+        initGame();
+
+        binding.mainMenu.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                navigateToHomeFragment();
+            }
+        });
+        swipeListener = new SwipeListener(getContext(), this);
+        binding.wholeScreen.setOnTouchListener(swipeListener);
+        binding.tokenGridLayout.setOnTouchListener(swipeListener);
+
+        return binding.getRoot();
+    }
+
+    /**
+     * Navigate to the home fragment
+     */
+    private void navigateToHomeFragment() {
+        if (getActivity() != null) {
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, HomePageFragment.newInstance())
+                    .addToBackStack(null)
+                    .commit();
+        }
+    }
+
+    /**
+     * Initialize the game
+     */
+    private void initGame(){
         this.grid = new Grid();
-        
         this.oldGrid = new Grid();
         this.game = new Game(this.grid);
         this.game.start(this.choice);
@@ -114,28 +144,28 @@ public class GridFragment extends Fragment {
 
         displayTokenGrid();
         displayBorderGrid(-1, -1);
-        binding.mainMenu.setOnClickListener(new View.OnClickListener(){
-                @Override
-                public void onClick(View v) {
-                        navigateToHomeFragment();
-                   }
-                });
-        swipeListener = new SwipeListener(getContext(), this);
-        binding.wholeScreen.setOnTouchListener(swipeListener);
-        binding.tokenGridLayout.setOnTouchListener(swipeListener);
+
         if (choice == '3' ){
             DelayedTaskUtil.executeWithDelay(500, this::playAITurn);
         }
-        return binding.getRoot();
-
     }
-    private void navigateToHomeFragment() {
-        if (getActivity() != null) {
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, HomePageFragment.newInstance())
-                    .addToBackStack(null)
-                    .commit();
-        }
+
+    /**
+     * Initialize the skip button
+     */
+    private void initSkipButton(){
+        binding.blueSkip.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                skipPushTurn(v);
+            }
+        });
+        binding.orangeSkip.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                skipPushTurn(v);
+            }
+        });
     }
 
     /**
@@ -173,42 +203,49 @@ public class GridFragment extends Fragment {
                 final int finalJ = j;
                 cell.setClickable(true); // Make the cell clickable
                 cell.setFocusable(true); // Make the cell focusable
-                cell.setOnClickListener(v -> handleCellClickPlace(finalI, finalJ));
+                cell.setOnClickListener(v -> handleCellClickPlace(finalI, finalJ, cell));
                 borderGridLayout.addView(cell);
             }
         }
     }
 
-    private void handleCellClickPlace(int i, int j) {
+    /**
+     * Handle cell click event for placing a token
+     * @param i : x coordinate of the cell
+     * @param j : y coordinate of the cell
+     */
+    private void handleCellClickPlace(int i, int j, ImageView cell) {
         Coordinates coordinates = new Coordinates(i, j);
         if(this.removeTurnPlayer1 > 0 || this.removeTurnPlayer2 > 0){
-            Toast.makeText(getContext(), "You can't place now need to remove token before", Toast.LENGTH_SHORT).show();
+            printTest("You can't place now need to remove token before");
             return;
         }
         if (this.grid.getToken(coordinates) == null && placeTurn && !aiTurn) {
             try {
                 this.grid.placeToken(game.getColorOfCurrentPlayer(), coordinates);
                 handleTurn();
+
             } catch (IllegalArgumentException e) {
-                Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+                printTest(e.getMessage());
             }
         }
         else {
             if (!placeTurn){
-                Toast.makeText(getContext(), "You can't place now", Toast.LENGTH_SHORT).show();
+                printTest("You can't place now");
             }
             else if (aiTurn) {
-                Toast.makeText(getContext(), "It's not your turn", Toast.LENGTH_SHORT).show();
+                printTest("It's not your turn");
             }
             else {
-            Toast.makeText(getContext(), "This cell is already occupied", Toast.LENGTH_SHORT).show();
+                printTest("This cell is already occupied");
             }
         }
-
     }
 
-
-    public void changeColorToCurrentPlayer(){
+    /**
+     * Change background color to match the current player's color
+     */
+    private void changeColorToCurrentPlayer(){
         if (game.getColorOfCurrentPlayer() == 'B') {
             binding.wholeScreen.setBackgroundColor(Color.parseColor("#385ea0"));
         }
@@ -217,15 +254,17 @@ public class GridFragment extends Fragment {
         }
     }
 
-
-    public void handleTurn() {
+    /**
+     * Handle the end of a turn
+     */
+    private void handleTurn() {
         if (!this.finishGame) {
             if (this.removeTurnPlayer1 == 0 && this.removeTurnPlayer2 == 0) {
                 if (this.placeTurn) {
                     this.pushTurn = true;
                     this.placeTurn = false;
+                    diplayTurn();
                 }
-
                 else if (this.pushTurn) {
                     this.pushTurn = false;
                     this.placeTurn = true;
@@ -236,29 +275,30 @@ public class GridFragment extends Fragment {
                     if (this.removeTurnPlayer1 == 0 && this.removeTurnPlayer2 == 0){
                         game.switchPlayer();
                         changeColorToCurrentPlayer();
+                        diplayTurn();
                     }
-
                 }
             }
-
             displayTokenGrid();
             displayBorderGrid( -1, -1);
             if (this.aiTurn && this.removeTurnPlayer1 == 0 && this.removeTurnPlayer2 == 0) {
                 DelayedTaskUtil.executeWithDelay(500, this::playAITurn);
             }
         }
-
     }
 
-    public void checkWin() {
+    /**
+     * Check for a win or alignments of five tokens
+     */
+    private void checkWin() {
         int gameState = game.updateScore();
         updateDisplayScore();
         if (gameState == 0) {
-            Toast.makeText(getContext(), "Blue wins", Toast.LENGTH_SHORT).show();
+            printTest("Blue wins");
             this.finishGame = true;
             displayWinner("Blue");
         } else if (gameState == 1) {
-            Toast.makeText(getContext(), "Yellow wins", Toast.LENGTH_SHORT).show();
+            printTest("Yellow wins");
             this.finishGame = true;
             displayWinner("Orange");
         }
@@ -291,7 +331,6 @@ public class GridFragment extends Fragment {
                                 this.alignmentToRemovePlayer2.addAll(alignment);
                             }
                         }
-
                     } catch (Exception e) {
                         System.out.println(e.getMessage());
                     }
@@ -300,8 +339,11 @@ public class GridFragment extends Fragment {
         }
     }
 
+    /**
+     * Update the score display
+     */
     @SuppressLint("SetTextI18n")
-    public void updateDisplayScore() {
+    private void updateDisplayScore() {
         TextView scoreView = binding.scoreBoard;
         int[] scores = game.getScore();
         String scoreText = scores[0] + " • " + scores[1];
@@ -317,13 +359,14 @@ public class GridFragment extends Fragment {
 
         // Définissez le texte coloré sur le TextView
         scoreView.setText(spannableString);
-
     }
 
-
+    /**
+     * Display the winner and navigate to the home fragment
+     * @param winner : the winner's color
+     */
     @SuppressLint("SetTextI18n")
     public void displayWinner(String winner) {
-
         changeColorToCurrentPlayer();
 
         // Mettez à jour le texte du TextView
@@ -337,25 +380,25 @@ public class GridFragment extends Fragment {
             binding.winnerBackground.setBackgroundColor(Color.parseColor("#BBce9744"));
         }
 
-
-
         // Rendez le TextView visible
         winnerTextView.setVisibility(View.VISIBLE);
-        animateWinnerTextView();
+        animateTexteView(winnerTextView);
         DelayedTaskUtil.executeWithDelay(10000, this::navigateToHomeFragment);
-
     }
 
-    private void animateWinnerTextView() {
-        TextView winnerTextView = binding.winnerTextView;
+    /**
+     * Animate the text view
+     * @param textView : the text view to animate
+     */
+    private void animateTexteView(TextView textView) {
         // Créez des animations pour l'apparition (fade in) et l'agrandissement (scale up)
-        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(winnerTextView, "alpha", 0f, 1f);
+        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(textView, "alpha", 0f, 1f);
         fadeIn.setDuration(1000); // 1 seconde
 
-        ObjectAnimator scaleX = ObjectAnimator.ofFloat(winnerTextView, "scaleX", 0f, 1f);
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(textView, "scaleX", 0f, 1f);
         scaleX.setDuration(1000); // 1 seconde
 
-        ObjectAnimator scaleY = ObjectAnimator.ofFloat(winnerTextView, "scaleY", 0f, 1f);
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(textView, "scaleY", 0f, 1f);
         scaleY.setDuration(1000); // 1 seconde
 
         // Combinez les animations dans un AnimatorSet
@@ -364,7 +407,110 @@ public class GridFragment extends Fragment {
         animatorSet.start();
     }
 
-    public void playAITurn() {
+    /**
+     * Animate the image view
+     * @param imageView : the text view to animate
+     */
+    private void animateImageView(ImageView imageView) {
+        // Créez des animations pour l'apparition (fade in) et l'agrandissement (scale up)
+        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(imageView, "alpha", 0f, 1f);
+        fadeIn.setDuration(1000); // 1 seconde
+
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(imageView, "scaleX", 0f, 1f);
+        scaleX.setDuration(1000); // 1 seconde
+
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(imageView, "scaleY", 0f, 1f);
+        scaleY.setDuration(1000); // 1 seconde
+
+        // Combinez les animations dans un AnimatorSet
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(fadeIn, scaleX, scaleY);
+        animatorSet.start();
+    }
+
+    /**
+     * Animate the image view rotation
+     * @param imageView : the image view to animate
+     * @param duration : the duration of the animation
+     */
+    private void animateImageViewRotation(ImageView imageView, int duration) {
+        // Créez des animations pour l'apparition (fade in) et l'agrandissement (scale up)
+        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(imageView, "alpha", 0f, 1f);
+        fadeIn.setDuration(duration);
+
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(imageView, "scaleX", 0f, 1f);
+        scaleX.setDuration(duration);
+
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(imageView, "scaleY", 0f, 1f);
+        scaleY.setDuration(duration);
+
+        // Créez une animation de rotation
+        ObjectAnimator rotate = ObjectAnimator.ofFloat(imageView, "rotation", 0f, 360f);
+        rotate.setDuration(duration);
+
+        // Combinez les animations dans un AnimatorSet
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(fadeIn, scaleX, scaleY, rotate);
+        animatorSet.start();
+    }
+
+    /**
+     * Display the interdiction indicator
+     */
+    private void displayInterdiction() {
+        binding.interdictionIndicator.setVisibility(View.VISIBLE);
+        animateImageViewRotation(binding.interdictionIndicator, 500);
+        DelayedTaskUtil.executeWithDelay(1000, () -> binding.interdictionIndicator.setVisibility(View.GONE));
+    }
+
+    /**
+     * Display the current turn
+     */
+    private void diplayTurn() {
+        char currentPlayer = game.getColorOfCurrentPlayer();
+        TextView turn;
+        ImageView skip = null;
+        binding.blueSkip.setVisibility(View.GONE);
+        binding.orangeSkip.setVisibility(View.GONE);
+
+        if (currentPlayer == 'B') {
+            turn = binding.blueTurn;
+            binding.orangeTurn.setVisibility(View.INVISIBLE);
+        } else {
+            turn = binding.orangeTurn;
+            binding.blueTurn.setVisibility(View.INVISIBLE);
+        }
+
+        if (this.placeTurn) {
+            turn.setText("PLACE");
+        } else {
+            turn.setText("PUSH");
+            if (currentPlayer == 'B') {
+                skip = binding.blueSkip;
+            } else {
+                skip = binding.orangeSkip;
+            }
+        }
+        if (skip != null){
+            skip.setVisibility(View.VISIBLE);
+        }
+        turn.setVisibility(View.VISIBLE);
+        animateTexteView(turn);
+        animateImageView(skip);
+    }
+
+    /**
+     * Skip the push turn
+     * @param view : the view that triggered the event
+     */
+    public void skipPushTurn(View view) {
+        handleTurn();
+    }
+
+    /**
+     * Play AI turn
+     */
+    private void playAITurn() {
         game.getCurrentPlayer().placeToken();
         displayTokenGrid();
         oldGrid.setGrid(grid.copyGrid());
@@ -380,9 +526,8 @@ public class GridFragment extends Fragment {
 
     /**
      * Display the grid of tokens in the GridLayout
-     *
      */
-    public void displayTokenGrid() {
+    private void displayTokenGrid() {
         GridLayout tokenGridLayout = binding.tokenGridLayout;
         tokenGridLayout.removeAllViews();
 
@@ -390,7 +535,6 @@ public class GridFragment extends Fragment {
 
         for (int i = 0; i < size; i++) {
             for (int j = 0; j < size; j++) {
-
                 ImageView cell = new ImageView(getContext());
                 GridLayout.LayoutParams param = new GridLayout.LayoutParams();
                 param.width = param.height = (getResources().getDisplayMetrics().widthPixels) / size;
@@ -406,8 +550,12 @@ public class GridFragment extends Fragment {
                     cell.setFocusable(true); // Make the cell focusable
                     int final_i = i;
                     int final_j = j;
-                    cell.setOnClickListener(v -> handleCellClick(final_i, final_j, cell));
 
+                    cell.setOnTouchListener(v -> {
+                        handleDirectSlide(final_i, final_j);
+                        return false;
+                    });
+                    cell.setOnClickListener(v -> handleCellClick(final_i, final_j, cell));
 
                     if (token.getColor() == 'B') {
                         cell.setImageResource(R.drawable.blue_token);
@@ -421,7 +569,21 @@ public class GridFragment extends Fragment {
         }
     }
 
-    public void handleCellClick(int i, int j, ImageView cell) {
+
+    private void handleDirectSlide(int i, int j) {
+        this.coordinatesToPush = new Coordinates(i, j);
+        public boolean onTouch(View v, MotionEvent event) {
+            return this.swipeListener.onTouch(v, event);
+        }
+    }
+
+    /**
+     * Handle cell click event for removing or pushing a token
+     * @param i : x coordinate of the cell
+     * @param j : y coordinate of the cell
+     * @param cell : the image view of the cell
+     */
+    private void handleCellClick(int i, int j, ImageView cell) {
         Coordinates coordinates = new Coordinates(i, j);
 
         if (this.removeTurnPlayer1 > 0 && game.getCurrentPlayer().equals(game.getPlayer1())) {
@@ -441,12 +603,11 @@ public class GridFragment extends Fragment {
                     displayTokenGrid();
                 }
                 else {
-                    Toast.makeText(getContext(), "This cell is not in an alignment of 5", Toast.LENGTH_SHORT).show();
+                    printTest("This cell is not in an alignment of 5");
                 }
-
             }
             else {
-                Toast.makeText(getContext(), "This cell is not yours", Toast.LENGTH_SHORT).show();
+                printTest("This cell is not yours");
             }
         }
         else if (this.removeTurnPlayer2 > 0 && game.getCurrentPlayer().equals(game.getPlayer2())){
@@ -463,42 +624,43 @@ public class GridFragment extends Fragment {
                     displayTokenGrid();
                 }
                 else {
-                    Toast.makeText(getContext(), "This cell is not in an alignment of 5", Toast.LENGTH_SHORT).show();
+                    printTest("This cell is not in an alignment of 5");
                 }
-
             }
             else {
-                Toast.makeText(getContext(), "This cell is not yours", Toast.LENGTH_SHORT).show();
+                printTest("This cell is not yours");
             }
         }
 
-
-        if (this.grid.getToken(coordinates) != null && pushTurn && !aiTurn) {
-            if (this.grid.getToken(coordinates).getColor() != game.getColorOfCurrentPlayer()) {
-                Toast.makeText(getContext(), "This cell is not yours", Toast.LENGTH_SHORT).show();
-                return;
+        if (!swipeListener.getDirectSlide()) {
+            if (this.grid.getToken(coordinates) != null && pushTurn && !aiTurn) {
+                if (this.grid.getToken(coordinates).getColor() != game.getColorOfCurrentPlayer()) {
+                    printTest("This cell is not yours");
+                    return;
+                }
+                displayBorderGrid(i, j);
+                cell.setOnTouchListener(swipeListener);
+                swipeListener.setWaitSlide(true);
+                this.coordinatesToPush = coordinates;
             }
-            displayBorderGrid(i, j);
-            cell.setOnTouchListener(swipeListener);
-
-            swipeListener.setWaitSlide(true);
-
-            this.coordinatesToPush = coordinates;
         }
         else {
             if (aiTurn) {
-                Toast.makeText(getContext(), "It's not your turn", Toast.LENGTH_SHORT).show();
+                printTest("It's not your turn");
             }
             else if (!pushTurn) {
-                Toast.makeText(getContext(), "You can't push now", Toast.LENGTH_SHORT).show();
+                printTest("You can't push now");
             }
             else {
-                Toast.makeText(getContext(), "This cell is empty", Toast.LENGTH_SHORT).show();
+                printTest("This cell is empty");
             }
-
         }
     }
 
+    /**
+     * Make a push for the current player
+     * @param directions : the directions to push the token
+     */
     public void makePushCurrentPlayer(int[] directions) {
         oldGrid.setGrid(grid.copyGrid());
         try {
@@ -506,20 +668,22 @@ public class GridFragment extends Fragment {
             animateTokenPush(animationVariables);
             displayBorderGrid(-1, -1);
         } catch (IllegalArgumentException e) {
-            Toast.makeText(getContext(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            if (e.getMessage().equals("You are trying to push tokens in the same previous position")) {
+                displayInterdiction();
+            }
+            else {
+                printTest(e.getMessage());
+            }
             displayBorderGrid(-1, -1);
         }
-
-
     }
 
     /**
      * Animate the token push when a player pushes a token in a direction
      * @param animationVariables : the variables needed for the animation
      *                           (the tokens to animate, the number of cases to push, the directions)
-     *
      */
-    public void animateTokenPush(AnimationVariables animationVariables) {
+    private void animateTokenPush(AnimationVariables animationVariables) {
         // Récupérer les positions des jetons avant et après le déplacement
         HashMap<Coordinates, Token> oldPositions = oldGrid.getGrid();
         HashMap<Coordinates, Token> newPositions = grid.getGrid();
@@ -552,9 +716,13 @@ public class GridFragment extends Fragment {
         DelayedTaskUtil.executeWithDelay(500, this::handleTurn);
     }
 
-    public void printTest(String msg) {
-        Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+    /**
+     * Print a test message using Toast
+     * @param msg : the message to display
+     */
+    private void printTest(String msg) {
+        if (allowToPrintMessages) {
+            Toast.makeText(getContext(), msg, Toast.LENGTH_SHORT).show();
+        }
     }
-
-
 }

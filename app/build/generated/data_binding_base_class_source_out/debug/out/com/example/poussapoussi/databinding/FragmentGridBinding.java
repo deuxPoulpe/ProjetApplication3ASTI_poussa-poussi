@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.FrameLayout;
 import android.widget.GridLayout;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -19,6 +20,9 @@ import java.lang.Object;
 
 public abstract class FragmentGridBinding extends ViewDataBinding {
   @NonNull
+  public final ImageView blueSkip;
+
+  @NonNull
   public final TextView blueTurn;
 
   @NonNull
@@ -28,7 +32,13 @@ public abstract class FragmentGridBinding extends ViewDataBinding {
   public final FrameLayout gridContainer;
 
   @NonNull
+  public final ImageView interdictionIndicator;
+
+  @NonNull
   public final Button mainMenu;
+
+  @NonNull
+  public final ImageView orangeSkip;
 
   @NonNull
   public final TextView orangeTurn;
@@ -52,15 +62,18 @@ public abstract class FragmentGridBinding extends ViewDataBinding {
   public final TextView winnerTextView;
 
   protected FragmentGridBinding(Object _bindingComponent, View _root, int _localFieldCount,
-      TextView blueTurn, GridLayout borderGridLayout, FrameLayout gridContainer, Button mainMenu,
-      TextView orangeTurn, TextView scoreBoard, FrameLayout squareLayout,
-      GridLayout tokenGridLayout, ConstraintLayout wholeScreen, FrameLayout winnerBackground,
-      TextView winnerTextView) {
+      ImageView blueSkip, TextView blueTurn, GridLayout borderGridLayout, FrameLayout gridContainer,
+      ImageView interdictionIndicator, Button mainMenu, ImageView orangeSkip, TextView orangeTurn,
+      TextView scoreBoard, FrameLayout squareLayout, GridLayout tokenGridLayout,
+      ConstraintLayout wholeScreen, FrameLayout winnerBackground, TextView winnerTextView) {
     super(_bindingComponent, _root, _localFieldCount);
+    this.blueSkip = blueSkip;
     this.blueTurn = blueTurn;
     this.borderGridLayout = borderGridLayout;
     this.gridContainer = gridContainer;
+    this.interdictionIndicator = interdictionIndicator;
     this.mainMenu = mainMenu;
+    this.orangeSkip = orangeSkip;
     this.orangeTurn = orangeTurn;
     this.scoreBoard = scoreBoard;
     this.squareLayout = squareLayout;

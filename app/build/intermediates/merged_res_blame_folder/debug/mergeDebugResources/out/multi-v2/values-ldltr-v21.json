@@ -1,7 +1,7 @@
 {
     "logs": [
         {
-            "outputFile": "com.example.poussapoussi.app-mergeDebugResources-31:/values-ldltr-v21/values-ldltr-v21.xml",
+            "outputFile": "com.example.poussapoussi.app-mergeDebugResources-32:/values-ldltr-v21/values-ldltr-v21.xml",
             "map": [
                 {
                     "source": "C:\\Users\\unPoulpe\\.gradle\\caches\\transforms-4\\28469acfb5c3169bc7cd127b83910fb3\\transformed\\appcompat-1.7.0\\res\\values-ldltr-v21\\values-ldltr-v21.xml",

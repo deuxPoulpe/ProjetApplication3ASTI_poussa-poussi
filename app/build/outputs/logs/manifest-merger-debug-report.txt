@@ -14,6 +14,7 @@ MERGED from [androidx.appcompat:appcompat:1.7.0] C:\Users\unPoulpe\.gradle\cache
 MERGED from [androidx.viewpager2:viewpager2:1.0.0] C:\Users\unPoulpe\.gradle\caches\transforms-4\a454e0effd6b3ccfc6fb4275e989e8f9\transformed\viewpager2-1.0.0\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.fragment:fragment:1.5.4] C:\Users\unPoulpe\.gradle\caches\transforms-4\78d11450121121d1d1a38cd1afc28a0d\transformed\fragment-1.5.4\AndroidManifest.xml:17:1-24:12
 MERGED from [androidx.activity:activity:1.9.0] C:\Users\unPoulpe\.gradle\caches\transforms-4\dbaccfdb96d327609aaee5a602a133e1\transformed\activity-1.9.0\AndroidManifest.xml:17:1-22:12
+MERGED from [com.intuit.ssp:ssp-android:1.1.1] C:\Users\unPoulpe\.gradle\caches\transforms-4\0264b07539762c16284053a908dfa04f\transformed\ssp-android-1.1.1\AndroidManifest.xml:2:1-9:12
 MERGED from [androidx.savedstate:savedstate:1.2.1] C:\Users\unPoulpe\.gradle\caches\transforms-4\281e9027d6b2a737a455e1870f6a56d6\transformed\savedstate-1.2.1\AndroidManifest.xml:17:1-22:12
 MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] C:\Users\unPoulpe\.gradle\caches\transforms-4\0ccd507818e5d5a3d0ba6faca4104786\transformed\emoji2-views-helper-1.3.0\AndroidManifest.xml:2:1-7:12
 MERGED from [androidx.emoji2:emoji2:1.3.0] C:\Users\unPoulpe\.gradle\caches\transforms-4\ed0d493146c3495435f6c9e4b9f63a56\transformed\emoji2-1.3.0\AndroidManifest.xml:17:1-35:12
@@ -143,6 +144,8 @@ MERGED from [androidx.fragment:fragment:1.5.4] C:\Users\unPoulpe\.gradle\caches\
 MERGED from [androidx.fragment:fragment:1.5.4] C:\Users\unPoulpe\.gradle\caches\transforms-4\78d11450121121d1d1a38cd1afc28a0d\transformed\fragment-1.5.4\AndroidManifest.xml:20:5-22:41
 MERGED from [androidx.activity:activity:1.9.0] C:\Users\unPoulpe\.gradle\caches\transforms-4\dbaccfdb96d327609aaee5a602a133e1\transformed\activity-1.9.0\AndroidManifest.xml:20:5-44
 MERGED from [androidx.activity:activity:1.9.0] C:\Users\unPoulpe\.gradle\caches\transforms-4\dbaccfdb96d327609aaee5a602a133e1\transformed\activity-1.9.0\AndroidManifest.xml:20:5-44
+MERGED from [com.intuit.ssp:ssp-android:1.1.1] C:\Users\unPoulpe\.gradle\caches\transforms-4\0264b07539762c16284053a908dfa04f\transformed\ssp-android-1.1.1\AndroidManifest.xml:7:5-44
+MERGED from [com.intuit.ssp:ssp-android:1.1.1] C:\Users\unPoulpe\.gradle\caches\transforms-4\0264b07539762c16284053a908dfa04f\transformed\ssp-android-1.1.1\AndroidManifest.xml:7:5-44
 MERGED from [androidx.savedstate:savedstate:1.2.1] C:\Users\unPoulpe\.gradle\caches\transforms-4\281e9027d6b2a737a455e1870f6a56d6\transformed\savedstate-1.2.1\AndroidManifest.xml:20:5-44
 MERGED from [androidx.savedstate:savedstate:1.2.1] C:\Users\unPoulpe\.gradle\caches\transforms-4\281e9027d6b2a737a455e1870f6a56d6\transformed\savedstate-1.2.1\AndroidManifest.xml:20:5-44
 MERGED from [androidx.emoji2:emoji2-views-helper:1.3.0] C:\Users\unPoulpe\.gradle\caches\transforms-4\0ccd507818e5d5a3d0ba6faca4104786\transformed\emoji2-views-helper-1.3.0\AndroidManifest.xml:5:5-44

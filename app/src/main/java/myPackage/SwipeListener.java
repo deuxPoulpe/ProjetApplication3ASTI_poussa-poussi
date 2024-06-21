@@ -11,6 +11,7 @@ import com.example.poussapoussi.GridFragment;
 public class SwipeListener implements View.OnTouchListener {
 
     private static final String TAG = "Swipe position";
+    private boolean directSlide = false;
     private boolean waitslide = false;
     private float x1, x2, y1, y2;
     private double angleBetweenPoints;
@@ -34,7 +35,7 @@ public class SwipeListener implements View.OnTouchListener {
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-        if (waitslide) {
+        if (waitslide || directSlide) {
         gestureDetector.onTouchEvent(event);
 
         switch (event.getAction()) {
@@ -58,6 +59,7 @@ public class SwipeListener implements View.OnTouchListener {
                         this.directions[0] = 1;
                         this.directions[1] = 0;
                         this.waitslide = false;
+                        this.directSlide = false;
 
                     }
 
@@ -68,18 +70,22 @@ public class SwipeListener implements View.OnTouchListener {
                         this.directions[0] = 0;
                         this.directions[1] = 1;
                         this.waitslide = false;
+                        this.directSlide = false;
+
                     } else if (inRange(angleBetweenPoints, 45, 135)){
                         //Toast.makeText(context, "Up is swiped", Toast.LENGTH_SHORT).show();
                         Log.d(TAG, "Top swipe");
                         this.directions[0] = 0;
                         this.directions[1] = -1;
                         this.waitslide = false;
+                        this.directSlide = false;
                     }
                     else {
                         //Toast.makeText(context, "Left is swiped", Toast.LENGTH_SHORT).show();
                         this.directions[0] = -1;
                         this.directions[1] = 0;
                         this.waitslide = false;
+                        this.directSlide = false;
                     }
                 }
                 myGridFragment.makePushCurrentPlayer(this.directions);
@@ -96,6 +102,14 @@ public class SwipeListener implements View.OnTouchListener {
 
     public void setWaitSlide(boolean bool) {
         this.waitslide = bool;
+    }
+
+    public void setDirectSlide(boolean bool) {
+        this.directSlide = bool;
+    }
+
+    public boolean getDirectSlide() {
+        return this.directSlide;
     }
 
 

@@ -45,6 +45,9 @@ public final class FragmentRulesBinding implements ViewBinding {
   public final TextView preambule;
 
   @NonNull
+  public final TextView textView;
+
+  @NonNull
   public final TextView turnDetail;
 
   @NonNull
@@ -53,8 +56,8 @@ public final class FragmentRulesBinding implements ViewBinding {
   private FragmentRulesBinding(@NonNull ConstraintLayout rootView,
       @NonNull TextView equipmentDetail, @NonNull Button exit, @NonNull TextView gameBeginning,
       @NonNull TextView goal, @NonNull TextView goalDetail, @NonNull TextView materials,
-      @NonNull TextView nameGame, @NonNull TextView preambule, @NonNull TextView turnDetail,
-      @NonNull TextView turns) {
+      @NonNull TextView nameGame, @NonNull TextView preambule, @NonNull TextView textView,
+      @NonNull TextView turnDetail, @NonNull TextView turns) {
     this.rootView = rootView;
     this.equipmentDetail = equipmentDetail;
     this.exit = exit;
@@ -64,6 +67,7 @@ public final class FragmentRulesBinding implements ViewBinding {
     this.materials = materials;
     this.nameGame = nameGame;
     this.preambule = preambule;
+    this.textView = textView;
     this.turnDetail = turnDetail;
     this.turns = turns;
   }
@@ -143,6 +147,12 @@ public final class FragmentRulesBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.textView;
+      TextView textView = ViewBindings.findChildViewById(rootView, id);
+      if (textView == null) {
+        break missingId;
+      }
+
       id = R.id.turn_detail;
       TextView turnDetail = ViewBindings.findChildViewById(rootView, id);
       if (turnDetail == null) {
@@ -156,7 +166,8 @@ public final class FragmentRulesBinding implements ViewBinding {
       }
 
       return new FragmentRulesBinding((ConstraintLayout) rootView, equipmentDetail, exit,
-          gameBeginning, goal, goalDetail, materials, nameGame, preambule, turnDetail, turns);
+          gameBeginning, goal, goalDetail, materials, nameGame, preambule, textView, turnDetail,
+          turns);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

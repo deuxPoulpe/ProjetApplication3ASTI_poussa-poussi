@@ -101,6 +101,8 @@
             android:background="@drawable/home_page_button_orange"
             android:textColor="#FFFFFF"
             android:textSize="30sp"
+            android:drawableLeft="@drawable/ic_rules"
+            android:drawableRight="@drawable/ic_rules"
             android:drawablePadding="8dp" />
     </LinearLayout>
 </RelativeLayout>
