@@ -1,6 +1,7 @@
 package agentsPackage;
 
 import java.util.Set;
+import java.util.Arrays;
 
 import gamePackage.Coordinates;
 import gamePackage.Grid;
@@ -69,11 +70,11 @@ public class MinMaxAgent extends Agent{
         } else if (pushAction == null) {
             message = getColor() + " : does not push any token";
         } else {
+            message = getColor() + " : pushes token at " + pushAction.getCoordinates().toString() + " in direction " + Arrays.toString(pushAction.getDirection());
+            System.out.println(message);
             grid.pushToken(bestMove.getPushAction(), getColor());
-            message = getColor() + " : pushes token at " + pushAction.getCoordinates().toString() + " in direction " + pushAction.getDirection().toString();
         }
         if (Settings.getInstance().getDisplayInTerminal())
-            System.out.println(message);
 
         // Phase de retrait 2
 
@@ -105,72 +106,63 @@ public class MinMaxAgent extends Agent{
      * @return GridTree
      */
     public ActionTree evaluateBestMove(ActionTree node, int depth, int alpha, int beta, boolean maximizingPlayer) {
-
         ChildIterator childIterator = new ChildIterator(node);
 
-        // Si le noeud est une feuille ou si la profondeur est nulle, on retourne le noeud
+        // Vérifie si le noeud est une feuille ou si la profondeur est nulle, puis retourne le noeud
         if (depth == 0 || !childIterator.hasNext()) {
             node.calculateHeuristicValue();
             return node;
         }
 
-        // Si c'est le tour du joueur maximisant
         if (maximizingPlayer) {
             ActionTree bestChild = null;
-
-            // On initialise la meilleure valeur à un très petit nombre
             int maxEval = Integer.MIN_VALUE;
 
-            // On parcourt le prochain enfant
-            ActionTree child = childIterator.next();
             while (childIterator.hasNext()) {
+                ActionTree child = childIterator.next(); // Correction: déplacement de cette ligne dans la boucle
 
-                // On calcule la profondeur du noeud enfant
+                // Définit la profondeur du noeud enfant
                 child.setDepth(node.getDepth() + 1);
 
-                // On évalue le noeud enfant
+                // Évalue le noeud enfant
                 ActionTree nodeEval = evaluateBestMove(child, depth - 1, alpha, beta, false);
-
-                // On récupère la valeur heuristique du noeud enfant
                 int eval = nodeEval.getHeuristicValue();
 
-                // On met à jour la meilleure valeur et le meilleur enfant
+                // Met à jour la meilleure valeur et le meilleur enfant si nécessaire
                 if (eval > maxEval) {
                     maxEval = eval;
                     bestChild = child;
                 }
 
-                // Alpha prend la valeur du maximum entre alpha et la valeur de l'évaluation
+                // Met à jour alpha avec la valeur maximale entre alpha et eval
                 alpha = Math.max(alpha, eval);
                 if (beta <= alpha) {
-                    break;
+                    break; // Coupe la branche si beta est inférieur ou égal à alpha
                 }
             }
             return bestChild;
 
-        } else { // Si c'est le tour du joueur minimisant
+        } else { // Tour du joueur minimisant
             ActionTree bestChild = null;
-
-            // On initialise la meilleure valeur à un très grand nombre
             int minEval = Integer.MAX_VALUE;
 
-            ActionTree child = childIterator.next();
             while (childIterator.hasNext()) {
-                ActionTree nodeEval = evaluateBestMove(child, depth - 1, alpha, beta, true);
+                ActionTree child = childIterator.next(); // Correction: déplacement de cette ligne dans la boucle
 
-                // On récupère la valeur heuristique du noeud enfant
+                // Évalue le noeud enfant
+                ActionTree nodeEval = evaluateBestMove(child, depth - 1, alpha, beta, true);
                 int eval = nodeEval.getHeuristicValue();
 
-                // On met à jour la meilleure valeur et le meilleur enfant
+                // Met à jour la meilleure valeur et le meilleur enfant si nécessaire
                 if (eval < minEval) {
                     minEval = eval;
                     bestChild = child;
                 }
 
-                // Beta prend la valeur du minimum entre beta et la valeur de l'évaluation
+                // Met à jour beta avec la valeur minimale entre beta et eval
                 beta = Math.min(beta, eval);
                 if (beta <= alpha) {
-                    break;
+                    break; // Coupe la branche si beta est inférieur ou égal à alpha
                 }
             }
             return bestChild;

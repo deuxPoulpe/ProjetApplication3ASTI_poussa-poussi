@@ -39,10 +39,10 @@ public class Game {
             this.player2 = new PlayerAgent('Y');
         } else if (choice == '2') {
             this.player1 = new PlayerAgent('B');
-            this.player2 = new MinMaxAgent('Y', 4);
+            this.player2 = new MinMaxAgent('Y', 3);
         } else {
-            this.player1 = new MinMaxAgent('B', 1);
-            this.player2 = new MinMaxAgent('Y', 1);
+            this.player1 = new MinMaxAgent('B', 2);
+            this.player2 = new MinMaxAgent('Y', 2);
         }
         currentPlayer = player1;
     }
