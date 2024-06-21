@@ -4,7 +4,6 @@ import agentsPackage.MinMaxAgent;
 import gamePackage.*;
 import treeFormationPackage.ChildIterator;
 import treeFormationPackage.ActionTree;
-import treeFormationPackage.PushChildIterator;
 
 public class BenchmarkMinMax {
     private static int depth = 1; // Ajout d'une valeur pour la profondeur de recherche
@@ -38,7 +37,7 @@ public class BenchmarkMinMax {
         // System.out.println("Best move: \n" + bestMove + "\n");
         // bestMove.getGrid().display();
 
-        PushChildIterator it = new PushChildIterator(root);
+        ChildIterator it = new ChildIterator(root);
         while (it.hasNext()) {
             ActionTree child = it.next();
             System.out.println(child);

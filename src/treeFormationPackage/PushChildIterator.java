@@ -9,7 +9,6 @@ import gamePackage.PushAction;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
-import java.util.Arrays;
 
 
 public class PushChildIterator implements Iterator<ActionTree> {
@@ -30,112 +29,54 @@ public class PushChildIterator implements Iterator<ActionTree> {
         this.node = myNode;
         this.ownTokenCoordsIterator = new ColorTokenCoordsIterator(myNode.getGrid(), myNode.getAgent().getColor());
         this.directionsIterator = pushDirections.iterator();
-    }
-
-    private boolean hasNextHelper(Iterator<Coordinates> ownTokenCoordsIteratorClone, Iterator<int[]> directionsIteratorClone, PushAction currentPushActionClone) {
-        // Si on a encore des directions de poussée à explorer
-        if (directionsIterator.hasNext()) {
-            currentPushAction.setDirection(directionsIterator.next());
-            // Si l'action de poussée est valide, on a encore des fils à explorer
-            if (node.getGrid().isValidPushAction(currentPushAction, node.getAgent().getColor())) {
-                return true;
-            }
-
-            // Sinon, on passe à la prochaine direction
-            return hasNext();
-        
-        } 
-        // Si on a encore des jetons à explorer
-        if (ownTokenCoordsIterator.hasNext()) {
-            currentPushAction.setCoordinates(ownTokenCoordsIterator.next());
-            directionsIterator = pushDirections.iterator();
-
-            // On itère sur les directions de poussée
-            return hasNext();
-        }
-
-        // Sinon, on n'a plus de fils à explorer
-        return false;
+        this.currentPushAction = new PushAction(ownTokenCoordsIterator.next(), null);
     }
 
     @Override
     public boolean hasNext() {
-        // On clone les itérateurs pour ne pas les modifier
-        ColorTokenCoordsIterator ownTokenCoordsIteratorClone = ownTokenCoordsIterator.clone();
-        Iterator<int[]> directionsIteratorClone = pushDirections.iterator();
 
-        // On se place sur la direction courante
-        int[] currentDirection = null;
-        if (directionsIteratorClone.hasNext()) {
-            currentDirection = directionsIteratorClone.next();
-        }
+        // S'il reste des directions à explorer
+        if (directionsIterator.hasNext()) {
 
-        while (directionsIteratorClone.hasNext() && !Arrays.equals(currentDirection, currentPushAction.getDirection())) {
-            currentDirection = directionsIteratorClone.next();
-        }
-
-        PushAction currentPushActionClone = null;
-        if (currentPushAction.getCoordinates() != null) {
-            Coordinates currentPushCoords = new Coordinates(currentPushAction.getCoordinates().getX(), currentPushAction.getCoordinates().getY());
-            currentPushActionClone = new PushAction(currentPushCoords, currentDirection);
-        }
-
-        return hasNextHelper(ownTokenCoordsIteratorClone, directionsIteratorClone, currentPushActionClone);
-    }
-
-    private ActionTree createPushChildHelper(Grid grid) {
-
-        // On clone le plateau courant
-        Grid pushGrid = grid.clone();
-
-        // On effectue la poussée du jeton courant dans la direction courante sur le plateau cloné
-        pushGrid.pushToken(currentPushAction, node.getAgent().getColor());
-
-        // On crée un fils pour pousser le jeton courant dans la direction courantes
-        ActionTree pushChild = new ActionTree(node, pushGrid, node.getPlaceCoordinates(), currentPushAction);
-        return pushChild;
-    }
-
-    private ActionTree createPushChild(Grid grid) {
-        ActionTree pushChild = null;
-
-        // Si on n'a pas encore exploré toutes les directions de poussée valides
-        if (directionsIterator.hasNext() && currentPushAction.getCoordinates() != null) {
-
-            // On met à jour la direction courante
+            // On retourne vrai s'il est possible de pousser dans la direction actuelle
             currentPushAction.setDirection(directionsIterator.next());
 
-            // Si l'action de poussée est valide, on retourne un fils pour pousser le jeton courant dans la direction courante
-            if (grid.isValidPushAction(currentPushAction, node.getAgent().getColor()))
-                pushChild = createPushChildHelper(grid);
-            
-            else // Sinon, on passe à la prochaine direction
-                pushChild = createPushChild(grid);
+            if (node.getGrid().isValidPushAction(currentPushAction, node.getAgent().getColor())) {
+                return true;
+            }
+
+            // S'il n'est pas possible de pousser dans la direction actuelle, on continue à explorer les directions
+            return hasNext();
         }
-        // Sinon, on passe au jeton suivant
-        else if (ownTokenCoordsIterator.hasNext()){
-            // On remet à zéro l'itérateur sur les directions de poussée
-            directionsIterator = pushDirections.iterator();
-            
-            // On met à jour les coordonnées du jeton courant
+
+        // S'il n'y a plus de directions à explorer
+        if (ownTokenCoordsIterator.hasNext()) {
+
+            // On passe au prochain jeton de la couleur de l'agent
             currentPushAction.setCoordinates(ownTokenCoordsIterator.next());
 
-            // On appelle récursivement la fonction pour créer un fils pour pousser le jeton suivant
-            pushChild = createPushChild(grid);
+            // On réinitialise l'itérateur de directions
+            directionsIterator = pushDirections.iterator();
+
+            // On appelle récursivement la méthode pour vérifier s'il est possible de pousser à partir du prochain jeton
+            return hasNext();
         }
 
-        return pushChild;
+        // S'il n'y a plus de jetons de la couleur de l'agent
+        return false;
     }
-    
+
     @Override
     public ActionTree next() {
-        if (!hasNext() || !ownTokenCoordsIterator.hasNext() && !directionsIterator.hasNext()) {
-            throw new NoSuchElementException();
-        }
 
-        // On retourne un fils pour pousser le jeton courant dans la direction courante
-        return createPushChild(node.getGrid());
+        // On génère un fils pour pousser dans la direction actuelle
+        Grid gridClone = node.getGrid().clone();
+        gridClone.pushToken(currentPushAction, node.getAgent().getColor());
+        ActionTree child = new ActionTree(node, gridClone, node.getPlaceCoordinates(), currentPushAction);
+
+        return child;
     }
+
 
     private class ColorTokenCoordsIterator implements Iterator<Coordinates> {
         private Grid grid;
