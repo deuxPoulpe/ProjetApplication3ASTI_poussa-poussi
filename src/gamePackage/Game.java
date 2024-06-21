@@ -12,6 +12,7 @@ public class Game {
     private Agent player1;
     private Agent player2;
     private Agent currentPlayer = player1;
+    private boolean isFirstRound = true;
 
     public Game(Grid myGrid) {
         this.grid = myGrid;
@@ -50,10 +51,10 @@ public class Game {
         while (true) {
             Round();
 
-            if (checkScore() == 0) {
+            if (checkScore() == 1) {
                 System.out.println("B wins");
                 System.exit(0);
-            } else if (checkScore() == 1) {
+            } else if (checkScore() == 2) {
                 System.out.println("Y wins");
                 System.exit(0);
             }
@@ -70,19 +71,19 @@ public class Game {
 
         currentPlayer.executeGameRound(grid);
 
-        // Après l'exécution du tour, enregistrer les points marqués par le joueur précédent
-        if (currentPlayer == player1) {
-            // Mettre à jour le score pour le joueur 1
-            int ownPoints = player1.getownPoints();
-            player1.setScore(player1.getScore() + ownPoints - player2.getrivalGift());
-        } else {
-            // Mettre à jour le score pour le joueur 2
-            int ownPoints = player2.getownPoints();
-            player2.setScore(player2.getScore() + ownPoints - player1.getrivalGift());
+        if (!isFirstRound) {
+            // Determine the previous player
+            Agent previousPlayer = (currentPlayer == player1) ? player2 : player1;
+
+            // Update the scores based on the points and gifts
+            int ownPoints = previousPlayer.getownPoints();
+            int rivalGift = currentPlayer.getrivalGift();
+            previousPlayer.setScore(previousPlayer.getScore() + ownPoints - rivalGift);
+       
+        previousPlayer.resetPoints();
         }
 
-        player1.resetPoints();
-        player2.resetPoints();
+        isFirstRound = false;
 
         int gameState = checkScore();
         if (Settings.getInstance().getDisplayInTerminal()) {
@@ -112,10 +113,9 @@ public class Game {
         {
             if (player1.getScore() > player2.getScore() && player1.getScore() >= 2) {
                 return 1;
-            } else if (player1.getScore() < player2.getScore() && player2.getScore() >= 2) {
-                return 2;
-            } else 
-                return 3;
+            } else {
+                return (player1.getScore() < player2.getScore() && player2.getScore() >= 2) ? 2 : 3;
+            }
         }
     }
 }

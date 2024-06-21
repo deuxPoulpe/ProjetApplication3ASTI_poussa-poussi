@@ -10,24 +10,7 @@ public class MinMaxAgent extends Agent{
 
     private int smartness;
     private final int[] weights = {1, 3, 9, 50};
-    private int rivalGift = 0;
-    private int ownPoints = 0;
-
-    public int getrivalGift() {
-        return rivalGift;
-    }
-
-    public int getownPoints() {
-        return ownPoints;
-    }
-
-    public int setrivalGift(int rivalGift) {
-        return this.rivalGift = rivalGift;
-    }
-
-    public int setownPoints(int ownPoints) {
-        return this.ownPoints = ownPoints;
-    }
+    
     
     public MinMaxAgent(char myColor, int smartness) {
         super(myColor);
