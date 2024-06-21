@@ -32,9 +32,6 @@ public abstract class FragmentGridBinding extends ViewDataBinding {
   public final FrameLayout gridContainer;
 
   @NonNull
-  public final ImageView interdictionIndicator;
-
-  @NonNull
   public final Button mainMenu;
 
   @NonNull
@@ -63,15 +60,14 @@ public abstract class FragmentGridBinding extends ViewDataBinding {
 
   protected FragmentGridBinding(Object _bindingComponent, View _root, int _localFieldCount,
       ImageView blueSkip, TextView blueTurn, GridLayout borderGridLayout, FrameLayout gridContainer,
-      ImageView interdictionIndicator, Button mainMenu, ImageView orangeSkip, TextView orangeTurn,
-      TextView scoreBoard, FrameLayout squareLayout, GridLayout tokenGridLayout,
-      ConstraintLayout wholeScreen, FrameLayout winnerBackground, TextView winnerTextView) {
+      Button mainMenu, ImageView orangeSkip, TextView orangeTurn, TextView scoreBoard,
+      FrameLayout squareLayout, GridLayout tokenGridLayout, ConstraintLayout wholeScreen,
+      FrameLayout winnerBackground, TextView winnerTextView) {
     super(_bindingComponent, _root, _localFieldCount);
     this.blueSkip = blueSkip;
     this.blueTurn = blueTurn;
     this.borderGridLayout = borderGridLayout;
     this.gridContainer = gridContainer;
-    this.interdictionIndicator = interdictionIndicator;
     this.mainMenu = mainMenu;
     this.orangeSkip = orangeSkip;
     this.orangeTurn = orangeTurn;

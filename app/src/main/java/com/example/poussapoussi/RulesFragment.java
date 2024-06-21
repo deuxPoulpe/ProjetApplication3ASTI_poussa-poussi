@@ -20,31 +20,30 @@ public class RulesFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private FragmentRulesBinding binding;
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
+    
+    private HomePageFragment homePageFragment;
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+
 
     public RulesFragment() {
         // Required empty public constructor
+    }
+    
+    public RulesFragment(HomePageFragment homePageFragment) {
+        this.homePageFragment = homePageFragment;
     }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment RulesFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static RulesFragment newInstance(String param1, String param2) {
+    public static RulesFragment newInstance() {
         RulesFragment fragment = new RulesFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -52,10 +51,6 @@ public class RulesFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -67,7 +62,7 @@ public class RulesFragment extends Fragment {
                     public void onClick(View v) {
                         if (getActivity() != null) {
                             getActivity().getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.fragment_container, HomePageFragment.newInstance())
+                                    .replace(R.id.fragment_container, homePageFragment)
                                     .addToBackStack(null)
                                     .commit();
                         }

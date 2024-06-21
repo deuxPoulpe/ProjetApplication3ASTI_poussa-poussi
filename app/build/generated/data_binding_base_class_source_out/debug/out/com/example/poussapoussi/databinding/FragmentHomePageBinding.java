@@ -25,29 +25,29 @@ public final class FragmentHomePageBinding implements ViewBinding {
   public final TextView GameName;
 
   @NonNull
+  public final Button exit;
+
+  @NonNull
   public final ImageView gridBackground;
 
   @NonNull
-  public final Button iavsia;
+  public final Button newGame;
 
   @NonNull
-  public final Button player1;
+  public final Button resume;
 
   @NonNull
-  public final Button player2;
-
-  @NonNull
-  public final Button rules;
+  public final ImageView rules;
 
   private FragmentHomePageBinding(@NonNull RelativeLayout rootView, @NonNull TextView GameName,
-      @NonNull ImageView gridBackground, @NonNull Button iavsia, @NonNull Button player1,
-      @NonNull Button player2, @NonNull Button rules) {
+      @NonNull Button exit, @NonNull ImageView gridBackground, @NonNull Button newGame,
+      @NonNull Button resume, @NonNull ImageView rules) {
     this.rootView = rootView;
     this.GameName = GameName;
+    this.exit = exit;
     this.gridBackground = gridBackground;
-    this.iavsia = iavsia;
-    this.player1 = player1;
-    this.player2 = player2;
+    this.newGame = newGame;
+    this.resume = resume;
     this.rules = rules;
   }
 
@@ -84,38 +84,38 @@ public final class FragmentHomePageBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.exit;
+      Button exit = ViewBindings.findChildViewById(rootView, id);
+      if (exit == null) {
+        break missingId;
+      }
+
       id = R.id.gridBackground;
       ImageView gridBackground = ViewBindings.findChildViewById(rootView, id);
       if (gridBackground == null) {
         break missingId;
       }
 
-      id = R.id.iavsia;
-      Button iavsia = ViewBindings.findChildViewById(rootView, id);
-      if (iavsia == null) {
+      id = R.id.newGame;
+      Button newGame = ViewBindings.findChildViewById(rootView, id);
+      if (newGame == null) {
         break missingId;
       }
 
-      id = R.id.player1;
-      Button player1 = ViewBindings.findChildViewById(rootView, id);
-      if (player1 == null) {
-        break missingId;
-      }
-
-      id = R.id.player2;
-      Button player2 = ViewBindings.findChildViewById(rootView, id);
-      if (player2 == null) {
+      id = R.id.resume;
+      Button resume = ViewBindings.findChildViewById(rootView, id);
+      if (resume == null) {
         break missingId;
       }
 
       id = R.id.rules;
-      Button rules = ViewBindings.findChildViewById(rootView, id);
+      ImageView rules = ViewBindings.findChildViewById(rootView, id);
       if (rules == null) {
         break missingId;
       }
 
-      return new FragmentHomePageBinding((RelativeLayout) rootView, GameName, gridBackground,
-          iavsia, player1, player2, rules);
+      return new FragmentHomePageBinding((RelativeLayout) rootView, GameName, exit, gridBackground,
+          newGame, resume, rules);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

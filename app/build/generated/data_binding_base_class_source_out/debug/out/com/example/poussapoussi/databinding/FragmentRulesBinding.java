@@ -5,6 +5,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +38,12 @@ public final class FragmentRulesBinding implements ViewBinding {
   public final TextView goalDetail;
 
   @NonNull
+  public final ImageView gridBackground;
+
+  @NonNull
+  public final LinearLayout linearLayout;
+
+  @NonNull
   public final TextView materials;
 
   @NonNull
@@ -55,15 +63,18 @@ public final class FragmentRulesBinding implements ViewBinding {
 
   private FragmentRulesBinding(@NonNull ConstraintLayout rootView,
       @NonNull TextView equipmentDetail, @NonNull Button exit, @NonNull TextView gameBeginning,
-      @NonNull TextView goal, @NonNull TextView goalDetail, @NonNull TextView materials,
-      @NonNull TextView nameGame, @NonNull TextView preambule, @NonNull TextView textView,
-      @NonNull TextView turnDetail, @NonNull TextView turns) {
+      @NonNull TextView goal, @NonNull TextView goalDetail, @NonNull ImageView gridBackground,
+      @NonNull LinearLayout linearLayout, @NonNull TextView materials, @NonNull TextView nameGame,
+      @NonNull TextView preambule, @NonNull TextView textView, @NonNull TextView turnDetail,
+      @NonNull TextView turns) {
     this.rootView = rootView;
     this.equipmentDetail = equipmentDetail;
     this.exit = exit;
     this.gameBeginning = gameBeginning;
     this.goal = goal;
     this.goalDetail = goalDetail;
+    this.gridBackground = gridBackground;
+    this.linearLayout = linearLayout;
     this.materials = materials;
     this.nameGame = nameGame;
     this.preambule = preambule;
@@ -129,6 +140,18 @@ public final class FragmentRulesBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.gridBackground;
+      ImageView gridBackground = ViewBindings.findChildViewById(rootView, id);
+      if (gridBackground == null) {
+        break missingId;
+      }
+
+      id = R.id.linearLayout;
+      LinearLayout linearLayout = ViewBindings.findChildViewById(rootView, id);
+      if (linearLayout == null) {
+        break missingId;
+      }
+
       id = R.id.materials;
       TextView materials = ViewBindings.findChildViewById(rootView, id);
       if (materials == null) {
@@ -166,8 +189,8 @@ public final class FragmentRulesBinding implements ViewBinding {
       }
 
       return new FragmentRulesBinding((ConstraintLayout) rootView, equipmentDetail, exit,
-          gameBeginning, goal, goalDetail, materials, nameGame, preambule, textView, turnDetail,
-          turns);
+          gameBeginning, goal, goalDetail, gridBackground, linearLayout, materials, nameGame,
+          preambule, textView, turnDetail, turns);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

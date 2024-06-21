@@ -43,7 +43,7 @@ anim m3_side_sheet_exit_to_right
 anim mtrl_bottom_sheet_slide_in
 anim mtrl_bottom_sheet_slide_out
 anim mtrl_card_lowers_interpolator
-anim translate
+anim shake
 animator design_appbar_state_list_animator
 animator design_fab_hide_motion_spec
 animator design_fab_show_motion_spec
@@ -3112,11 +3112,12 @@ drawable design_ic_visibility
 drawable design_ic_visibility_off
 drawable design_password_eye
 drawable design_snackbar_background
-drawable ellipse_button
 drawable home_page_background
 drawable home_page_button_blue
+drawable home_page_button_grey
 drawable home_page_button_orange
 drawable ic_arrow_back_black_24
+drawable ic_back
 drawable ic_call_answer
 drawable ic_call_answer_low
 drawable ic_call_answer_video
@@ -3139,6 +3140,7 @@ drawable ic_mtrl_chip_close_circle
 drawable ic_player
 drawable ic_rules
 drawable ic_search_black_24
+drawable ic_settings
 drawable ic_skip
 drawable indeterminate_static
 drawable m3_avd_hide_password
@@ -3214,8 +3216,8 @@ drawable notification_template_icon_low_bg
 drawable notification_tile_bg
 drawable notify_panel_notification_icon_bg
 drawable orange_skip
-drawable red_cross
 drawable rounded_button
+drawable rules_texte_background
 drawable test_level_drawable
 drawable tooltip_frame_dark
 drawable tooltip_frame_light
@@ -3308,6 +3310,7 @@ id auto
 id autoComplete
 id autoCompleteToEnd
 id autoCompleteToStart
+id back
 id barrier
 id baseline
 id beginOnFirstDraw
@@ -3463,7 +3466,6 @@ id immediateStop
 id included
 id indeterminate
 id info
-id interdictionIndicator
 id invisible
 id inward
 id italic
@@ -3478,6 +3480,8 @@ id legacy
 id line1
 id line3
 id linear
+id linearLayout
+id linearLayoutSettings
 id listMode
 id list_item
 id m3_side_sheet
@@ -3554,6 +3558,7 @@ id navigation_header_container
 id never
 id neverCompleteToEnd
 id neverCompleteToStart
+id newGame
 id noScroll
 id noState
 id none
@@ -3610,6 +3615,7 @@ id radio
 id ratio
 id rectangles
 id report_drawn
+id resume
 id reverseSawtooth
 id right
 id rightToLeft
@@ -3639,9 +3645,16 @@ id search_mag_icon
 id search_plate
 id search_src_text
 id search_voice_btn
+id seekBarBlue
+id seekBarOrange
+id seekBarTextBlue
+id seekBarTextOrange
+id seekBarValueBlue
+id seekBarValueOrange
 id select_dialog_listview
 id selected
 id selection_type
+id settings
 id sharedValueSet
 id sharedValueUnset
 id shortcut
@@ -3695,6 +3708,7 @@ id tag_transition_group
 id tag_unhandled_key_event_manager
 id tag_unhandled_key_listeners
 id tag_window_insets_animation_callback
+id test
 id text
 id text2
 id textEnd
@@ -3895,6 +3909,7 @@ layout design_text_input_start_icon
 layout fragment_grid
 layout fragment_home_page
 layout fragment_rules
+layout fragment_select
 layout ime_base_split_test_activity
 layout ime_secondary_split_test_activity
 layout m3_alert_dialog

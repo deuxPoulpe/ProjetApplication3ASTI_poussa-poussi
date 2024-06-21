@@ -14,9 +14,12 @@ import android.view.ViewGroup;
 import com.example.poussapoussi.databinding.FragmentHomePageBinding;
 
 import android.view.animation.AccelerateDecelerateInterpolator;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -42,6 +45,8 @@ public class HomePageFragment extends Fragment {
     private static final long ANIMATION_DURATION = 1000;
     private AnimatorSet animatorSet;
 
+    private GridFragment gridFragment;
+
     public HomePageFragment() {
         // Required empty public constructor
     }
@@ -61,6 +66,10 @@ public class HomePageFragment extends Fragment {
         return fragment;
     }
 
+    public void setGridFragment(GridFragment gridFragment) {
+        this.gridFragment = gridFragment;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,32 +87,67 @@ public class HomePageFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        resumeButtonChange();
+
         // Set the game name to animate
         TextView gameNameTextView = view.findViewById(R.id.GameName);
         startAnimation(gameNameTextView);
 
-        binding.player1.setOnClickListener(v -> {
-            navigateToGridFragment('2');
+        binding.resume.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (gridFragment == null) {
+                    // If the gridFragment is null, we make a message appear to the user to tell him that there is no game to resume
+                    shakeView(binding.resume);
+                }
+                else if (getActivity() != null) {
+                    gridFragment.setResume(true);
+                    getActivity().getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_container, gridFragment)
+                            .addToBackStack(null)
+                            .commit();
+                }
+            }
         });
 
-        binding.player2.setOnClickListener(v -> {
-            navigateToGridFragment('1');
+        binding.newGame.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                navigateToSelectFragment();
+            }
         });
 
-        binding.iavsia.setOnClickListener(v -> {
-            navigateToGridFragment('3');
+        binding.exit.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View v) {
+                if (getActivity() != null) {
+                    getActivity().finish();
+                }
+            }
         });
+
         binding.rules.setOnClickListener(new View.OnClickListener() {
-                    public void onClick(View v) {
-                        if (getActivity() != null) {
-                            getActivity().getSupportFragmentManager().beginTransaction()
-                                    .replace(R.id.fragment_container, RulesFragment.newInstance(mParam1, mParam2))
-                                    .addToBackStack(null)
-                                    .commit();
-                        }
+            public void onClick(View v) {
+                navigateToRulesFragment();
+            }
+        });
+    }
 
-                    }
-                });
+    private void navigateToSelectFragment() {
+        if (getActivity() != null) {
+            SelectFragment selectFragment = new SelectFragment(this);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, selectFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
+    }
+
+    private void navigateToRulesFragment() {
+        if (getActivity() != null) {
+            RulesFragment rulesFragment = new RulesFragment(this);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, rulesFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
     }
 
     @Override
@@ -114,12 +158,15 @@ public class HomePageFragment extends Fragment {
         }
     }
 
-    private void navigateToGridFragment(char choice) {
-        if (getActivity() != null) {
-            getActivity().getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.fragment_container, GridFragment.newInstance(choice))
-                    .addToBackStack(null)
-                    .commit();
+
+
+    private void resumeButtonChange() {
+        Button resumeButton = binding.resume;
+        if( gridFragment != null && gridFragment.getGrid() != null){
+            resumeButton.setBackgroundResource(R.drawable.home_page_button_blue);
+        }
+        else{
+            resumeButton.setBackgroundResource(R.drawable.home_page_button_grey);
         }
     }
 
@@ -157,6 +204,11 @@ public class HomePageFragment extends Fragment {
         animatorSet = new AnimatorSet();
         animatorSet.playTogether(rotateAnimator, scaleXAnimator, scaleYAnimator, translationXAnimator, translationYAnimator);
         animatorSet.start();
+    }
+
+    private void shakeView(View view) {
+        Animation shake = AnimationUtils.loadAnimation(this.getContext(), R.anim.shake);
+        view.startAnimation(shake);
     }
 
 

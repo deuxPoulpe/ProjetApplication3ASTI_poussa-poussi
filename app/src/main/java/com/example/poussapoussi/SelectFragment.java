@@ -1,12 +1,26 @@
 package com.example.poussapoussi;
 
+import android.animation.AnimatorSet;
+import android.animation.ObjectAnimator;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.AccelerateDecelerateInterpolator;
+import android.widget.Button;
+import android.widget.SeekBar;
+import android.widget.TextView;
+
+import com.example.poussapoussi.databinding.FragmentSelectBinding;
+
+import java.util.zip.Inflater;
+
+import UtilsPackage.DelayedTaskUtil;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -15,33 +29,41 @@ import android.view.ViewGroup;
  */
 public class SelectFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private FragmentSelectBinding binding;
+
+    private GridFragment gridFragment;
+    private HomePageFragment homePageFragment;
+
+    private static final long ANIMATION_DURATION = 1000;
+    private AnimatorSet animatorSet;
+    
+    private boolean settingsDisplayed = false; 
+    
+    int orangeDifficulty = 1;
+    int blueDifficulty = 1;
+
 
     public SelectFragment() {
         // Required empty public constructor
     }
 
+    public SelectFragment(HomePageFragment homePageFragment) {
+        this.homePageFragment = homePageFragment;
+    }
+
+
+
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
      * @return A new instance of fragment SelectFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static SelectFragment newInstance(String param1, String param2) {
+    public static SelectFragment newInstance() {
         SelectFragment fragment = new SelectFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -49,16 +71,206 @@ public class SelectFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
+
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_select, container, false);
+        binding = FragmentSelectBinding.inflate(inflater, container, false);
+        return binding.getRoot();
+    }
+
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
+        // Set the game name to animate
+        TextView gameNameTextView = view.findViewById(R.id.GameName);
+        startAnimation(gameNameTextView);
+        
+        // Set the seekbar to handle the difficulty
+        handleSeekBar();
+
+        binding.player1.setOnClickListener(v -> {
+            navigateToGridFragment('2');
+        });
+
+        binding.player2.setOnClickListener(v -> {
+            navigateToGridFragment('1');
+        });
+
+        binding.iavsia.setOnClickListener(v -> {
+            navigateToGridFragment('3');
+        });
+        
+        binding.back.setOnClickListener(v -> {
+            if (getActivity() != null) {
+                getActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, homePageFragment)
+                        .addToBackStack(null)
+                        .commit();
+            }
+        });
+        
+        binding.settings.setOnClickListener(v -> {
+            displaySettings();
+        });
+
+    }
+
+    private void navigateToGridFragment(char choice) {
+        if (getActivity() != null) {
+            gridFragment = new GridFragment(choice, homePageFragment, orangeDifficulty, blueDifficulty);
+            homePageFragment.setGridFragment(gridFragment);
+            getActivity().getSupportFragmentManager().beginTransaction()
+                    .replace(R.id.fragment_container, gridFragment)
+                    .addToBackStack(null)
+                    .commit();
+        }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        if (animatorSet != null) {
+            animatorSet.cancel();
+        }
+    }
+
+    
+    private void displaySettings() {
+        
+        if (settingsDisplayed) {
+            invertAnimationView(binding.linearLayoutSettings);
+            DelayedTaskUtil.executeWithDelay(1000, () -> binding.linearLayoutSettings.setVisibility(View.GONE));
+            binding.player1.setVisibility(View.VISIBLE);
+            animateView(binding.player1);
+            binding.player2.setVisibility(View.VISIBLE);
+            animateView(binding.player2);
+            binding.iavsia.setVisibility(View.VISIBLE);
+            animateView(binding.iavsia);
+            settingsDisplayed = false;
+        }
+        else {
+            binding.linearLayoutSettings.setVisibility(View.VISIBLE);
+            animateView(binding.linearLayoutSettings);
+            invertAnimationView(binding.player1);
+            DelayedTaskUtil.executeWithDelay(1000, () -> binding.player1.setVisibility(View.GONE));
+            invertAnimationView(binding.player2);
+            DelayedTaskUtil.executeWithDelay(1000, () -> binding.player2.setVisibility(View.GONE));
+            invertAnimationView(binding.iavsia);
+            DelayedTaskUtil.executeWithDelay(1000, () -> binding.iavsia.setVisibility(View.GONE));
+            settingsDisplayed = true;
+        }
+               
+    }
+
+    private void handleSeekBar() {
+        // Handle the seekbar
+        binding.seekBarOrange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                orangeDifficulty = progress;
+                binding.seekBarValueOrange.setText(String.valueOf(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // Do nothing
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // Do nothing
+            }
+        });
+        binding.seekBarBlue.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                blueDifficulty = progress;
+                binding.seekBarValueBlue.setText(String.valueOf(progress));
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+                // Do nothing
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+                // Do nothing
+            }
+        });
+    }
+
+    private void startAnimation(TextView textView) {
+        ObjectAnimator rotateAnimator = ObjectAnimator.ofFloat(textView, "rotation", -15f, 15f);
+        rotateAnimator.setDuration(ANIMATION_DURATION);
+        rotateAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        rotateAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+        rotateAnimator.setRepeatMode(ObjectAnimator.REVERSE);
+
+        ObjectAnimator scaleXAnimator = ObjectAnimator.ofFloat(textView, "scaleX", 1f, 1.2f);
+        scaleXAnimator.setDuration(ANIMATION_DURATION);
+        scaleXAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        scaleXAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+        scaleXAnimator.setRepeatMode(ObjectAnimator.REVERSE);
+
+        ObjectAnimator scaleYAnimator = ObjectAnimator.ofFloat(textView, "scaleY", 1f, 1.2f);
+        scaleYAnimator.setDuration(ANIMATION_DURATION);
+        scaleYAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        scaleYAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+        scaleYAnimator.setRepeatMode(ObjectAnimator.REVERSE);
+
+        ObjectAnimator translationXAnimator = ObjectAnimator.ofFloat(textView, "translationX", -20f, 20f);
+        translationXAnimator.setDuration(ANIMATION_DURATION);
+        translationXAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        translationXAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+        translationXAnimator.setRepeatMode(ObjectAnimator.REVERSE);
+
+        ObjectAnimator translationYAnimator = ObjectAnimator.ofFloat(textView, "translationY", -10f, 10f);
+        translationYAnimator.setDuration(ANIMATION_DURATION);
+        translationYAnimator.setInterpolator(new AccelerateDecelerateInterpolator());
+        translationYAnimator.setRepeatCount(ObjectAnimator.INFINITE);
+        translationYAnimator.setRepeatMode(ObjectAnimator.REVERSE);
+
+        animatorSet = new AnimatorSet();
+        animatorSet.playTogether(rotateAnimator, scaleXAnimator, scaleYAnimator, translationXAnimator, translationYAnimator);
+        animatorSet.start();
+    }
+
+    private void animateView(View view) {
+        // Créez des animations pour l'apparition (fade in) et l'agrandissement (scale up)
+        ObjectAnimator fadeIn = ObjectAnimator.ofFloat(view, "alpha", 0.5f, 1f);
+        fadeIn.setDuration(1000); // 1 seconde
+
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", 0f, 1f);
+        scaleX.setDuration(1000); // 1 seconde
+
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", 0f, 1f);
+        scaleY.setDuration(1000); // 1 seconde
+
+        // Combinez les animations dans un AnimatorSet
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(fadeIn, scaleX, scaleY);
+        animatorSet.start();
+    }
+    
+    private void invertAnimationView(View view) {
+        // Créez des animations pour la disparition (fade out) et la réduction (scale down)
+        ObjectAnimator fadeOut = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f);
+        fadeOut.setDuration(1000); // 1 seconde
+
+        ObjectAnimator scaleX = ObjectAnimator.ofFloat(view, "scaleX", 1f, 0f);
+        scaleX.setDuration(1000); // 1 seconde
+
+        ObjectAnimator scaleY = ObjectAnimator.ofFloat(view, "scaleY", 1f, 0f);
+        scaleY.setDuration(1000); // 1 seconde
+
+        // Combinez les animations dans un AnimatorSet
+        AnimatorSet animatorSet = new AnimatorSet();
+        animatorSet.playTogether(fadeOut, scaleX, scaleY);
+        animatorSet.start();
     }
 }

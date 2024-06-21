@@ -133,14 +133,7 @@
                 android:columnCount="8"
                 android:rowCount="8" />
 
-            <ImageView
-                android:id="@+id/interdictionIndicator"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:src="@drawable/red_cross"
-                android:visibility="invisible"
-                android:layout_gravity="center"
-                />
+
 
 
         </FrameLayout>
