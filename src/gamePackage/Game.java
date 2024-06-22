@@ -103,9 +103,6 @@ public class Game {
             System.out.println("The game is ongoing");
         }
     }
-    // Verification si un joueur a gagné. True si l'un a gagné, false sinon
-    boolean player1Wins =  player1.getScore() > player2.getScore() && player1.getScore() >= 2; 
-    boolean player2Wins = player1.getScore() < player2.getScore() && player2.getScore() >= 2;
     
 
     /*
@@ -115,6 +112,9 @@ public class Game {
      * 3: The game is ongoing
      */
     public int checkScore() {
+        // Verification si un joueur a gagné. True si l'un a gagné, false sinon
+        boolean player1Wins =  player1.getScore() > player2.getScore() && player1.getScore() >= 2; 
+        boolean player2Wins = player1.getScore() < player2.getScore() && player2.getScore() >= 2;
        
         return  grid.isFull() ? 0 : (player1Wins ? 1 : player2Wins ? 2 : 3);
    
