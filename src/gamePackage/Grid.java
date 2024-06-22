@@ -106,23 +106,21 @@ public class Grid {
             currentCoordinates = new Coordinates(currentCoordinates.getX() + direction[0], currentCoordinates.getY() + direction[1]);
             nbEmptyCells++; 
         }
-        if (nbEmptyCells == 0) {
-            throw new IllegalArgumentException("There is no empty cell in this direction");
-        }
+        
         return nbEmptyCells;
     }
-
+    
     public HashMap<Coordinates, Token> getTokensToMove(PushAction pushAction, char color) {
 
         Coordinates coordinates = pushAction.getCoordinates();
         int[] direction = pushAction.getDirection();
 
-        // Si les coordonnées ne contiennent pas de jeton, on lève une exception
-        if (!map.keySet().contains(coordinates) || map.get(coordinates) == null) {
+        // On vérifie si le jeton à déplacer existe et est de la bonne couleur
+        if (!map.containsKey(coordinates) || map.get(coordinates) == null) {
             throw new IllegalArgumentException("There is no token at the given coordinates");
         }
 
-        // Si le jeton est de la mauvaise couleur, on lève une exception
+        // On vérifie si le jeton à déplacer est de la bonne couleur
         else if (map.get(coordinates).getColor() != color) {
             throw new IllegalArgumentException("The token at the given coordinates is not of the right color");
         }
@@ -138,67 +136,63 @@ public class Grid {
         
         return tokensToMove;
     }
-   
+    
     public HashMap<Coordinates, Token> getMovedTokens(PushAction pushAction, HashMap<Coordinates, Token> tokensToMove) {
 
         int[] direction = pushAction.getDirection();
         Coordinates coordinates = pushAction.getCoordinates();
 
-        // On récupère les coordonnées du dernier des jetons à déplacer
+        // Les coordonnées du dernier jeton à déplacer
         Coordinates lastToken = new Coordinates(coordinates.getX() + (tokensToMove.size() - 1) * direction[0], coordinates.getY() + (tokensToMove.size() - 1) * direction[1]); 
 
-        // On calcule la distance de déplacement
-        int distance;
-        try {
-            distance = countEmptyCellsInDirection(lastToken, direction);
-        } catch (IllegalArgumentException e) {
-            distance = 0;
-        }
-
-        // Si la distance est nulle, on lève une exception
+        // Calcul de la distance de déplacement
+        int distance = countEmptyCellsInDirection(lastToken, direction);
+        
+        // On vérifie si le dernier jeton à déplacer est sur un bord du plateau
         if (distance == 0) {
             throw new IllegalArgumentException("There is no empty cell in this direction");
         }
 
-        // On instancie le vecteur de déplacement
         int [] movementVector = {distance * direction[0], distance * direction[1]};
 
-        // On met à jour la position des jetons à déplacer
+        // On stocke les nouvelles coordonnées des jetons déplacés
         HashMap <Coordinates, Token> tokensMoved = new HashMap<>();
         for (Coordinates c : tokensToMove.keySet()) {
-
-            // On récupère les jetons à déplacer et on calcule leurs nouvelles coordonnées
             Token token = tokensToMove.get(c);
             Coordinates newTokenCoordinates = new Coordinates(c.getX() + movementVector[0], c.getY() + movementVector[1]);
-
-            // On place le jeton aux nouvelles coordonnées
             tokensMoved.put(newTokenCoordinates, token);
         }
 
-        if (!Settings.getInstance().getAllowPushBack()) {
-            if (previousMovedTokens.equals(tokensMoved)) {
-                throw new IllegalArgumentException("You are trying to push tokens in the same previous position");
-            }
+        // On vérifie si les jetons déplacés sont dans le plateau
+        if (!Settings.getInstance().getAllowPushBack() && previousMovedTokens != null && previousMovedTokens.equals(tokensMoved)) {
+            throw new IllegalArgumentException("You are trying to push tokens in the same previous position");
         }
-    
-        return tokensMoved;
 
+        return tokensMoved;
     }
 
     public boolean isValidPushAction(PushAction pushAction, char color) {
+        boolean isValid = false; // Utilisez une variable booléenne pour suivre la validité de l'action
 
-        // On instancie parresseusement la map des coordonnées des jetons déplacés
-        HashMap<Coordinates, Token> movedTokens;
-
-        // Vérifie si une exception est levée lors de la récupération des jetons déplacés
         try {
+            // Vérifie si le jeton à déplacer existe et est de la bonne couleur
             HashMap<Coordinates, Token> tokensToMove = getTokensToMove(pushAction, color);
-            movedTokens = tokensToMove == null ? null : getMovedTokens(pushAction, tokensToMove);
-        } 
-        catch (IllegalArgumentException e) {
-            return false;
+
+            if (!Settings.getInstance().getAllowPushBack()) {
+                // Si le joueur n'a pas le droit de pousser les jetons en arrière, on vérifie si les jetons déplacés sont valides
+                HashMap<Coordinates, Token> movedTokens = getMovedTokens(pushAction, tokensToMove);
+                isValid = movedTokens != null && !movedTokens.isEmpty(); // Vérifie si movedTokens n'est pas null et pas vide
+            } else {
+                // Sinon, on vérifie juste s'il y a de la place pour pousser les jetons
+                Coordinates lastToken = new Coordinates(pushAction.getCoordinates().getX() + (tokensToMove.size() - 1) * pushAction.getDirection()[0], pushAction.getCoordinates().getY() + (tokensToMove.size() - 1) * pushAction.getDirection()[1]);
+                int distance = countEmptyCellsInDirection(lastToken, pushAction.getDirection());
+                isValid = distance > 0; // Vérifie si la distance est supérieure à 0
+            }
+        } catch (IllegalArgumentException e) {
+            isValid = false; // En cas d'exception, l'action n'est pas valide
         }
-        return movedTokens != null;
+
+        return isValid; // Retourne la validité de l'action
     }
 
     public void pushToken(PushAction pushAction, char color) {

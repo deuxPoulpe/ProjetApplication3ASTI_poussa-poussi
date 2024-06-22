@@ -4,7 +4,10 @@ import agentsPackage.MinMaxAgent;
 import gamePackage.*;
 import treeFormationPackage.ChildIterator;
 import treeFormationPackage.PlaceChildIterator;
+import treeFormationPackage.PushChildIterator;
+import treeFormationPackage.RemovGridIterator;
 import treeFormationPackage.ActionTree;
+import treeFormationPackage.CoordinateSetGridPair;
 
 public class BenchmarkMinMax {
     private static int depth = 1; // Ajout d'une valeur pour la profondeur de recherche
@@ -24,17 +27,26 @@ public class BenchmarkMinMax {
         Grid grid = new Grid();
         
         // Grille avec un alignement de push optimal
-        // grid.placeToken('Y', new Coordinates(0, 0));
+        grid.placeToken('Y', new Coordinates(0, 0));
+        grid.placeToken('Y', new Coordinates(0, 1));
+        grid.placeToken('Y', new Coordinates(0, 2));
+        grid.placeToken('Y', new Coordinates(0, 3));
+        grid.placeToken('Y', new Coordinates(0, 4));
         
         grid.display();
         
         MinMaxAgent agent = new MinMaxAgent('Y', depth);
         ActionTree root = new ActionTree(agent, grid);
-        ActionTree bestMove = agent.evaluateBestMove(root, agent.getSmartness(), Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+        // ActionTree bestMove = agent.evaluateBestMove(root, agent.getSmartness(), Integer.MIN_VALUE, Integer.MAX_VALUE, true);
 
-        System.out.println("Best move: \n" + bestMove + "\n");
-        bestMove.getGrid().display();
-
+        // System.out.println("Best move: \n" + bestMove + "\n");
+        // bestMove.getGrid().display();
+        ChildIterator childIterator = new ChildIterator(root);
+        while (childIterator.hasNext()) {
+            ActionTree child = childIterator.next();
+            System.out.println(child);
+            child.getGrid().display();
+        }
 
     }
 

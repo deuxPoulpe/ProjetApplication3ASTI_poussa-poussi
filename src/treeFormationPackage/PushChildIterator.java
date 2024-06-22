@@ -18,38 +18,37 @@ public class PushChildIterator implements Iterator<ActionTree> {
     private ColorTokenCoordsIterator ownTokenCoordsIterator;
     private List<int[]> pushDirections = new ArrayList<>();
     {
-        pushDirections.add(new int[]{1, 0});
-        pushDirections.add(new int[]{0, 1});
-        pushDirections.add(new int[]{-1, 0});
-        pushDirections.add(new int[]{0, -1});
+        pushDirections.add(new int[]{1, 0}); // Droite
+        pushDirections.add(new int[]{0, 1}); // Bas
+        pushDirections.add(new int[]{-1, 0}); // Gauche
+        pushDirections.add(new int[]{0, -1}); // Haut
     }
     private Iterator<int[]> directionsIterator;
 
     public PushChildIterator(ActionTree myNode) {
         this.node = myNode;
         this.ownTokenCoordsIterator = new ColorTokenCoordsIterator(myNode.getGrid(), myNode.getAgent().getColor());
-        this.directionsIterator = pushDirections.iterator();
-        this.currentPushAction = new PushAction(ownTokenCoordsIterator.next(), null);
     }
 
     @Override
     public boolean hasNext() {
 
-        // S'il reste des directions à explorer
-        if (directionsIterator.hasNext()) {
+        // Retourne vrai si l'action de poussée actuelle est valide
+        if (currentPushAction.getDirection() != null && node.getGrid().isValidPushAction(currentPushAction, node.getAgent().getColor())) {
+            return true;
+        }
 
-            // On retourne vrai s'il est possible de pousser dans la direction actuelle
+        // S'il reste des directions à explorer
+        if (directionsIterator != null && directionsIterator.hasNext()) {
+
+            // On itère sur la prochaine direction
             currentPushAction.setDirection(directionsIterator.next());
 
-            if (node.getGrid().isValidPushAction(currentPushAction, node.getAgent().getColor())) {
-                return true;
-            }
-
-            // S'il n'est pas possible de pousser dans la direction actuelle, on continue à explorer les directions
+            // On appelle récursivement la méthode pour vérifier s'il est possible de pousser dans la direction actuelle
             return hasNext();
         }
 
-        // S'il n'y a plus de directions à explorer
+        // S'il n'y a plus de directions à explorer, mais qu'il reste des jetons de la couleur de l'agent à explorer
         if (ownTokenCoordsIterator.hasNext()) {
 
             // On passe au prochain jeton de la couleur de l'agent
@@ -62,17 +61,37 @@ public class PushChildIterator implements Iterator<ActionTree> {
             return hasNext();
         }
 
+        // Si les coordonnées du jeton à pousser n'ont pas été initialisées, on les initialise
+        if (currentPushAction.getCoordinates() == null) {
+            currentPushAction.setCoordinates(ownTokenCoordsIterator.next());
+            directionsIterator = pushDirections.iterator();
+        }
+
         // S'il n'y a plus de jetons de la couleur de l'agent
         return false;
     }
 
     @Override
     public ActionTree next() {
+        if (!hasNext()) {
+            throw new NoSuchElementException();
+        }
 
         // On génère un fils pour pousser dans la direction actuelle
         Grid gridClone = node.getGrid().clone();
         gridClone.pushToken(currentPushAction, node.getAgent().getColor());
         ActionTree child = new ActionTree(node, gridClone, node.getPlaceCoordinates(), currentPushAction);
+
+        // On passe à la prochaine direction si possible
+        if (directionsIterator != null && directionsIterator.hasNext()) {
+            currentPushAction.setDirection(directionsIterator.next());
+        }
+
+        // Sinon, on passe au prochain jeton de la couleur de l'agent
+        else if (ownTokenCoordsIterator.hasNext()) {
+            currentPushAction.setCoordinates(ownTokenCoordsIterator.next());
+            directionsIterator = pushDirections.iterator();
+        }
 
         return child;
     }
