@@ -7,7 +7,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.Stack;
-
 import treeFormationPackage.EmptyCoordIterator;
 
 
@@ -226,17 +225,18 @@ public class Grid {
         List<List<Coordinates>> result = new ArrayList<>();
         int[][] directions = {{0, 1}, {1, 0}, {1, 1}, {1, -1}};
         Set<Coordinates> visitedTokens = new HashSet<>();
-    
+
         // Pour chaque jeton dans la grille
         for (Coordinates c : map.keySet()) {
             Token token = map.get(c);
             char color = token.getColor();
-            
+        
             // Si le jeton n'est pas de la couleur spécifiée ou a déjà été visité, on passe au suivant
             if (color != specifiedColor || visitedTokens.contains(c)) {
                 continue;
             }
     
+
             // Pour chaque direction
             for (int[] direction : directions) {
 
@@ -249,11 +249,15 @@ public class Grid {
                     
                     // Si le nombre de voisins alignés est suffisant
                     if (neighbours.size() >= alignmentSize) {
-                        
+                        int i = 0;
                         // Marquer tous les jetons alignés et les ajouter aux résultats
                         for (Coordinates neighbourCoordinates : neighbours) {
+                            System.out.println("Debut : "+i);
                             getToken(neighbourCoordinates).addToAlignments(direction);
+                            System.out.println("Alignement : "+neighbourCoordinates+" "+direction[0]+" "+direction[1]+"");
                             visitedTokens.add(neighbourCoordinates);
+                            System.out.println("Fin : " +i);
+                            i++;
                         }
     
                         result.add(neighbours);

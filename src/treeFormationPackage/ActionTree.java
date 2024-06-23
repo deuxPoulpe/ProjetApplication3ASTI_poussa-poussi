@@ -1,14 +1,13 @@
 package treeFormationPackage;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.HashSet;
-import java.util.Set;
-
 import agentsPackage.MinMaxAgent;
 import gamePackage.Coordinates;
 import gamePackage.Grid;
 import gamePackage.PushAction;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 public class ActionTree {
 
@@ -128,6 +127,9 @@ public class ActionTree {
                 opponentAlignmentCounts[i - 2] = grid.getAlignments('B', i).size();
             }
         }
+
+        System.out.println("Alignements du joueur : " + alignmentCounts[0] + " " + alignmentCounts[1] + " " + alignmentCounts[2] + " " + alignmentCounts[3]);
+        System.out.println("Alignements de l'adversaire : " + opponentAlignmentCounts[0] + " " + opponentAlignmentCounts[1] + " " + opponentAlignmentCounts[2] + " " + opponentAlignmentCounts[3]);
 
         // On ajoute le score des alignements de 5 jetons formés après la poussée
         pointCounter += removCoordinates.get(1).size() / 2;
