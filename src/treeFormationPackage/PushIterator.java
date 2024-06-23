@@ -10,8 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ArrayList;
 
-
-public class PushChildIterator implements Iterator<ActionTree> {
+public class PushIterator implements Iterator<ActionTree> {
 
     private ActionTree node;
     private PushAction currentPushAction = new PushAction(null, null);
@@ -23,52 +22,41 @@ public class PushChildIterator implements Iterator<ActionTree> {
         pushDirections.add(new int[]{-1, 0}); // Gauche
         pushDirections.add(new int[]{0, -1}); // Haut
     }
-    private Iterator<int[]> directionsIterator;
+    private Iterator<int[]> directionsIterator = pushDirections.iterator(); // Initialise l'itérateur des directions
 
-    public PushChildIterator(ActionTree myNode) {
+    public PushIterator(ActionTree myNode) {
         this.node = myNode;
         this.ownTokenCoordsIterator = new ColorTokenCoordsIterator(myNode.getGrid(), myNode.getAgent().getColor());
+        if (ownTokenCoordsIterator.hasNext()) {
+            currentPushAction.setCoordinates(ownTokenCoordsIterator.next());
+        }
+        // Réinitialise l'itérateur des directions pour le premier jeton
+        this.directionsIterator = pushDirections.iterator();
     }
 
     @Override
     public boolean hasNext() {
 
-        // Retourne vrai si l'action de poussée actuelle est valide
-        if (currentPushAction.getDirection() != null && node.getGrid().isValidPushAction(currentPushAction, node.getAgent().getColor())) {
+        // Si la direction est valide, on retourne vrai
+        if (currentPushAction.getDirection() != null && node.getGrid().isPushValid(currentPushAction, node.getAgent().getColor())) {
             return true;
-        }
 
-        // S'il reste des directions à explorer
-        if (directionsIterator != null && directionsIterator.hasNext()) {
-
-            // On itère sur la prochaine direction
+        // Sinon, si on a une prochaine direction, on vérifie si elle est valide
+        } else if (directionsIterator.hasNext()) {
             currentPushAction.setDirection(directionsIterator.next());
-
-            // On appelle récursivement la méthode pour vérifier s'il est possible de pousser dans la direction actuelle
             return hasNext();
-        }
 
-        // S'il n'y a plus de directions à explorer, mais qu'il reste des jetons de la couleur de l'agent à explorer
-        if (ownTokenCoordsIterator.hasNext()) {
-
-            // On passe au prochain jeton de la couleur de l'agent
+        // Sinon, si on a un prochain jeton à pousser, on vérifie si on peut le pousser
+        } else if (ownTokenCoordsIterator.hasNext()) {
             currentPushAction.setCoordinates(ownTokenCoordsIterator.next());
-
-            // On réinitialise l'itérateur de directions
-            directionsIterator = pushDirections.iterator();
-
-            // On appelle récursivement la méthode pour vérifier s'il est possible de pousser à partir du prochain jeton
+            directionsIterator = pushDirections.iterator(); // Réinitialise l'itérateur des directions pour le nouveau jeton
+            currentPushAction.setDirection(null);
             return hasNext();
-        }
 
-        // Si les coordonnées du jeton à pousser n'ont pas été initialisées, on les initialise
-        if (currentPushAction.getCoordinates() == null) {
-            currentPushAction.setCoordinates(ownTokenCoordsIterator.next());
-            directionsIterator = pushDirections.iterator();
+        // Sinon, on retourne faux
+        } else {
+            return false;
         }
-
-        // S'il n'y a plus de jetons de la couleur de l'agent
-        return false;
     }
 
     @Override
@@ -77,20 +65,25 @@ public class PushChildIterator implements Iterator<ActionTree> {
             throw new NoSuchElementException();
         }
 
-        // On génère un fils pour pousser dans la direction actuelle
-        Grid gridClone = node.getGrid().clone();
-        gridClone.pushToken(currentPushAction, node.getAgent().getColor());
-        ActionTree child = new ActionTree(node, gridClone, node.getPlaceCoordinates(), currentPushAction);
+        // On crée un nouvel enfant avec la copie de la grille actuelle
+        ActionTree child = new ActionTree(node, node.getGrid().clone(), node.getPlaceCoordinates(), currentPushAction.clone());
 
-        // On passe à la prochaine direction si possible
-        if (directionsIterator != null && directionsIterator.hasNext()) {
+        // On effectue l'action de poussée sur la grille du nouvel enfant
+        child.getGrid().pushToken(currentPushAction, node.getAgent().getColor());
+
+        // Si on a une prochaine direction, on se place dessus
+        if (directionsIterator.hasNext()) {
             currentPushAction.setDirection(directionsIterator.next());
         }
-
-        // Sinon, on passe au prochain jeton de la couleur de l'agent
+        // Sinon, si on a un prochain jeton à pousser, on se place dessus
         else if (ownTokenCoordsIterator.hasNext()) {
             currentPushAction.setCoordinates(ownTokenCoordsIterator.next());
-            directionsIterator = pushDirections.iterator();
+            directionsIterator = pushDirections.iterator(); // Réinitialise l'itérateur des directions pour le nouveau jeton
+            currentPushAction.setDirection(null);
+        }
+        // Sinon, on se place sur une direction nulle
+        else {
+            currentPushAction.setDirection(null);
         }
 
         return child;
@@ -134,13 +127,6 @@ public class PushChildIterator implements Iterator<ActionTree> {
             Coordinates currentMatchingCoordinate = nextMatchingCoordinate;
             findNext(); // Prépare le prochain élément correspondant pour le prochain appel
             return currentMatchingCoordinate;
-        }
-
-        public ColorTokenCoordsIterator clone() {
-
-            ColorTokenCoordsIterator clone = new ColorTokenCoordsIterator(grid.clone(), color);
-            clone.nextMatchingCoordinate = nextMatchingCoordinate == null ? null : new Coordinates(nextMatchingCoordinate.getX(), nextMatchingCoordinate.getY());
-            return clone;
         }
     }
 }

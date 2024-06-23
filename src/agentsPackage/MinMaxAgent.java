@@ -7,7 +7,7 @@ import gamePackage.Coordinates;
 import gamePackage.Grid;
 import gamePackage.PushAction;
 import gamePackage.Settings;
-import treeFormationPackage.ChildIterator;
+import treeFormationPackage.ActionIterator;
 import treeFormationPackage.ActionTree;
 
 public class MinMaxAgent extends Agent{
@@ -106,7 +106,7 @@ public class MinMaxAgent extends Agent{
      * @return GridTree
      */
     public ActionTree evaluateBestMove(ActionTree node, int depth, int alpha, int beta, boolean maximizingPlayer) {
-        ChildIterator childIterator = new ChildIterator(node);
+        ActionIterator childIterator = new ActionIterator(node);
 
         // Vérifie si le noeud est une feuille ou si la profondeur est nulle, puis retourne le noeud
         if (depth == 0 || !childIterator.hasNext()) {

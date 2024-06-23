@@ -1,53 +1,34 @@
 import java.util.List;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+import java.util.concurrent.TimeUnit;
+import java.util.concurrent.TimeoutException;
 
 import agentsPackage.MinMaxAgent;
 import gamePackage.*;
-import treeFormationPackage.ChildIterator;
-import treeFormationPackage.PlaceChildIterator;
-import treeFormationPackage.PushChildIterator;
-import treeFormationPackage.RemovGridIterator;
+import treeFormationPackage.ActionIterator;
 import treeFormationPackage.ActionTree;
-import treeFormationPackage.CoordinateSetGridPair;
+import treeFormationPackage.PushIterator;
 
 public class BenchmarkMinMax {
-    private static int depth = 1; // Ajout d'une valeur pour la profondeur de recherche
-    private static int numberOfTests = 100; // Ajout d'une valeur pour le nombre de tests
-    private static int nbTokenPerPlayer = 10; // Ajout d'une valeur pour le nombre de jetons par joueur
+    private static int depth = 2; // Ajout d'une valeur pour la profondeur de recherche
+    private static int numberOfTests = 1000; // Ajout d'une valeur pour le nombre de tests
+    private static int nbTokenPerPlayer = 5; // Ajout d'une valeur pour le nombre de jetons par joueur
     public static long averageDurationBestMove = 0;
 
     public static void main(String[] args) throws Exception {
 
+        // Initialisation de l'agent MinMax
+        MinMaxAgent agent = new MinMaxAgent('Y', depth);
+
         // Initialisation des paramètres de jeu
         Settings.getInstance(true, true, false);
         
-        // averageDurationBestMove = benchmarkBestMove(agent);
+        averageDurationBestMove = benchmarkBestMove(agent);
         
-        // display();
-        
-        Grid grid = new Grid();
-        
-        // Grille avec un alignement de push optimal
-        grid.placeToken('Y', new Coordinates(0, 0));
-        grid.placeToken('Y', new Coordinates(0, 1));
-        grid.placeToken('Y', new Coordinates(0, 2));
-        grid.placeToken('Y', new Coordinates(0, 3));
-        grid.placeToken('Y', new Coordinates(0, 4));
-        
-        grid.display();
-        
-        MinMaxAgent agent = new MinMaxAgent('Y', depth);
-        ActionTree root = new ActionTree(agent, grid);
-        // ActionTree bestMove = agent.evaluateBestMove(root, agent.getSmartness(), Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-
-        // System.out.println("Best move: \n" + bestMove + "\n");
-        // bestMove.getGrid().display();
-        ChildIterator childIterator = new ChildIterator(root);
-        while (childIterator.hasNext()) {
-            ActionTree child = childIterator.next();
-            System.out.println(child);
-            child.getGrid().display();
-        }
-
+        display();
     }
 
     public static void display() {
@@ -79,22 +60,42 @@ public class BenchmarkMinMax {
     }
 
     public static long measureBestMove(Grid grid, MinMaxAgent agent) {
-        long startTime = System.nanoTime();
-        ActionTree root = new ActionTree(agent, grid);
-        agent.evaluateBestMove(root, agent.getSmartness(), Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-        long endTime = System.nanoTime();
-        long duration = (endTime - startTime) / 1000000;
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Callable<Long> task = () -> {
+            long startTime = System.nanoTime();
+            ActionTree root = new ActionTree(agent, grid);
+            agent.evaluateBestMove(root, agent.getSmartness(), Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+            long endTime = System.nanoTime();
+            return (endTime - startTime) / 1000000;
+        };
+
+        Future<Long> future = executor.submit(task);
+        long duration;
+        try {
+            // Attendre la fin de l'exécution ou timeout après 3 secondes
+            duration = future.get(5, TimeUnit.SECONDS);
+        } catch (TimeoutException e) {
+            // Gérer le cas où l'exécution dépasse 5 secondes
+            System.out.println("\n Le temps est dépassé pour l'exécution de measureBestMove. Affichage de la grille actuelle :");
+            grid.display(); // Affiche la grille actuelle
+            duration = -1; // Retourner une valeur spécifique ou gérer autrement
+        } catch (Exception e) {
+            // Gérer les autres exceptions
+            duration = -1; // Retourner une valeur spécifique ou gérer autrement
+        } finally {
+            executor.shutdownNow(); // Arrêter l'executor immédiatement
+        }
+
         return duration;
     }
 
     public static long benchmarkBestMove(MinMaxAgent agent) {
-
         // Exécute le benchmark
         long[] durations = new long[numberOfTests];
         for (int i = 0; i < numberOfTests; i++) {
             Grid grid = generateRandomGrid(nbTokenPerPlayer);
             durations[i] = measureBestMove(grid, agent);
-
+    
             // Affiche une barre de progression
             double progress = (double) (i + 1) / numberOfTests;
             final int width = 50; // largeur de la barre de progression
@@ -108,7 +109,7 @@ public class BenchmarkMinMax {
             }
             System.out.print("] " + Math.round(progress * 100) + "% ");
         }
-
+    
         // Retourne la moyenne des durées d'exécution
         long sum = 0;
         for (long duration : durations) {
@@ -117,4 +118,11 @@ public class BenchmarkMinMax {
         long average = sum / numberOfTests;
         return average;
     }
+    
+    // Méthode pour effacer le terminal
+    private static void clearTerminal() {
+        System.out.print("\033[H\033[2J");
+        System.out.flush();
+    }
+    
 }

@@ -1,16 +1,13 @@
-package treeFormationPackage;
+package gamePackage;
 
 import java.util.Set;
 
-import gamePackage.Coordinates;
-import gamePackage.Grid;
-
-public class CoordinateSetGridPair {
+public class RemovAction {
 
     private Set<Coordinates> coordinates;
     private Grid grid;
 
-    public CoordinateSetGridPair(Set<Coordinates> coordinates, Grid grid) {
+    public RemovAction(Set<Coordinates> coordinates, Grid grid) {
         this.coordinates = coordinates;
         this.grid = grid;
     }

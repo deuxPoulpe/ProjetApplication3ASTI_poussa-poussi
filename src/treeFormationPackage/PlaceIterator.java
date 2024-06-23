@@ -4,15 +4,16 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import gamePackage.Coordinates;
+import gamePackage.EmptyCoordIterator;
 import gamePackage.Grid;
 
-public class PlaceChildIterator implements Iterator<ActionTree> {
+public class PlaceIterator implements Iterator<ActionTree> {
     
     private ActionTree node;
     private EmptyCoordIterator emptyCoordIterator;
     private Coordinates currentPlaceCoordinates;
 
-    public PlaceChildIterator(ActionTree myNode) {
+    public PlaceIterator(ActionTree myNode) {
         this.node = myNode;
         Grid grid = myNode.getGrid();
         this.emptyCoordIterator = new EmptyCoordIterator(grid);

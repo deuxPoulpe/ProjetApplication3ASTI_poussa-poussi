@@ -9,14 +9,16 @@ import java.util.Set;
 
 import gamePackage.Coordinates;
 import gamePackage.Grid;
+import gamePackage.RemovAction;
 
-public class RemovGridIterator implements Iterator<CoordinateSetGridPair> {
+public class RemovIterator implements Iterator<RemovAction> {
     private Grid grid;
     private Iterator<Set<Coordinates>> combinationsIterator;
-    private CoordinateSetGridPair currentPair;
+    private RemovAction currentPair;
 
-    public RemovGridIterator(Grid grid, List<List<Coordinates>> alignments) {
-        currentPair = new CoordinateSetGridPair(null, grid);
+    public RemovIterator(Grid grid, char color) {
+        currentPair = new RemovAction(null, grid);
+        List<List<Coordinates>> alignments = grid.getAlignments(color, 5);
         combinationsIterator = new CombinationIterator(alignments);
         this.grid = grid;
     }
@@ -27,7 +29,7 @@ public class RemovGridIterator implements Iterator<CoordinateSetGridPair> {
     }
 
     @Override
-    public CoordinateSetGridPair next() {
+    public RemovAction next() {
         if (!hasNext()) {
             throw new NoSuchElementException();
         }
@@ -53,12 +55,25 @@ public class RemovGridIterator implements Iterator<CoordinateSetGridPair> {
         private List<List<Coordinates>> alignments;
         private int[] combinationIndices;
         private boolean hasNext = true;
-    
+        
         public CombinationIterator(List<List<Coordinates>> alignments) {
             this.alignments = alignments;
             this.combinationIndices = new int[alignments.size()];
+            this.hasNext = checkInitialHasNext();
         }
-    
+
+        private boolean checkInitialHasNext() {
+            if (alignments.isEmpty()) {
+                return false;
+            }
+            for (List<Coordinates> alignment : alignments) {
+                if (alignment.size() < 2) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        
         @Override
         public boolean hasNext() {
             return hasNext;

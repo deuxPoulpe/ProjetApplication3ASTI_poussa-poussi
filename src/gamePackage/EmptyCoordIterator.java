@@ -1,10 +1,7 @@
-package treeFormationPackage;
+package gamePackage;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import gamePackage.Coordinates;
-import gamePackage.Grid;
 
 
 public class EmptyCoordIterator implements Iterator<Coordinates> {

@@ -109,7 +109,7 @@ public class RandomAgent extends Agent {
             PushAction pushAction = new PushAction(coords, randomDirection);
 
             // Si la direction est valide, on la retourne
-            if (grid.isValidPushAction(pushAction, getColor())) {
+            if (grid.isPushValid(pushAction, getColor())) {
                 return randomDirection;
             }
 

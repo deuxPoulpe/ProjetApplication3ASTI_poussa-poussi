@@ -8,8 +8,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.Stack;
 
-import treeFormationPackage.EmptyCoordIterator;
-
 
 
 public class Grid {
@@ -171,7 +169,7 @@ public class Grid {
         return tokensMoved;
     }
 
-    public boolean isValidPushAction(PushAction pushAction, char color) {
+    public boolean isPushValid(PushAction pushAction, char color) {
         boolean isValid = false; // Utilisez une variable booléenne pour suivre la validité de l'action
 
         try {
@@ -212,7 +210,7 @@ public class Grid {
         }
 
         // On met à jour les jetons déplacés
-        previousMovedTokens = movedTokens;
+        previousMovedTokens = tokensToMove;
     }
  
     /**
