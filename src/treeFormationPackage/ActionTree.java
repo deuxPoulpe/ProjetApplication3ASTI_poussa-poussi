@@ -5,6 +5,7 @@ import gamePackage.Coordinates;
 import gamePackage.Grid;
 import gamePackage.PushAction;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -114,31 +115,32 @@ public class ActionTree {
     public void calculateHeuristicValue() {
         int[] alignmentCounts = new int[4];
         int[] opponentAlignmentCounts = new int[4];
-
+    
         // On récupère les alignements de chaque joueur
         for (int i = 2; i < 6; i++) {
-            // joueur courant
             alignmentCounts[i - 2] = grid.getAlignments(agent.getColor(), i).size();
-
-            // adversaire
             if (agent.getColor() == 'B') {
                 opponentAlignmentCounts[i - 2] = grid.getAlignments('Y', i).size();
             } else {
                 opponentAlignmentCounts[i - 2] = grid.getAlignments('B', i).size();
             }
         }
-
-        System.out.println("Alignements du joueur : " + alignmentCounts[0] + " " + alignmentCounts[1] + " " + alignmentCounts[2] + " " + alignmentCounts[3]);
-        System.out.println("Alignements de l'adversaire : " + opponentAlignmentCounts[0] + " " + opponentAlignmentCounts[1] + " " + opponentAlignmentCounts[2] + " " + opponentAlignmentCounts[3]);
-
-        // On ajoute le score des alignements de 5 jetons formés après la poussée
+    
+        System.out.println("Alignment Counts: " + Arrays.toString(alignmentCounts));
+        System.out.println("Opponent Alignment Counts: " + Arrays.toString(opponentAlignmentCounts));
+    
         pointCounter += removCoordinates.get(1).size() / 2;
-
-        // On calcule la valeur heuristique des alignements de 2, 3, 4 et 5 jetons
+    
+        System.out.println("Point Counter: " + pointCounter);
+    
         int alignmentsScore = calculateScore(alignmentCounts, opponentAlignmentCounts);
-
-        // on calcule la valeur heuristique
+    
+        System.out.println("Alignments Score: " + alignmentsScore);
+    
         heuristicValue = pointCounter * agent.getWeights()[3] + alignmentsScore;
+    
+        System.out.println("Heuristic Value: " + heuristicValue);
     }
+    
 
 }

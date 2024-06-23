@@ -1,5 +1,4 @@
 package gamePackage;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,7 +15,6 @@ public class Grid {
     private final int size = 8;
     private HashMap<Coordinates, Token> map;
     private HashMap<Coordinates, Token> previousMovedTokens = new HashMap<>();
-
 
 
     public HashMap<Coordinates, Token> getHashMap() {
@@ -249,14 +247,15 @@ public class Grid {
                     
                     // Si le nombre de voisins alignés est suffisant
                     if (neighbours.size() >= alignmentSize) {
-                        int i = 0;
+                        int i =0;
                         // Marquer tous les jetons alignés et les ajouter aux résultats
                         for (Coordinates neighbourCoordinates : neighbours) {
-                            System.out.println("Debut : "+i);
+                            System.out.println("debut i : "+i);      
                             getToken(neighbourCoordinates).addToAlignments(direction);
                             System.out.println("Alignement : "+neighbourCoordinates+" "+direction[0]+" "+direction[1]+"");
                             visitedTokens.add(neighbourCoordinates);
-                            System.out.println("Fin : " +i);
+                            System.out.println("Added to alignments: " + neighbourCoordinates + " " + direction[0] + " " + direction[1]);
+                            System.out.println("fin i : "+i);
                             i++;
                         }
     
