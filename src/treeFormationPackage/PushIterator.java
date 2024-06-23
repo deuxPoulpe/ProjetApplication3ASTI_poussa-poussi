@@ -15,7 +15,7 @@ public class PushIterator implements Iterator<ActionTree> {
     private ActionTree node;
     private PushAction currentPushAction = new PushAction(null, null);
     private ColorTokenCoordsIterator ownTokenCoordsIterator;
-    private List<int[]> pushDirections = new ArrayList<>();
+    private final List<int[]> pushDirections = new ArrayList<>();
     {
         pushDirections.add(new int[]{1, 0}); // Droite
         pushDirections.add(new int[]{0, 1}); // Bas

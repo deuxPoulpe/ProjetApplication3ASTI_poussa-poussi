@@ -1,11 +1,9 @@
 package agentsPackage;
 
-import java.util.Set;
 import java.util.Arrays;
 
 import gamePackage.Coordinates;
 import gamePackage.Grid;
-import gamePackage.PushAction;
 import gamePackage.Settings;
 import treeFormationPackage.ActionIterator;
 import treeFormationPackage.ActionTree;

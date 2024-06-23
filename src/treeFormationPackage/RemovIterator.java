@@ -13,7 +13,7 @@ import gamePackage.RemovAction;
 
 public class RemovIterator implements Iterator<RemovAction> {
     private Grid grid;
-    private Iterator<Set<Coordinates>> combinationsIterator;
+    private CombinationIterator combinationsIterator;
     private RemovAction currentPair;
 
     public RemovIterator(Grid grid, char color) {
