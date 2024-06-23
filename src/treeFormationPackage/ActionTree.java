@@ -131,16 +131,10 @@ public class ActionTree {
     
         pointCounter += removCoordinates.get(1).size() / 2;
     
-        System.out.println("Point Counter: " + pointCounter);
-    
         int alignmentsScore = calculateScore(alignmentCounts, opponentAlignmentCounts);
-    
-        System.out.println("Alignments Score: " + alignmentsScore);
     
         heuristicValue = pointCounter * agent.getWeights()[3] + alignmentsScore;
     
-        System.out.println("Heuristic Value: " + heuristicValue);
     }
-    
 
 }

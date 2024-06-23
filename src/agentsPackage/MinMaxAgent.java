@@ -1,14 +1,13 @@
 package agentsPackage;
 
-import java.util.Set;
-import java.util.Arrays;
-
 import gamePackage.Coordinates;
 import gamePackage.Grid;
 import gamePackage.PushAction;
 import gamePackage.Settings;
-import treeFormationPackage.ChildIterator;
+import java.util.Arrays;
+import java.util.Set;
 import treeFormationPackage.ActionTree;
+import treeFormationPackage.ChildIterator;
 
 public class MinMaxAgent extends Agent{
 
