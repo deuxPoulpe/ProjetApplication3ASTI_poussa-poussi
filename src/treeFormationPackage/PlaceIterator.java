@@ -15,7 +15,7 @@ public class PlaceIterator implements Iterator<ActionTree> {
 
     public PlaceIterator(ActionTree myNode) {
         this.node = myNode;
-        Grid grid = myNode.getGrid();
+        Grid grid = myNode.getAction().getGrid();
         this.emptyCoordIterator = new EmptyCoordIterator(grid);
     }
 
@@ -36,7 +36,7 @@ public class PlaceIterator implements Iterator<ActionTree> {
         }
 
         // On retourne un fils pour placer un jeton à la coordonnée actuelle.
-        return createPlaceChild(node.getGrid());
+        return createPlaceChild(node.getAction().getGrid());
     }
 
     /**

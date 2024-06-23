@@ -35,12 +35,8 @@ public class EmptyCoordIterator implements Iterator<Coordinates> {
             for (int x = (y == start.getY() ? start.getX() : 0); x < grid.getSize(); x++) {
                 Coordinates coordinates = new Coordinates(x, y);
 
-                boolean hasNeighbours = grid.hasNeighbours(coordinates);
-                boolean isOnBorder = coordinates.getX() == 0 || coordinates.getY() == 0 || coordinates.getX() == grid.getSize() - 1 || coordinates.getY() == grid.getSize() - 1;
-                boolean isNotOccupied = !grid.getHashMap().containsKey(coordinates);
-
                 // Si la case est vide et a des voisins ou est sur le bord, on la retourne
-                if (isNotOccupied && (hasNeighbours || isOnBorder)) {
+                if (grid.isPlaceValid(coordinates)) {
                     return coordinates;
                 }
             }

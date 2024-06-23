@@ -17,7 +17,7 @@ public class ActionIterator implements Iterator<ActionTree>{
     
     public ActionIterator(ActionTree myNode) {
         this.node = myNode;
-        Grid grid = node.getGrid();
+        Grid grid = node.getAction().getGrid();
 
         // On initialise l'itérateur de retrait en début de tour
         this.startRemovIterator = new RemovIterator(grid, node.getAgent().getColor());
@@ -39,7 +39,7 @@ public class ActionIterator implements Iterator<ActionTree>{
             throw new NoSuchElementException();
         }
      
-        ActionTree child = new ActionTree(node.getAgent(), node.getGrid());
+        ActionTree child = new ActionTree(node.getAgent(), node.getAction().getGrid());
         boolean actionPending = true;
         
         while (actionPending) {
@@ -49,10 +49,14 @@ public class ActionIterator implements Iterator<ActionTree>{
 
                 // On explore le prochain retrait en fin de tour
                 RemovAction removAction = endRemovIterator.next();
-                child.setGrid(removAction.getGrid());
+                child.getAction().setGrid(removAction.getGrid());
 
-                int index = node.getDepth() == 0 ? 0 : 1;
-                child.getRemovCoordinates().set(index, removAction.getCoordinates());
+                if (node.getDepth() == 0) {
+                    child.getAction().setStartRemove(removAction.getCoordinates());
+                }
+                else {
+                    child.getAction().setEndRemove(removAction.getCoordinates());
+                }
 
                 // On sort de la boucle
                 actionPending = false;
@@ -65,7 +69,7 @@ public class ActionIterator implements Iterator<ActionTree>{
                 child = pushIterator.next();
 
                 // On réinitialise l'itérateur de retrait en fin de tour sur la prochaine grille de poussée
-                endRemovIterator = new RemovIterator(child.getGrid(), child.getAgent().getColor());
+                endRemovIterator = new RemovIterator(child.getAction().getGrid(), child.getAgent().getColor());
 
                 // Si on n'a pas de retrait en fin de tour, on sort de la boucle
                 actionPending = false;
@@ -87,7 +91,7 @@ public class ActionIterator implements Iterator<ActionTree>{
                 if (!Settings.getInstance().getMandatoryPush()) {
                     
                     // On réinitialise l'itérateur de retrait en fin de tour sur la prochaine grille de placement
-                    endRemovIterator = new RemovIterator(child.getGrid(), child.getAgent().getColor());
+                    endRemovIterator = new RemovIterator(child.getAction().getGrid(), child.getAgent().getColor());
                     if (!endRemovIterator.hasNext()) {
                         actionPending = false;
                     }
@@ -105,8 +109,8 @@ public class ActionIterator implements Iterator<ActionTree>{
                 RemovAction removAction = startRemovIterator.next();
 
                 // On met à jour la grille et les coordonnées de retrait de jetons du prochain enfant
-                child.setGrid(removAction.getGrid());
-                child.getRemovCoordinates().set(0, removAction.getCoordinates());
+                child.getAction().setGrid(removAction.getGrid());
+                child.getAction().setStartRemove(removAction.getCoordinates());
 
                 // On réinitialise l'itérateur de placement sur le prochain retrait en début de tour
                 placeIterator = new PlaceIterator(child);

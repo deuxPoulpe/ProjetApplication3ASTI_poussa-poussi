@@ -50,7 +50,7 @@ public class Game {
     public void run() {
         
         while (true) {
-            Round();
+            executeRound();
 
             if (checkScore() == 0) {
                 System.out.println("B wins");
@@ -68,14 +68,15 @@ public class Game {
         }
     }
 
-    public void Round() {
+    public void executeRound() {
         // Avant placement du jeton
         if (grid.isFull()) {
             System.out.println("It's a draw.");
             System.exit(0);
         }
         // Placement et poussée du jeton
-        currentPlayer.executeGameRound(grid);
+        Action action = currentPlayer.evaluateAction(grid);
+        currentPlayer.executeAction(action);
 
         // Vérification du score
         int gameState = checkScore();

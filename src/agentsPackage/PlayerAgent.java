@@ -2,11 +2,13 @@ package agentsPackage;
 
 import java.util.List;
 import java.util.Scanner;
+import java.util.HashSet;
 
 import gamePackage.Coordinates;
 import gamePackage.Grid;
 import gamePackage.PushAction;
 import gamePackage.Settings;
+import gamePackage.Action;
 
 public class PlayerAgent extends Agent {
 
@@ -16,48 +18,118 @@ public class PlayerAgent extends Agent {
         super(myColor);
     }
     
-    public void executeGameRound(Grid grid) {
+    @Override
+    public void executeAction(Action action) {
 
-        // Phase de retrait 1
-        
-        // Pour chaque alignement de 5 jetons du joueur formé par l'adversaire, on retire 2 jetons de l'alignement
-        for (List<Coordinates> alignment : grid.getAlignments(super.getColor(), 5)) {
-            if (alignment.size() >= 5) {
-                removeTwoTokens(grid, alignment);
-            }
+        // Retire les jetons de l'alignement de 5 jetons de l'adversaire
+        for (Coordinates removCoords : action.getStartRemove()) {
+            action.getGrid().removeToken(removCoords);
         }
 
-        // Phase de placement
-        
-        placeToken(grid);
-
-        if (Settings.getInstance().getDisplayInTerminal())
-            grid.display();
-
-        // Phase de poussée
-
-        if (grid.isFull()) {
-            if (Settings.getInstance().getDisplayInTerminal())
-            System.out.println("The grid is full. No more tokens can be pushed.");
-        } else 
-
-        pushToken(grid);
-        if (Settings.getInstance().getDisplayInTerminal())
-            grid.display();
-
-        // Phase de retrait 2
-        
-        // Pour chaque alignement de 5 jetons formé, on retire 2 jetons de l'alignement
-        for (List<Coordinates> alignment : grid.getAlignments(super.getColor(), 5)) {
-            if (alignment.size() >= 5) {
-                removeTwoTokens(grid, alignment);
-            }
+        // Place le jeton sur le plateau
+        if (action.getPlacement() != null) {
+            action.getGrid().placeToken(getColor(), action.getPlacement());
         }
+
+        // Pousse le jeton si une poussée est possible
+        if (action.getPush() != null) {
+            action.getGrid().pushToken(action.getPush(), getColor());
+        }
+
+        // Retire les jetons de l'alignement de 5 jetons du joueur
+        for (Coordinates removCoords : action.getEndRemove()) {
+            action.getGrid().removeToken(removCoords);
+        }
+
     }
 
-    private void placeToken(Grid grid) {
+    @Override
+    public Action evaluateAction(Grid grid) {
 
-        List<Coordinates> emptyCells = grid.getValidEmptyCoordinates();
+        Action action = new Action(new HashSet<>(), null, null, new HashSet<>(), grid);
+        Grid gridCopy = grid.clone();
+
+        // Pour chaque alignement de 5 jetons du joueur formé par l'adversaire, on retire 2 jetons de l'alignement
+        List<List<Coordinates>> alignments = grid.getAlignments(getColor(), 5);
+        for (int i = 0; i < alignments.size(); i++) {
+            List<Coordinates> alignment = alignments.get(i);
+            for (int j = 0; j < 2; j++) {
+                Coordinates startRemCoords = inputRemove(alignment);
+                action.getStartRemove().add(startRemCoords);
+                gridCopy.removeToken(startRemCoords);
+
+                if (Settings.getInstance().getDisplayInTerminal()) {
+                    gridCopy.display();
+                }
+            }
+        }
+
+        // Place le jeton sur le plateau si la grille n'est pas pleine
+        if (!grid.isFull()) {
+            Coordinates placement = inputPlacement(grid);
+            action.setPlacement(placement);
+            gridCopy.placeToken(getColor(), placement);
+
+            if (Settings.getInstance().getDisplayInTerminal()) {
+                gridCopy.display();
+            }
+        }
+
+        // Détermine si une poussée est possible
+        int[][] directions = {{0, -1}, {0, 1}, {1, 0}, {-1, 0}};
+        boolean hasValidPush = false;
+        for (int i = 0; i < gridCopy.getSize(); i++) {
+            for (int j = 0; j < gridCopy.getSize(); j++) {
+                Coordinates coords = new Coordinates(i, j);
+                // Vérifie si la case contient un jeton avant de tenter de pousser
+                if (gridCopy.getHashMap().containsKey(coords)) {
+                    for (int[] direction : directions) {
+                        PushAction pushAction = new PushAction(coords, direction);
+                        if (gridCopy.isPushValid(pushAction, getColor())) {
+                            hasValidPush = true;
+                            break;
+                        }
+                    }
+                    if (hasValidPush) {
+                        break; // Sort de la boucle si une poussée valide est trouvée
+                    }
+                }
+            }
+            if (hasValidPush) {
+                break; // Sort de la boucle externe si une poussée valide est trouvée
+            }
+        }
+
+        // Si une poussée est possible, on demande au joueur de pousser un jeton
+        if (hasValidPush) {
+            PushAction pushAction = inputPush(gridCopy);
+            action.setPush(pushAction);
+            gridCopy.pushToken(pushAction, getColor());
+
+            if (Settings.getInstance().getDisplayInTerminal()) {
+                gridCopy.display();
+            }
+        }
+
+        // Pour chaque alignement de 5 jetons du joueur formé par le joueur, on retire 2 jetons de l'alignement
+        alignments = grid.getAlignments(getColor(), 5);
+        for (int i = 0; i < alignments.size(); i++) {
+            List<Coordinates> alignment = alignments.get(i);
+            for (int j = 0; j < 2; j++) {
+                Coordinates endRemCoords = inputRemove(alignment);
+                action.getEndRemove().add(endRemCoords);
+                gridCopy.removeToken(endRemCoords);
+
+                if (Settings.getInstance().getDisplayInTerminal()) {
+                    gridCopy.display();
+                }
+            }
+        }   
+        
+        return action;
+    }
+
+    private Coordinates inputPlacement(Grid grid) {
 
         Coordinates placeCoords;
         do {
@@ -70,42 +142,39 @@ public class PlayerAgent extends Agent {
             
             placeCoords = new Coordinates(x, y);
 
-        } while (!emptyCells.contains(placeCoords));
+        } while (!grid.isPlaceValid(placeCoords));
 
-        grid.placeToken(super.getColor(), placeCoords);
+        return placeCoords;
     }
 
-    private void pushToken(Grid grid) {
+    private PushAction inputPush(Grid grid) {
 
-        int result = 0;
+        PushAction pushAction = null;
 
         do {
-            if (Settings.getInstance().getDisplayInTerminal())
+            if (Settings.getInstance().getDisplayInTerminal()) {
                 System.out.println(super.getColor() + " : Enter the coordinates of the token you want to push and the direction you want to push it in (U, D, L, R)");
-                if (!Settings.getInstance().getMandatoryPush())
+                if (!Settings.getInstance().getMandatoryPush()) {
                     System.out.println("Enter E to not push any token");
+                }
+            }
 
             int x = scanner.nextInt();
             int y = scanner.nextInt();
             char pushDirection = scanner.next().charAt(0);
 
             if (!Settings.getInstance().getMandatoryPush() && pushDirection == 'E') {
-                return;
+                return null;
             }
 
             int[] direction = inputToDirection(pushDirection);
             Coordinates pushCoords = new Coordinates(x, y);
 
-            PushAction pushAction = new PushAction(pushCoords, direction);
+            pushAction = new PushAction(pushCoords, direction);
 
-            try {
-                grid.pushToken(pushAction, getColor());
-            } catch (IllegalArgumentException e) {
-                System.out.println(e.getMessage());
-                result = 1;
-            }
+        } while (!grid.isPushValid(pushAction, getColor()));
 
-        } while (result == 1);
+        return pushAction;
     }
 
      /**
@@ -131,61 +200,26 @@ public class PlayerAgent extends Agent {
         return coeffs;
     }
     
-    private int removeTokenFromAlignment(Grid grid, List<Coordinates> alignment) throws Exception {
-
-        int x = scanner.nextInt();
-        int y = scanner.nextInt();
-
-        Coordinates removeCoords = new Coordinates(x, y);
-
-        // Vérifie si les coordonnées saisies par le joueur sont dans l'alignement
+    private Coordinates inputRemove(List<Coordinates> alignment) {
         boolean found = false;
-        for (Coordinates c : alignment) {
-            if (c.equals(removeCoords)) {
-                found = true;
-                break;
+        Coordinates removeCoords = null;
+
+        while (!found) {
+            int x = scanner.nextInt();
+            int y = scanner.nextInt();
+
+            removeCoords = new Coordinates(x, y);
+
+            // Vérifie si les coordonnées saisies par le joueur sont dans l'alignement
+            for (Coordinates c : alignment) {
+                if (c.equals(removeCoords)) {
+                    found = true;
+                    alignment.remove(removeCoords);
+                    break;
+                }
             }
         }
 
-        if (!found) {
-            throw new Exception("The entered coordinates are not in the alignment");
-        }
-
-        try {
-            grid.removeToken(removeCoords);
-        } catch (IllegalArgumentException e) {
-            System.out.println(e.getMessage());
-            return 1;
-        }
-        alignment.remove(removeCoords);
-        return 0;
-
+        return removeCoords;
     }
-
-    private void removeTwoTokens(Grid grid, List<Coordinates> alignment) {
-        String index = "first";
-        for (int i = 0; i < 2; i++) {
-            
-
-            // Demande au joueur de retirer un jeton de l'alignement
-            do {
-                if (Settings.getInstance().getDisplayInTerminal())
-                    System.out.println(super.getColor() + " : Enter the coordinates of the " + index + " token you want to remove");
-                try {
-                    if (removeTokenFromAlignment(grid, alignment) == 0) {
-                        break;
-                    }
-                } catch (Exception e) {
-                    System.out.println(e.getMessage());
-                }
-            } while (true);
-
-            index = "second";
-
-            // Affiche le plateau de jeu après que le joueur ait retiré un jeton
-            if (Settings.getInstance().getDisplayInTerminal())
-                grid.display();
-        }
-    }
-
 }

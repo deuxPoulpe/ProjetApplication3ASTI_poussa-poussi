@@ -1,22 +1,20 @@
-import java.util.List;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.Random;
 
 import agentsPackage.MinMaxAgent;
 import gamePackage.*;
-import treeFormationPackage.ActionIterator;
-import treeFormationPackage.ActionTree;
-import treeFormationPackage.PushIterator;
 
 public class BenchmarkMinMax {
     private static int depth = 2; // Ajout d'une valeur pour la profondeur de recherche
     private static int numberOfTests = 1000; // Ajout d'une valeur pour le nombre de tests
     private static int nbTokenPerPlayer = 5; // Ajout d'une valeur pour le nombre de jetons par joueur
     public static long averageDurationBestMove = 0;
+    private static final Random randomGenerator = new Random(); // Créez une instance de Random
 
     public static void main(String[] args) throws Exception {
 
@@ -44,16 +42,20 @@ public class BenchmarkMinMax {
 
     public static Grid generateRandomGrid(int nbTokenPerPlayer) {
         Grid grid = new Grid();
-        List<Coordinates> emptyCellCoords = grid.getValidEmptyCoordinates();
+
+        Coordinates randomCoordinates = new Coordinates(randomGenerator.nextInt(grid.getSize()), randomGenerator.nextInt(grid.getSize()));
+
         for (int i = 0; i < nbTokenPerPlayer; i++) {
-            Coordinates randomCoords = emptyCellCoords.get((int) (Math.random() * emptyCellCoords.size()));
-            grid.placeToken('Y', randomCoords);
-            emptyCellCoords.remove(randomCoords);
+            while (!grid.isFull() && !grid.isPlaceValid(randomCoordinates)) {
+                randomCoordinates = new Coordinates(randomGenerator.nextInt(grid.getSize()), randomGenerator.nextInt(grid.getSize()));
+                grid.placeToken('Y', randomCoordinates);
+            }
         }
         for (int j=0; j< nbTokenPerPlayer; j++) {
-            Coordinates randomCoords = emptyCellCoords.get((int) (Math.random() * emptyCellCoords.size())); 
-            grid.placeToken('B', randomCoords);
-            emptyCellCoords.remove(randomCoords);
+            while (!grid.isFull() && !grid.isPlaceValid(randomCoordinates)) {
+                randomCoordinates = new Coordinates(randomGenerator.nextInt(grid.getSize()), randomGenerator.nextInt(grid.getSize()));
+                grid.placeToken('Y', randomCoordinates);
+            }
         }
 
         return grid;
@@ -63,8 +65,7 @@ public class BenchmarkMinMax {
         ExecutorService executor = Executors.newSingleThreadExecutor();
         Callable<Long> task = () -> {
             long startTime = System.nanoTime();
-            ActionTree root = new ActionTree(agent, grid);
-            agent.evaluateBestMove(root, agent.getSmartness(), Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+            agent.evaluateAction(grid);
             long endTime = System.nanoTime();
             return (endTime - startTime) / 1000000;
         };
@@ -117,12 +118,6 @@ public class BenchmarkMinMax {
         }
         long average = sum / numberOfTests;
         return average;
-    }
-    
-    // Méthode pour effacer le terminal
-    private static void clearTerminal() {
-        System.out.print("\033[H\033[2J");
-        System.out.flush();
     }
     
 }

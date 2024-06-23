@@ -26,7 +26,7 @@ public class PushIterator implements Iterator<ActionTree> {
 
     public PushIterator(ActionTree myNode) {
         this.node = myNode;
-        this.ownTokenCoordsIterator = new ColorTokenCoordsIterator(myNode.getGrid(), myNode.getAgent().getColor());
+        this.ownTokenCoordsIterator = new ColorTokenCoordsIterator(myNode.getAction().getGrid(), myNode.getAgent().getColor());
         if (ownTokenCoordsIterator.hasNext()) {
             currentPushAction.setCoordinates(ownTokenCoordsIterator.next());
         }
@@ -38,7 +38,7 @@ public class PushIterator implements Iterator<ActionTree> {
     public boolean hasNext() {
 
         // Si la direction est valide, on retourne vrai
-        if (currentPushAction.getDirection() != null && node.getGrid().isPushValid(currentPushAction, node.getAgent().getColor())) {
+        if (currentPushAction.getDirection() != null && node.getAction().getGrid().isPushValid(currentPushAction, node.getAgent().getColor())) {
             return true;
 
         // Sinon, si on a une prochaine direction, on vérifie si elle est valide
@@ -66,10 +66,10 @@ public class PushIterator implements Iterator<ActionTree> {
         }
 
         // On crée un nouvel enfant avec la copie de la grille actuelle
-        ActionTree child = new ActionTree(node, node.getGrid().clone(), node.getPlaceCoordinates(), currentPushAction.clone());
+        ActionTree child = new ActionTree(node, node.getAction().getGrid().clone(), node.getAction().getPlacement(), currentPushAction.clone());
 
         // On effectue l'action de poussée sur la grille du nouvel enfant
-        child.getGrid().pushToken(currentPushAction, node.getAgent().getColor());
+        child.getAction().getGrid().pushToken(currentPushAction, node.getAgent().getColor());
 
         // Si on a une prochaine direction, on se place dessus
         if (directionsIterator.hasNext()) {

@@ -1,7 +1,6 @@
 package gamePackage;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -34,16 +33,6 @@ public class Grid {
         return this.map.get(coordinates);
     }
 
-    public HashMap<Coordinates, Token> getmovedTokens() {
-        return this.previousMovedTokens;
-    }
-
-    // Constructors
-    
-    public Grid(HashMap<Coordinates, Token> map) {
-        this.map = map;
-    }
-
     public Grid() {
         this.map = new HashMap<>();
     }
@@ -51,18 +40,44 @@ public class Grid {
     // Methods
 
     public Grid clone() {
-        HashMap<Coordinates, Token> newGrid = new HashMap<>();
+        Grid newGrid = new Grid();
+
+        HashMap<Coordinates, Token> newMap = new HashMap<>();
         for (Coordinates c : map.keySet()) {
-            newGrid.put(c, map.get(c));
+            newMap.put(c, map.get(c));
         }
-        return new Grid(newGrid);
+        newGrid.map = newMap;
+
+        return newGrid;
     }
 
     public boolean isFull() {
         return map.size() == this.size * this.size;
     }
 
+    /**
+     * Vérifie si une case a des voisins.
+     * @param coordinates les coordonnées de la case à vérifier.
+     * @return true si la case a des voisins, false sinon.
+     */
+    private boolean hasNeighbours(Coordinates coordinates) {
+        int [][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
+        for (int[] direction : directions)
+        {
+            Coordinates neighbour = new Coordinates(coordinates.getX()+direction[0], coordinates.getY()+direction[1]);
+            if (map.get(neighbour) != null)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
 
+    public boolean isPlaceValid(Coordinates coordinates) {
+        boolean isOnBorder = coordinates.getX() == 0 || coordinates.getX() == size - 1 || coordinates.getY() == 0 || coordinates.getY() == size - 1;
+        return !map.containsKey(coordinates) && (hasNeighbours(coordinates) || isOnBorder);
+    }
+    
     public void placeToken(char color, Coordinates coordinates) {
         // Check if there is already a token at the given coordinates
         if (map.containsKey(coordinates)) {
@@ -81,12 +96,6 @@ public class Grid {
         map.remove(coordinates);
     }
 
-    public void removeTokens(Collection<Coordinates> tokens) {
-        for (Coordinates c : tokens) {
-            removeToken(c);
-        }
-    }
-
     /**
      * Renvoie le nombre de cellules vides dans une direction donnée à partir de coordonnées données.
      * @param lastToken les coordonnées à partir desquelles commencer à chercher les cellules vides.
@@ -94,7 +103,7 @@ public class Grid {
      * @param coeffY le coefficient de déplacement en y.
      * @return le nombre de cellules vides dans la direction donnée.
      */
-    public int countEmptyCellsInDirection(Coordinates coordinates, int[] direction) {
+    private int countEmptyCellsInDirection(Coordinates coordinates, int[] direction) {
 
         int nbEmptyCells = 0;
         Coordinates currentCoordinates = new Coordinates(coordinates.getX() + direction[0], coordinates.getY() + direction[1]);
@@ -108,7 +117,7 @@ public class Grid {
         return nbEmptyCells;
     }
     
-    public HashMap<Coordinates, Token> getTokensToMove(PushAction pushAction, char color) {
+    private HashMap<Coordinates, Token> getTokensToMove(PushAction pushAction, char color) {
 
         Coordinates coordinates = pushAction.getCoordinates();
         int[] direction = pushAction.getDirection();
@@ -135,7 +144,7 @@ public class Grid {
         return tokensToMove;
     }
     
-    public HashMap<Coordinates, Token> getMovedTokens(PushAction pushAction, HashMap<Coordinates, Token> tokensToMove) {
+    private HashMap<Coordinates, Token> getMovedTokens(PushAction pushAction, HashMap<Coordinates, Token> tokensToMove) {
 
         int[] direction = pushAction.getDirection();
         Coordinates coordinates = pushAction.getCoordinates();
@@ -212,14 +221,52 @@ public class Grid {
         // On met à jour les jetons déplacés
         previousMovedTokens = tokensToMove;
     }
- 
+     
+    /**
+     * Renvoie les jetons voisins d'un jeton donné dans une direction donnée.
+     * @param coordinates les coordonnées du jeton à partir duquel chercher les voisins.
+     * @param direction la direction dans laquelle chercher les voisins.
+     * @param color la couleur des jetons voisins à chercher.
+     * @return une liste des jetons voisins dans la direction donnée.
+     * 
+     * Complexité: O(n) où n est le nombre de jetons dans la direction donnée.
+     */
+    private List<Coordinates> getAlignment(Coordinates coordinates, int direction[], Set<Coordinates> visited) {
+        // Initialiser les structures de données
+        List<Coordinates> neighbours = new ArrayList<>();
+        Stack<Coordinates> stack = new Stack<>();
+        
+        // Commencer par les coordonnées initiales
+        stack.push(coordinates);
+
+        // Parcourir les coordonnées jusqu'à ce que la pile soit vide
+        while (!stack.isEmpty()) {
+            Coordinates current = stack.pop();
+
+            // Parcourir les voisins de la coordonnée actuelle
+            for (int i = -1; i <= 1; i += 2) {
+                Coordinates neighbour = new Coordinates(current.getX() + i * direction[0], current.getY() + i * direction[1]);
+
+                // Vérifier les conditions pour ajouter le voisin à la liste
+                if (!visited.contains(neighbour) && map.get(neighbour) != null && map.get(neighbour).getColor() == getToken(current).getColor()) {
+                    neighbours.add(neighbour);
+                    visited.add(neighbour);
+                    stack.push(neighbour);
+                }
+            }
+        }
+
+        // Retourner la liste des voisins
+        return neighbours;
+    }
+
     /**
      * Renvoie les alignements de 5 jetons dans le plateau.
      * @return une liste des alignements de 5 jetons dans le plateau.
      * @param specifiedColor la couleur des jetons à aligner.
      * @param alignmentSize la taille de l'alignement à chercher.
      */
-    public List<List<Coordinates>> getAlignments(char specifiedColor, int alignmentSize) {
+    public List<List<Coordinates>> getAlignments(char color, int alignmentSize) {
 
         List<List<Coordinates>> result = new ArrayList<>();
         int[][] directions = {{0, 1}, {1, 0}, {1, 1}, {1, -1}};
@@ -228,10 +275,10 @@ public class Grid {
         // Pour chaque jeton dans la grille
         for (Coordinates c : map.keySet()) {
             Token token = map.get(c);
-            char color = token.getColor();
+            char tokenColor = token.getColor();
             
             // Si le jeton n'est pas de la couleur spécifiée ou a déjà été visité, on passe au suivant
-            if (color != specifiedColor || visitedTokens.contains(c)) {
+            if (tokenColor != color || visitedTokens.contains(c)) {
                 continue;
             }
     
@@ -268,62 +315,6 @@ public class Grid {
         }
         
         return result;
-    }
-    
-    /**
-     * Renvoie les jetons voisins d'un jeton donné dans une direction donnée.
-     * @param coordinates les coordonnées du jeton à partir duquel chercher les voisins.
-     * @param direction la direction dans laquelle chercher les voisins.
-     * @param color la couleur des jetons voisins à chercher.
-     * @return une liste des jetons voisins dans la direction donnée.
-     * 
-     * Complexité: O(n) où n est le nombre de jetons dans la direction donnée.
-     */
-    public List<Coordinates> getAlignment(Coordinates coordinates, int direction[], Set<Coordinates> visited) {
-            // Initialiser les structures de données
-            List<Coordinates> neighbours = new ArrayList<>();
-            Stack<Coordinates> stack = new Stack<>();
-            
-            // Commencer par les coordonnées initiales
-            stack.push(coordinates);
-
-            // Parcourir les coordonnées jusqu'à ce que la pile soit vide
-            while (!stack.isEmpty()) {
-                Coordinates current = stack.pop();
-
-                // Parcourir les voisins de la coordonnée actuelle
-                for (int i = -1; i <= 1; i += 2) {
-                    Coordinates neighbour = new Coordinates(current.getX() + i * direction[0], current.getY() + i * direction[1]);
-
-                    // Vérifier les conditions pour ajouter le voisin à la liste
-                    if (!visited.contains(neighbour) && map.get(neighbour) != null && map.get(neighbour).getColor() == getToken(current).getColor()) {
-                        neighbours.add(neighbour);
-                        visited.add(neighbour);
-                        stack.push(neighbour);
-                    }
-                }
-            }
-
-            // Retourner la liste des voisins
-            return neighbours;
-        }
-
-    /**
-     * Vérifie si une case a des voisins.
-     * @param coordinates les coordonnées de la case à vérifier.
-     * @return true si la case a des voisins, false sinon.
-     */
-    public boolean hasNeighbours(Coordinates coordinates) {
-        int [][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
-        for (int[] direction : directions)
-        {
-            Coordinates neighbour = new Coordinates(coordinates.getX()+direction[0], coordinates.getY()+direction[1]);
-            if (map.get(neighbour) != null)
-            {
-                return true;
-            }
-        }
-        return false;
     }
 
     public void display() {
@@ -370,102 +361,5 @@ public class Grid {
         }
         System.out.println("──┘");
     }
-
-    /**
-     * Cette méthode permet trouver les coordonnées des cellules vides du plateau.
-     * @return Set<Coordinates> qui contient les coordonnées des cellules vides du plateau.
-     */
-    public List<Coordinates> getValidEmptyCoordinates () {
-        
-        // On récupère les coordonnées des cellules non vides
-        Set<Coordinates> nonEmptyCells = map.keySet();
-
-        // On initialise un Set qui contiendra les coordonnées des cellules vides
-        List<Coordinates> emptyCells = new ArrayList<>();
-
-        // On parcourt le plateau pour trouver les cellules vides
-        for (int i = 0; i < size; i++) {
-            for (int j = 0; j < size; j++) {
-                Coordinates coords = new Coordinates(i, j);
-
-                // Si la cellule n'est pas dans le Set des cellules non vides, on l'ajoute au Set des cellules vides
-                if (!nonEmptyCells.contains(coords) && (hasNeighbours(coords) || i == 0 || i == size - 1 || j == 0 || j == size - 1)) {
-                    emptyCells.add(coords);
-                }
-            }
-        }
-
-        return emptyCells;
-    }
-
-    /**
-     * Cette méthode permet de récupérer les coordonnées des jetons du joueur.
-     * @return List<Coordinates> qui contient les coordonnées des jetons du joueur.
-     */
-    public List<Coordinates> getColorTokenCoordinates (char color) {
-
-        // On initialise une liste qui contiendra les coordonnées des jetons du joueur
-        List<Coordinates> ownTokens = new ArrayList<>();
-
-        // On parcourt l'ensemble des jetons du posés sur le plateau
-        for (Coordinates coords : map.keySet()) {
-
-            // Si la couleur du jeton est celle du joueur, on l'ajoute à la liste des jetons du joueur
-            if (getToken(coords).getColor()  == color) {
-                ownTokens.add(coords);
-            }
-        }
-
-        return ownTokens;
-    }
-
-    public boolean hasColorInDirection(Coordinates coords, int[] direction, char color) {
-
-        // On vérifie si la cellule est sur un bord du plateau
-        if (isOnBorder(coords)) {
-            return false;
-        }
-        // Si les prochaines coordonnées sont dans le plateau et que la couleur est celle du joueur, on retourne vrai
-        Coordinates nextCoords = new Coordinates(coords.getX() + direction[0], coords.getY() + direction[1]);
-        if (map.keySet().contains(nextCoords) && map.get(nextCoords).getColor() == color) {
-            return true;
-        }
-        // Sinon on continue de vérifier dans la même direction
-        return hasColorInDirection(nextCoords, direction, color);
-    }
-
-    public boolean isAllignedWithColor (Coordinates coords, char color) {
-        int[][] directions = {{0, 1}, {1, 0}, {0, -1}, {-1, 0}};
-
-        // On vérifie s'il y a un jeton de la couleur donnée dans chaque direction
-        for (int[] direction : directions) {
-            if (hasColorInDirection(coords, direction, color)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean hasValidPush(char color) {
-        EmptyCoordIterator emptyCoordIterator = new EmptyCoordIterator(this);
-
-        // Tant qu'il reste des cellules vides à explorer
-        while (emptyCoordIterator.hasNext()) {
-
-            // On vérifie si la cellule vide est alignée avec un jeton du joueur
-            Coordinates emptyCoordinates = emptyCoordIterator.next();
-            if (isAllignedWithColor(emptyCoordinates, color)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    public boolean isOnBorder(Coordinates coordinates) {
-        return coordinates.getX() == 0 || coordinates.getX() == size - 1 || coordinates.getY() == 0 || coordinates.getY() == size - 1;
-    }
 }
  
-
-
-

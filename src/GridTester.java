@@ -1,12 +1,8 @@
 import agentsPackage.MinMaxAgent;
 import gamePackage.Coordinates;
 import gamePackage.Grid;
-import gamePackage.PushAction;
 import gamePackage.Settings;
-import treeFormationPackage.ActionIterator;
-import treeFormationPackage.ActionTree;
-import treeFormationPackage.PushIterator;
-import treeFormationPackage.RemovIterator;
+import gamePackage.Action;
 
 public class GridTester {    
     public static void main(String[] args) throws Exception {
@@ -15,21 +11,19 @@ public class GridTester {
 
         Grid grid = new Grid();
         grid.placeToken('Y', new Coordinates(0, 0));
-        grid.placeToken('Y', new Coordinates(4, 0));
-        grid.placeToken('Y', new Coordinates(7, 0));
-        grid.placeToken('Y', new Coordinates(0, 4));
-        grid.placeToken('Y', new Coordinates(7, 6));
+        grid.placeToken('Y', new Coordinates(0, 1));
+        grid.placeToken('Y', new Coordinates(0, 2));
+        grid.placeToken('Y', new Coordinates(0, 3));
 
-        grid.placeToken('B', new Coordinates(3, 0));
-        grid.placeToken('B', new Coordinates(0, 2));    
-        grid.placeToken('B', new Coordinates(0, 3));
-        grid.placeToken('B', new Coordinates(0, 6));
-        grid.placeToken('B', new Coordinates(0, 7));
+        // grid.placeToken('B', new Coordinates(3, 0));
+        // grid.placeToken('B', new Coordinates(0, 2));    
+        // grid.placeToken('B', new Coordinates(0, 3));
+        // grid.placeToken('B', new Coordinates(0, 6));
+        // grid.placeToken('B', new Coordinates(0, 7));
 
         grid.display();
 
         MinMaxAgent agent = new MinMaxAgent('Y', 2);
-        ActionTree root = new ActionTree(agent, grid);
 
         // // AFFICHAGE DES ACTIONS
         // ActionIterator actionIterator = new ActionIterator(root);
@@ -43,7 +37,7 @@ public class GridTester {
         // }
 
         // AFFICHAGE DU MEILLEUR COUP
-        ActionTree bestMove = agent.evaluateBestMove(root, 2, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+        Action bestMove = agent.evaluateAction(grid);
         System.out.println("Best move: " + bestMove);
         bestMove.getGrid().display();
 

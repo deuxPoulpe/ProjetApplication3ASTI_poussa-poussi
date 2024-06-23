@@ -9,11 +9,12 @@ import gamePackage.PushAction;
 import gamePackage.Settings;
 import treeFormationPackage.ActionIterator;
 import treeFormationPackage.ActionTree;
+import gamePackage.Action;
 
 public class MinMaxAgent extends Agent{
 
     private int smartness;
-    private final int[] weights = {1, 3, 9, 50};
+    private final int[] WEIGHTS = {1, 3, 9, 50};
     
     public MinMaxAgent(char myColor, int smartness) {
         super(myColor);
@@ -21,79 +22,74 @@ public class MinMaxAgent extends Agent{
     }
 
     public int[] getWeights() {
-        return weights;
+        return WEIGHTS;
     }
 
     public int getSmartness() {
         return smartness;
     }
 
-    public void executeGameRound(Grid grid) {
-        
-        // Si le plateau est plein, on affiche un message d'erreur
-        if (grid.getSize() * grid.getSize() == grid.getHashMap().keySet().size()) System.out.println("No possible moves");
-        
-        // Calcule le meilleur coup à jouer
-        ActionTree root = new ActionTree(this, grid);
-        ActionTree bestMove = evaluateBestMove(root, smartness, Integer.MIN_VALUE, Integer.MAX_VALUE, true);
-        
-        // Phase de retrait 1
+    @Override
+    public void executeAction(Action action) {
 
-        String message ="";
-
-        // Pour chaque alignement de 5 jetons du joueur formé par l'adversaire, on retire 2 jetons de l'alignement
-        for (Coordinates removCoords : bestMove.getRemovCoordinates().get(0)) {
+        boolean displayInTerminal = Settings.getInstance().getDisplayInTerminal();
+        Grid grid = action.getGrid();
+        
+        // Retire les jetons de l'alignement de 5 jetons de l'adversaire
+        for (Coordinates removCoords : action.getStartRemove()) {
             grid.removeToken(removCoords);
-            message += "Removed token at " + removCoords.toString() + "\n";
+
+            if (displayInTerminal) {
+                System.out.println(getColor() + " removes token at " + removCoords.toString());
+            }
         }
-
-        if (Settings.getInstance().getDisplayInTerminal())
-            System.out.println(message);
-
-        // Phase de placement
-
-        // Place le jeton sur le plateau
-        grid.placeToken(getColor(), bestMove.getPlaceCoordinates());
-        
-        if (Settings.getInstance().getDisplayInTerminal()) {
-            System.out.println(getColor() + " : places token at " + bestMove.getPlaceCoordinates().toString());
+        if (action.getStartRemove().size() > 0 && displayInTerminal) {
             grid.display();
         }
-        
-        // Phase de poussée
 
-        PushAction pushAction = bestMove.getPushAction();
+        // Place le jeton sur le plateau
+        if (action.getPlacement() != null) {
+            grid.placeToken(getColor(), action.getPlacement());
 
-        // Si le plateau n'est pas plein, on pousse le jeton choisi dans la direction choisie
-        if (grid.isFull()){
-            message = "The grid is full. No more tokens can be pushed.";
-        } else if (pushAction == null) {
-            message = getColor() + " : does not push any token";
-        } else {
-            message = getColor() + " : pushes token at " + pushAction.getCoordinates().toString() + " in direction " + Arrays.toString(pushAction.getDirection());
-            System.out.println(message);
-            grid.pushToken(bestMove.getPushAction(), getColor());
+            if (displayInTerminal) {
+                System.out.println(getColor() + " places token at " + action.getPlacement().toString());
+                grid.display();
+            }
         }
-        if (Settings.getInstance().getDisplayInTerminal())
-
-        // Phase de retrait 2
-
-        message = "";
-
-        // Pour chaque alignement de 5 jetons formé, on retire 2 jetons de l'alignement
-        Set<Coordinates> removCoordSet = bestMove.getRemovCoordinates().get(1);
-
-        if (removCoordSet != null) {
-            for (Coordinates removCoords : removCoordSet) {
-                grid.removeToken(removCoords);
-                message += "Removed token at " + removCoords.toString() + "\n";
+        else {
+            if (displayInTerminal) {
+                System.out.println("The grid is full, "+ getColor() +"does not place any token");
             }
         }
 
-        if (Settings.getInstance().getDisplayInTerminal()) {
-            System.out.println(message);
+        // Pousse le jeton si une poussée est possible
+        if (action.getPush() != null) {
+            grid.pushToken(action.getPush(), getColor());
+
+            if (displayInTerminal) {
+                System.out.println(getColor() + " pushes token at " + action.getPush().getCoordinates() + " in direction " + Arrays.toString(action.getPush().getDirection()));                grid.display();
+                grid.display();
+            }
+        }
+        else {
+            if (displayInTerminal) {
+                System.out.println(getColor() + " does not push any token");
+            }
+        }
+
+        // Retire les jetons de l'alignement de 5 jetons du joueur
+        for (Coordinates removCoords : action.getEndRemove()) {
+            grid.removeToken(removCoords);
+
+            if (displayInTerminal) {
+                System.out.println(getColor() + " removes token at " + removCoords.toString());
+            }
+
+        }
+        if (action.getEndRemove().size() > 0 && displayInTerminal) {
             grid.display();
         }
+        
     }
 
     /**
@@ -105,7 +101,15 @@ public class MinMaxAgent extends Agent{
      * @param maximizingPlayer
      * @return GridTree
      */
-    public ActionTree evaluateBestMove(ActionTree node, int depth, int alpha, int beta, boolean maximizingPlayer) {
+    @Override
+    public Action evaluateAction(Grid grid)  {
+        ActionTree root = new ActionTree(this, grid);
+        Action bestAction = findBestMove(root, smartness, Integer.MIN_VALUE, Integer.MAX_VALUE, true).getAction();
+        bestAction.setGrid(grid);
+        return bestAction;
+    }
+
+    private ActionTree findBestMove(ActionTree node, int depth, int alpha, int beta, boolean maximizingPlayer) {
         ActionIterator childIterator = new ActionIterator(node);
 
         // Vérifie si le noeud est une feuille ou si la profondeur est nulle, puis retourne le noeud
@@ -125,7 +129,7 @@ public class MinMaxAgent extends Agent{
                 child.setDepth(node.getDepth() + 1);
 
                 // Évalue le noeud enfant
-                ActionTree nodeEval = evaluateBestMove(child, depth - 1, alpha, beta, false);
+                ActionTree nodeEval = findBestMove(child, depth - 1, alpha, beta, false);
                 int eval = nodeEval.getHeuristicValue();
 
                 // Met à jour la meilleure valeur et le meilleur enfant si nécessaire
@@ -150,7 +154,7 @@ public class MinMaxAgent extends Agent{
                 ActionTree child = childIterator.next(); // Correction: déplacement de cette ligne dans la boucle
 
                 // Évalue le noeud enfant
-                ActionTree nodeEval = evaluateBestMove(child, depth - 1, alpha, beta, true);
+                ActionTree nodeEval = findBestMove(child, depth - 1, alpha, beta, true);
                 int eval = nodeEval.getHeuristicValue();
 
                 // Met à jour la meilleure valeur et le meilleur enfant si nécessaire
