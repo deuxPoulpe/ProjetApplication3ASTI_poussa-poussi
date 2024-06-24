@@ -30,6 +30,8 @@ public class MinMaxAgent extends Agent{
     @Override
     public void executeAction(Action action) {
 
+        System.out.println("Executing action: " + action);
+
         boolean displayInTerminal = Settings.getInstance().getDisplayInTerminal();
         Grid grid = action.getGrid();
         

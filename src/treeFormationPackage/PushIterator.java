@@ -66,7 +66,8 @@ public class PushIterator implements Iterator<ActionTree> {
         }
 
         // On crée un nouvel enfant avec la copie de la grille actuelle
-        ActionTree child = new ActionTree(node, node.getAction().getGrid().clone(), node.getAction().getPlacement(), currentPushAction.clone());
+        Coordinates placementClone = node.getAction().getPlacement() != null ? node.getAction().getPlacement().clone() : null;
+        ActionTree child = new ActionTree(node, node.getAction().getGrid().clone(), placementClone, currentPushAction.clone());
 
         // On effectue l'action de poussée sur la grille du nouvel enfant
         child.getAction().getGrid().pushToken(currentPushAction, node.getAgent().getColor());

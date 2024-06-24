@@ -69,7 +69,9 @@ public class Action {
 
     @Override
     public Action clone() {
-        return new Action(startRemove, placement, push.clone(), endRemove, grid.clone());
+        PushAction pushClone;
+        pushClone = push == null ? null : push.clone();
+        return new Action(startRemove, placement, pushClone, endRemove, grid.clone());
     }
     
 }

@@ -50,4 +50,7 @@ public class Coordinates {
         return "(" + this.x + ", " + this.y + ")";
     }
     
+    public Coordinates clone() {
+        return new Coordinates(this.x, this.y);
+    }
 }

@@ -19,9 +19,10 @@ public class GridTester {
         Settings.getInstance(true, true, true);
 
         Grid grid = new Grid();
-        grid.placeToken('Y', new Coordinates(0, 0));
-        grid.placeToken('Y', new Coordinates(0, 1));
-        grid.placeToken('Y', new Coordinates(0, 2));
+        grid.placeToken('Y', new Coordinates(7, 0));
+        grid.placeToken('Y', new Coordinates(6, 0));
+        grid.placeToken('Y', new Coordinates(5, 0));
+        grid.placeToken('Y', new Coordinates(4, 0));
 
         // grid.placeToken('B', new Coordinates(3, 0));
         // grid.placeToken('B', new Coordinates(0, 2));    
@@ -43,7 +44,7 @@ public class GridTester {
         //     System.out.println("Action: " + action);
         //     action.getAction().getGrid().display();
         //     i++;
-        //     if (action.getAction().getStartRemove().size() > 0) {
+        //     if (action.getAction().getEndRemove().size() > 0) {
         //         break;
         //     }
         // }
