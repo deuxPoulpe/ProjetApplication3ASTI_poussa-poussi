@@ -41,6 +41,9 @@ public abstract class FragmentGridBinding extends ViewDataBinding {
   public final TextView orangeTurn;
 
   @NonNull
+  public final Button restartButton;
+
+  @NonNull
   public final TextView scoreBoard;
 
   @NonNull
@@ -60,9 +63,9 @@ public abstract class FragmentGridBinding extends ViewDataBinding {
 
   protected FragmentGridBinding(Object _bindingComponent, View _root, int _localFieldCount,
       ImageView blueSkip, TextView blueTurn, GridLayout borderGridLayout, FrameLayout gridContainer,
-      Button mainMenu, ImageView orangeSkip, TextView orangeTurn, TextView scoreBoard,
-      FrameLayout squareLayout, GridLayout tokenGridLayout, ConstraintLayout wholeScreen,
-      FrameLayout winnerBackground, TextView winnerTextView) {
+      Button mainMenu, ImageView orangeSkip, TextView orangeTurn, Button restartButton,
+      TextView scoreBoard, FrameLayout squareLayout, GridLayout tokenGridLayout,
+      ConstraintLayout wholeScreen, FrameLayout winnerBackground, TextView winnerTextView) {
     super(_bindingComponent, _root, _localFieldCount);
     this.blueSkip = blueSkip;
     this.blueTurn = blueTurn;
@@ -71,6 +74,7 @@ public abstract class FragmentGridBinding extends ViewDataBinding {
     this.mainMenu = mainMenu;
     this.orangeSkip = orangeSkip;
     this.orangeTurn = orangeTurn;
+    this.restartButton = restartButton;
     this.scoreBoard = scoreBoard;
     this.squareLayout = squareLayout;
     this.tokenGridLayout = tokenGridLayout;

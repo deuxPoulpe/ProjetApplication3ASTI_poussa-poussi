@@ -32,4 +32,11 @@ public class PushAction {
         String strDirection = "Direction: " + directionCoordinates  + "\n";
         return strCoordinates + strDirection;
     }
+
+    @Override
+    public PushAction clone() {
+        Coordinates newCoordinates = new Coordinates(coordinates.getX(), coordinates.getY());
+        int[] newDirection = new int[]{direction[0], direction[1]};
+        return new PushAction(newCoordinates, newDirection);
+    }
 }

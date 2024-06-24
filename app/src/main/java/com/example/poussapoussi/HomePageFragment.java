@@ -2,6 +2,7 @@ package com.example.poussapoussi;
 
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.annotation.SuppressLint;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -95,16 +96,15 @@ public class HomePageFragment extends Fragment {
 
         binding.resume.setOnClickListener(new View.OnClickListener() {
             public void onClick(View v) {
-                if (gridFragment == null) {
-                    // If the gridFragment is null, we make a message appear to the user to tell him that there is no game to resume
-                    shakeView(binding.resume);
-                }
-                else if (getActivity() != null) {
+                if (getActivity() != null && gridFragment != null && !gridFragment.isTerminal()){
                     gridFragment.setResume(true);
                     getActivity().getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_container, gridFragment)
                             .addToBackStack(null)
                             .commit();
+                }
+                else {
+                    shakeView(binding.resume);
                 }
             }
         });
@@ -162,11 +162,13 @@ public class HomePageFragment extends Fragment {
 
     private void resumeButtonChange() {
         Button resumeButton = binding.resume;
-        if( gridFragment != null && gridFragment.getGrid() != null){
+        if( gridFragment != null && gridFragment.getGrid() != null && !gridFragment.isTerminal()){
             resumeButton.setBackgroundResource(R.drawable.home_page_button_blue);
+            resumeButton.setTextColor(getResources().getColor(R.color.white));
         }
         else{
             resumeButton.setBackgroundResource(R.drawable.home_page_button_grey);
+            resumeButton.setTextColor(getResources().getColor(R.color.grey_white));
         }
     }
 

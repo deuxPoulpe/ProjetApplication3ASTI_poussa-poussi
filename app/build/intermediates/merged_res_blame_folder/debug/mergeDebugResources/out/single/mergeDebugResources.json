@@ -1,15 +1,95 @@
 [
     {
-        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\xml_data_extraction_rules.xml.flat",
-        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\xml\\data_extraction_rules.xml"
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_home_page_button_orange.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\home_page_button_orange.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_cell_border_blue.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\cell_border_blue.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_launcher_foreground.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_flag_vietnamese.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_flag_vietnamese.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_flag_chinese.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_flag_chinese.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_rules_texte_background.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\rules_texte_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_launcher_background.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_launcher_background.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_cell_border_yellow.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\cell_border_yellow.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_flag_german.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_flag_german.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_back.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_back.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\mipmap-xhdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\mipmap-hdpi\\ic_launcher_round.webp"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_flag_french.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_flag_french.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_flag_japanese.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_flag_japanese.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_flag_italian.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_flag_italian.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\layout_fragment_grid.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\layout\\fragment_grid.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_flag_polish.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_flag_polish.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\layout_activity_main.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\layout\\activity_main.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_rounded_button.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\rounded_button.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\mipmap-xxxhdpi\\ic_launcher.webp"
+    },
+    {
+        "merged": "com.example.poussapoussi.app-debug-34:/layout_fragment_select.xml.flat",
+        "source": "com.example.poussapoussi.app-main-36:/layout/fragment_select.xml"
     },
     {
         "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_yellow_token.xml.flat",
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\yellow_token.xml"
     },
     {
-        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_home_page_button_orange.xml.flat",
-        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\home_page_button_orange.xml"
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\xml_data_extraction_rules.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\xml\\data_extraction_rules.xml"
     },
     {
         "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_home_page_button_blue.xml.flat",
@@ -24,12 +104,8 @@
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\mipmap-xhdpi\\ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_cell_border_blue.xml.flat",
-        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\cell_border_blue.xml"
-    },
-    {
-        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_launcher_foreground.xml.flat",
-        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_launcher_foreground.xml"
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_flag_english.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_flag_english.xml"
     },
     {
         "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\xml_backup_rules.xml.flat",
@@ -48,10 +124,6 @@
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\anim\\shake.xml"
     },
     {
-        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_rules_texte_background.xml.flat",
-        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\rules_texte_background.xml"
-    },
-    {
         "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_cell_border.xml.flat",
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\cell_border.xml"
     },
@@ -68,28 +140,24 @@
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\mipmap-anydpi-v26\\ic_launcher.xml"
     },
     {
-        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_launcher_background.xml.flat",
-        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_launcher_background.xml"
-    },
-    {
         "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_home_page_background.xml.flat",
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\home_page_background.xml"
-    },
-    {
-        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_cell_border_yellow.xml.flat",
-        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\cell_border_yellow.xml"
     },
     {
         "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\layout_fragment_rules.xml.flat",
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\layout\\fragment_rules.xml"
     },
     {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_flag_danish.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_flag_danish.xml"
+    },
+    {
         "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_home_page_button_grey.xml.flat",
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\home_page_button_grey.xml"
     },
     {
-        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_back.xml.flat",
-        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_back.xml"
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_flag_korean.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_flag_korean.xml"
     },
     {
         "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_settings.xml.flat",
@@ -104,28 +172,24 @@
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_player.xml"
     },
     {
-        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\mipmap-xhdpi_ic_launcher.webp.flat",
-        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\mipmap-xhdpi\\ic_launcher.webp"
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_flag_arabic.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_flag_arabic.xml"
     },
     {
         "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\layout_fragment_select.xml.flat",
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\layout\\fragment_select.xml"
     },
     {
-        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\mipmap-hdpi_ic_launcher_round.webp.flat",
-        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\mipmap-hdpi\\ic_launcher_round.webp"
-    },
-    {
         "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_background_border_grid.xml.flat",
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\background_border_grid.xml"
     },
     {
-        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\layout_fragment_home_page.xml.flat",
-        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\layout\\fragment_home_page.xml"
-    },
-    {
         "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_skip.xml.flat",
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_skip.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\layout_fragment_home_page.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\layout\\fragment_home_page.xml"
     },
     {
         "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\mipmap-anydpi-v26_ic_launcher_round.xml.flat",
@@ -140,35 +204,23 @@
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\mipmap-mdpi\\ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\layout_fragment_grid.xml.flat",
-        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\layout\\fragment_grid.xml"
-    },
-    {
         "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_rules.xml.flat",
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_rules.xml"
+    },
+    {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_ic_flag_spanish.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\ic_flag_spanish.xml"
     },
     {
         "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\mipmap-xxhdpi_ic_launcher_round.webp.flat",
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\mipmap-xxhdpi\\ic_launcher_round.webp"
     },
     {
-        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\layout_activity_main.xml.flat",
-        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\layout\\activity_main.xml"
-    },
-    {
-        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\drawable_rounded_button.xml.flat",
-        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\drawable\\rounded_button.xml"
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\layout_spinner_item.xml.flat",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\layout\\spinner_item.xml"
     },
     {
         "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\mipmap-mdpi_ic_launcher.webp.flat",
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\mipmap-mdpi\\ic_launcher.webp"
-    },
-    {
-        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-debug-34:\\mipmap-xxxhdpi_ic_launcher.webp.flat",
-        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\mipmap-xxxhdpi\\ic_launcher.webp"
-    },
-    {
-        "merged": "com.example.poussapoussi.app-debug-34:/layout_fragment_select.xml.flat",
-        "source": "com.example.poussapoussi.app-main-36:/layout/fragment_select.xml"
     }
 ]

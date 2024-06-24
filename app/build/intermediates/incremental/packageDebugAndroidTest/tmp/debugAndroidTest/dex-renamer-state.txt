@@ -1,4 +1,4 @@
-#Tue Jun 18 16:05:37 CEST 2024
+#Sun Jun 23 17:00:35 CEST 2024
 base.0=C\:\\Users\\unPoulpe\\Desktop\\InsaCVL2023\\pjaf\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeExtDexDebugAndroidTest\\classes.dex
 base.1=C\:\\Users\\unPoulpe\\Desktop\\InsaCVL2023\\pjaf\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\0\\classes.dex
 base.2=C\:\\Users\\unPoulpe\\Desktop\\InsaCVL2023\\pjaf\\app\\build\\intermediates\\dex\\debugAndroidTest\\mergeProjectDexDebugAndroidTest\\10\\classes.dex

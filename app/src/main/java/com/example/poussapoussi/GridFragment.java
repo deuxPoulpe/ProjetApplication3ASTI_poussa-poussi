@@ -8,15 +8,15 @@ import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
-import android.os.Handler;
-import android.os.Looper;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,22 +25,16 @@ import android.view.animation.AnimationUtils;
 import android.view.animation.TranslateAnimation;
 import android.widget.GridLayout;
 import android.widget.ImageView;
-import android.util.Log;
 import android.widget.TextView;
 import android.widget.Toast;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
-import android.view.View.OnTouchListener;
-import android.view.MotionEvent;
 
 import com.example.poussapoussi.databinding.FragmentGridBinding;
 
-import agentsPackage.Agent;
 import agentsPackage.MinMaxAgent;
 import agentsPackage.PlayerAgent;
 import gamePackage.*;
 import UtilsPackage.*;
-import treeFormationPackage.GridTree;
+import treeFormationPackage.ActionTree;
 
 
 //test
@@ -48,11 +42,13 @@ import treeFormationPackage.GridTree;
  * A simple {@link Fragment} subclass.
  * Use the {@link GridFragment#newInstance} factory method to
  * create an instance of this fragment.
+ * This fragment is used to display the game grid and handle the game logic.
+ * It allows the player to place and push tokens, and the AI to play its turn.
  */
 public class GridFragment extends Fragment {
     private FragmentGridBinding binding;
 
-    private boolean allowToPrintMessages = false;
+    private final boolean allowToPrintMessages = false;
 
     private Grid grid;
     private Game game;
@@ -60,13 +56,13 @@ public class GridFragment extends Fragment {
     private boolean pushTurn = false;
     private boolean placeTurn = true;
 
-    private int removeTurnPlayer1 = 0;
-    private int removeTurnPlayer2 = 0;
+    private HashMap<List<Coordinates>, Integer> removeTurnPlayer1 = new HashMap<>();
+    private HashMap<List<Coordinates>, Integer> removeTurnPlayer2 = new HashMap<>();
+
+    private char firstRemovePlayer;
 
     private boolean finishGame = false;
 
-    private List<Coordinates> alignmentToRemovePlayer1 = new ArrayList<>();
-    private List<Coordinates> alignmentToRemovePlayer2 = new ArrayList<>();
 
     private boolean aiTurn = false;
 
@@ -76,7 +72,10 @@ public class GridFragment extends Fragment {
     private int orangeAiDifficulty;
     private int blueAiDifficulty;
 
+    private AnimationVariables animationVariables;
+
     private boolean resume = false;
+    private boolean terminal = false;
 
     public GridFragment() {
         // Required empty public constructor
@@ -98,6 +97,11 @@ public class GridFragment extends Fragment {
 
     public void setResume(boolean resume) {
         this.resume = resume;
+    }
+
+
+    public boolean isTerminal() {
+        return terminal;
     }
 
 
@@ -127,7 +131,7 @@ public class GridFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         binding = FragmentGridBinding.inflate(inflater, container, false);
-        Settings.getInstance(true, false, true);
+        Settings.getInstance(false, false, true);
 
         initSkipButton();
         initGame();
@@ -139,6 +143,14 @@ public class GridFragment extends Fragment {
                 navigateToHomeFragment();
             }
         });
+
+        binding.restartButton.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View v) {
+                navigateToHomeFragment();
+            }
+        });
+
         return binding.getRoot();
     }
 
@@ -160,7 +172,23 @@ public class GridFragment extends Fragment {
      */
     private void initGame(){
         if(!resume) {
-            this.grid = new Grid();
+            animationVariables = new AnimationVariables();
+            this.grid = new Grid(animationVariables);
+//            grid.placeToken('B', new Coordinates(0, 0));
+//            grid.placeToken('B', new Coordinates(1, 0));
+//            grid.placeToken('B', new Coordinates(2, 0));
+//            grid.placeToken('B', new Coordinates(3, 0));
+//
+//            grid.placeToken('B', new Coordinates(0, 1));
+//            grid.placeToken('B', new Coordinates(1, 1));
+//            grid.placeToken('B', new Coordinates(2, 1));
+//            grid.placeToken('B', new Coordinates(3, 1));
+//
+//            grid.placeToken('Y', new Coordinates(0, 2));
+//            grid.placeToken('Y', new Coordinates(1, 2));
+//            grid.placeToken('Y', new Coordinates(2, 2));
+//            grid.placeToken('Y', new Coordinates(3, 2));
+
             this.game = new Game(this.grid, this.blueAiDifficulty, this.orangeAiDifficulty);
             this.game.start(this.choice);
         }
@@ -223,7 +251,7 @@ public class GridFragment extends Fragment {
                 final int finalJ = j;
                 cell.setClickable(true); // Make the cell clickable
                 cell.setFocusable(true); // Make the cell focusable
-                cell.setOnClickListener(v -> handleCellClickPlace(finalI, finalJ, cell));
+                cell.setOnClickListener(v -> handleCellClickPlace(finalI, finalJ));
                 borderGridLayout.addView(cell);
             }
         }
@@ -234,9 +262,18 @@ public class GridFragment extends Fragment {
      * @param i : x coordinate of the cell
      * @param j : y coordinate of the cell
      */
-    private void handleCellClickPlace(int i, int j, ImageView cell) {
+    private void handleCellClickPlace(int i, int j) {
         Coordinates coordinates = new Coordinates(i, j);
-        if(this.removeTurnPlayer1 > 0 || this.removeTurnPlayer2 > 0){
+        if(this.finishGame){
+            printTest("The game is finished");
+            return;
+        }
+        if(this.aiTurn){
+            printTest("It's not your turn");
+            return;
+        }
+
+        if(!this.removeTurnPlayer1.isEmpty() || !this.removeTurnPlayer2.isEmpty()){
             printTest("You can't place now need to remove token before");
             return;
         }
@@ -272,10 +309,17 @@ public class GridFragment extends Fragment {
         else {
             binding.wholeScreen.setBackgroundColor(Color.parseColor("#ce9744"));
         }
+
+        if(grid.isFull()){
+            binding.wholeScreen.setBackgroundColor(Color.parseColor("#777777"));
+        }
     }
 
     /**
-     * Handle the end of a turn
+     * Handle the current turn
+     * this.placeTurn : the player can place a token
+     * this.pushTurn : the player can push a token
+     *
      */
     private void handleTurn() {
         if (this.finishGame) {
@@ -283,7 +327,7 @@ public class GridFragment extends Fragment {
             return;
         }
 
-        if (this.removeTurnPlayer1 != 0 || this.removeTurnPlayer2 != 0) {
+        if (!this.removeTurnPlayer1.isEmpty() || !this.removeTurnPlayer2.isEmpty()) {
             displayTokenGrid();
             displayBorderGrid();
             return;
@@ -303,7 +347,7 @@ public class GridFragment extends Fragment {
         displayTokenGrid();
         displayBorderGrid();
 
-        if (this.aiTurn) {
+        if (this.aiTurn && (this.removeTurnPlayer1.isEmpty() && this.removeTurnPlayer2.isEmpty())) {
             DelayedTaskUtil.executeWithDelay(500, this::playAITurn);
         }
     }
@@ -319,15 +363,18 @@ public class GridFragment extends Fragment {
         this.pushTurn = false;
         this.placeTurn = true;
 
+        checkWin();
+
         if (this.choice == '2') {
             this.aiTurn = !this.aiTurn;
         }
 
-        checkWin();
-        game.switchPlayer();
-        changeColorToCurrentPlayer();
+        updateDisplayScore();
+        if (removeTurnPlayer1.isEmpty() && removeTurnPlayer2.isEmpty()) {
+            game.switchPlayer();
+            changeColorToCurrentPlayer();
+        }
         displayTurn();
-
 
     }
 
@@ -335,7 +382,44 @@ public class GridFragment extends Fragment {
      * Check for a win or alignments of five tokens
      */
     private void checkWin() {
-        //TODO: check for win
+        if (grid.isFull()){
+            displayWinner("Draw");
+            return;
+        }
+
+        if(!this.removeTurnPlayer1.isEmpty() || !this.removeTurnPlayer2.isEmpty()){
+            printTest("the score has already been updated");
+            return;
+        }
+
+        HashMap<String, List<List<Coordinates>>> alignments = game.getCurrentPlayer().updateAgentScore(grid);
+        List<List<Coordinates>> blueAlignments = alignments.get("B");
+        List<List<Coordinates>> orangeAlignments = alignments.get("Y");
+
+        firstRemovePlayer = game.getColorOfCurrentPlayer();
+
+        //set remove two token for each player if they have an alignment of 5
+        if (blueAlignments.size() > 0 && choice != '3') {
+            for (List<Coordinates> alignment : blueAlignments) {
+                this.removeTurnPlayer1.put(alignment, 2);
+            }
+        }
+        if (orangeAlignments.size() > 0 && choice == '1') {
+            for (List<Coordinates> alignment : orangeAlignments) {
+                this.removeTurnPlayer2.put(alignment, 2);
+            }
+        }
+
+
+        if (game.getScores()[0] >= 2) {
+            displayWinner("Blue");
+            this.finishGame = true;
+            this.terminal = true;
+        } else if (game.getScores()[1] >= 2) {
+            displayWinner("Orange");
+            this.finishGame = true;
+            this.terminal = true;
+        }
 
     }
 
@@ -345,8 +429,7 @@ public class GridFragment extends Fragment {
     @SuppressLint("SetTextI18n")
     private void updateDisplayScore() {
         TextView scoreView = binding.scoreBoard;
-        //int[] scores = game.getScore();       TODO: get score
-        int[] scores = {0, 0};
+        int[] scores = game.getScores();
         String scoreText = scores[0] + " • " + scores[1];
 
         // Créez un SpannableString avec le texte du score
@@ -372,19 +455,28 @@ public class GridFragment extends Fragment {
 
         // Mettez à jour le texte du TextView
         TextView winnerTextView = binding.winnerTextView;
+        View restartButton = binding.restartButton;
         winnerTextView.setText("Winner: " + winner);
+        if (winner.equals("Draw")) {
+            winnerTextView.setText("Draw");
+            winnerTextView.setTextColor(Color.parseColor("#777777"));
+        }
 
         //change background color of the full screen with opacity
         if (winner.equals("Blue")) {
             binding.winnerBackground.setBackgroundColor(Color.parseColor("#BB385ea0"));
-        } else {
+        } else if (winner.equals("Orange")){
             binding.winnerBackground.setBackgroundColor(Color.parseColor("#BBce9744"));
+        }
+        else {
+            binding.winnerBackground.setBackgroundColor(Color.parseColor("#DD303030"));
         }
 
         // Rendez le TextView visible
         winnerTextView.setVisibility(View.VISIBLE);
+        restartButton.setVisibility(View.VISIBLE);
+        animateView(restartButton);
         animateView(winnerTextView);
-        DelayedTaskUtil.executeWithDelay(10000, this::navigateToHomeFragment);
     }
 
 
@@ -455,7 +547,7 @@ public class GridFragment extends Fragment {
         binding.blueSkip.setVisibility(View.GONE);
         binding.orangeSkip.setVisibility(View.GONE);
 
-        if(this.aiTurn){
+        if(this.aiTurn && this.removeTurnPlayer1.isEmpty()){
             binding.blueTurn.setVisibility(View.INVISIBLE);
             binding.orangeTurn.setVisibility(View.INVISIBLE);
             return;
@@ -463,26 +555,41 @@ public class GridFragment extends Fragment {
 
         if (currentPlayer == 'B') {
             turn = binding.blueTurn;
+            skip = binding.blueSkip;
             binding.orangeTurn.setVisibility(View.INVISIBLE);
         } else {
             turn = binding.orangeTurn;
+            skip = binding.orangeSkip;
             binding.blueTurn.setVisibility(View.INVISIBLE);
         }
+        turn.setTextSize(70);
 
         if (this.placeTurn) {
             turn.setText("PLACE");
-        } else {
+            skip = null;
+        } else if(this.pushTurn) {
             turn.setText("PUSH");
-            if (currentPlayer == 'B') {
-                skip = binding.blueSkip;
-            } else {
-                skip = binding.orangeSkip;
-            }
+        }
+
+        if(!this.removeTurnPlayer1.isEmpty() || !this.removeTurnPlayer2.isEmpty()){
+            turn.setText("REMOVE");
+            turn.setTextSize(60);
+            skip = null;
         }
         if (skip != null){
             skip.setVisibility(View.VISIBLE);
         }
-        turn.setVisibility(View.VISIBLE);
+        if (!grid.isFull()){
+            turn.setVisibility(View.VISIBLE);
+        }
+        if(this.finishGame){
+            turn.setVisibility(View.INVISIBLE);
+            if (skip != null){
+                skip.setVisibility(View.INVISIBLE);
+            }
+            return;
+        }
+
         animateView(turn);
         animateView(skip);
     }
@@ -499,69 +606,54 @@ public class GridFragment extends Fragment {
      */
     private void playAITurn() {
 
-        MinMaxAgent agent = (MinMaxAgent) game.getCurrentPlayer();
-        AnimationVariables animationVariables = null;
+        MinMaxAgent ai = (MinMaxAgent) game.getCurrentPlayer();
+        Action action = ai.evaluateAction(grid);
 
-        // Calcule le meilleur coup à jouer
-        GridTree root = new GridTree(agent, grid);
-        final GridTree finalBestMove = agent.evaluateBestMove(root, agent.getSmartness(), Integer.MIN_VALUE, Integer.MAX_VALUE, true);
+        boolean displayInTerminal = Settings.getInstance().getDisplayInTerminal();
+        Grid grid = action.getGrid();
 
-        // Phase de retrait 1
-
-        // Pour chaque alignement de 5 jetons du joueur formé par l'adversaire, on retire 2 jetons de l'alignement
-        AiRemoveToken(finalBestMove);
-
-        displayTokenGrid();
-
-        // Phase de placement
-
-        // Place le jeton sur le plateau
-        grid.placeToken(agent.getColor(), finalBestMove.getPlaceCoordinates());
-
-        displayTokenGrid();
-
-
-        // Phase de poussée
-
-
-
-        PushAction pushAction = finalBestMove.getPushAction();
-
-        // Si le plateau n'est pas plein, on pousse le jeton choisi dans la direction choisie
-        if (!grid.isFull() && pushAction != null){
-            animationVariables = grid.pushToken(agent.getColor(), finalBestMove.getPushAction().getCoordinates(), finalBestMove.getPushAction().getDirection());
+        // Retire les jetons de l'alignement de 5 jetons de l'adversaire
+        for (Coordinates removCoords : action.getStartRemove()) {
+            grid.removeToken(removCoords);
         }
 
-        final AnimationVariables finalAnimationVariables = animationVariables;
+        displayTokenGrid();
 
-        DelayedTaskUtil.executeWithDelay(1000, () -> {
-
-            this.pushTurn = true;
-            this.placeTurn = false;
-            if (finalAnimationVariables != null) {
-                animateTokenPush(finalAnimationVariables);
+        DelayedTaskUtil.executeWithDelay(500, () -> {
+            // Place le jeton sur le plateau
+            if (action.getPlacement() != null) {
+                grid.placeToken(ai.getColor(), action.getPlacement());
+                displayTokenGrid();
             }
         });
 
-
-        // Phase de retrait 2
+        DelayedTaskUtil.executeWithDelay(1000, () -> {
+            // Pousse le jeton si une poussée est possible
+            if (action.getPush() != null) {
+                grid.pushToken(action.getPush(), ai.getColor());
+                animateTokenPush(animationVariables);
+            }
+            checkWin();
+        });
 
         DelayedTaskUtil.executeWithDelay(1500, () -> {
-            // Pour chaque alignement de 5 jetons formé, on retire 2 jetons de l'alignement
-            AiRemoveToken(finalBestMove);
+            // Retire les jetons de l'alignement de 5 jetons du joueur
+            for (Coordinates removCoords : action.getEndRemove()) {
+                grid.removeToken(removCoords);
+            }
+            this.placeTurn = false;
+            this.pushTurn = true;
+            displayTokenGrid();
             handleTurn();
         });
 
+
+
+
+
     }
 
-    private void AiRemoveToken(GridTree BestMove){
-        Set<Coordinates> removCoordSet = BestMove.getRemovCoordinates().get(1);
-        if (removCoordSet != null) {
-            for (Coordinates removCoords : removCoordSet) {
-                grid.removeToken(removCoords);
-            }
-        }
-    }
+
 
     /**
      * Display the grid of tokens in the GridLayout
@@ -613,21 +705,32 @@ public class GridFragment extends Fragment {
      * @param j : y coordinate of the cell
      */
     public void handleCellClick(int i, int j) {
+
+        if(this.finishGame){
+            printTest("The game is finished");
+            return;
+        }
+
+        if (this.aiTurn && removeTurnPlayer1.isEmpty()) {
+            printTest("It's not your turn");
+            return;
+        }
+
+
         Coordinates coordinates = new Coordinates(i, j);
         PlayerAgent currentPlayer = (PlayerAgent) game.getCurrentPlayer();
         Token token = this.grid.getToken(coordinates);
-        List<Coordinates> alignmentToRemove = null;
-        int removeTurn = 0;
+        HashMap<List<Coordinates>, Integer> removeTurn = new HashMap<>();
 
         if (currentPlayer.equals(game.getPlayer1())) {
-            alignmentToRemove = this.alignmentToRemovePlayer1;
             removeTurn = this.removeTurnPlayer1;
         } else if (currentPlayer.equals(game.getPlayer2())) {
-            alignmentToRemove = this.alignmentToRemovePlayer2;
             removeTurn = this.removeTurnPlayer2;
         }
 
-        if (removeTurn > 0) {
+
+
+        if (!removeTurn.isEmpty()) {
             if (token == null) {
                 printTest("This cell is empty");
                 return;
@@ -636,17 +739,35 @@ public class GridFragment extends Fragment {
             char expectedColor = currentPlayer.equals(game.getPlayer1()) ? 'B' : 'Y';
             if (token.getColor() != expectedColor) {
                 printTest("This cell is not yours");
+                displayInterdiction();
                 return;
             }
 
-            if (!alignmentToRemove.contains(coordinates)) {
-                printTest("This cell is not in an alignment of 5");
+            List<Coordinates> currentAlignment = null;
+
+            for (List<Coordinates> alignment : removeTurn.keySet()) {
+                // Vérifiez si l'alignement contient les coordonnées
+                if (alignment.contains(coordinates)) {
+                    currentAlignment = alignment;
+                    break;
+
+                    }
+            }
+
+            if (currentAlignment == null) {
+                printTest("You can't remove this token");
+                displayInterdiction();
                 return;
             }
 
-            alignmentToRemove.remove(coordinates);
+            int nbTokensToRemove = removeTurn.get(currentAlignment);
+            removeTurn.put(currentAlignment, nbTokensToRemove - 1);
+
+            if (removeTurn.get(currentAlignment) == 0) {
+                removeTurn.remove(currentAlignment);
+            }
+
             this.grid.removeToken(coordinates);
-            removeTurn--;
 
             if (currentPlayer.equals(game.getPlayer1())) {
                 this.removeTurnPlayer1 = removeTurn;
@@ -654,10 +775,13 @@ public class GridFragment extends Fragment {
                 this.removeTurnPlayer2 = removeTurn;
             }
 
-            if (removeTurn == 0) {
-                alignmentToRemove.clear();
-                game.switchPlayer();
-                changeColorToCurrentPlayer();
+            if (removeTurn.isEmpty()) {
+                if(firstRemovePlayer == game.getColorOfCurrentPlayer()){
+                    game.switchPlayer();
+                    changeColorToCurrentPlayer();
+                }
+
+                displayTurn();
                 if (this.choice == '2' && currentPlayer.equals(game.getPlayer1())) {
                     handleTurn();
                 }
@@ -675,19 +799,19 @@ public class GridFragment extends Fragment {
             printTest("You can't push now");
             return;
         }
-        try {
-            AnimationVariables animationVariables = this.grid.pushToken(this.game.getColorOfCurrentPlayer(), this.coordinatesToPush, directions);
-            animateTokenPush(animationVariables);
-            displayBorderGrid();
-        } catch (IllegalArgumentException e) {
-            if (e.getMessage().equals("You are trying to push tokens in the same previous position")) {
-                displayInterdiction();
-            }
-            else {
-                printTest(e.getMessage());
-            }
-            displayBorderGrid();
+        PushAction pushAction = new PushAction(this.coordinatesToPush, directions);
+
+        boolean validPush = grid.isPushValid(pushAction, game.getColorOfCurrentPlayer());
+
+        if (!validPush) {
+            printTest("Invalid push");
+            displayInterdiction();
+            return;
         }
+
+        grid.pushToken(pushAction, game.getColorOfCurrentPlayer());
+        animateTokenPush(animationVariables);
+        displayBorderGrid();
     }
 
     /**
@@ -728,6 +852,11 @@ public class GridFragment extends Fragment {
     }
 
 
+    /**
+     * Set the coordinates to push
+     * @param coordinatesToBePushed
+     *          the coordinates to push
+     */
      public void setCoordinatesToPush(Coordinates coordinatesToBePushed) {
      this.coordinatesToPush = coordinatesToBePushed;
      }

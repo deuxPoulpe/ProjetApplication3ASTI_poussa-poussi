@@ -27,6 +27,9 @@ public final class FragmentSelectBinding implements ViewBinding {
   public final TextView GameName;
 
   @NonNull
+  public final TextView adjustingDifficultyOfAI;
+
+  @NonNull
   public final ImageView back;
 
   @NonNull
@@ -65,18 +68,17 @@ public final class FragmentSelectBinding implements ViewBinding {
   @NonNull
   public final ImageView settings;
 
-  @NonNull
-  public final TextView test;
-
   private FragmentSelectBinding(@NonNull RelativeLayout rootView, @NonNull TextView GameName,
-      @NonNull ImageView back, @NonNull ImageView gridBackground, @NonNull Button iavsia,
+      @NonNull TextView adjustingDifficultyOfAI, @NonNull ImageView back,
+      @NonNull ImageView gridBackground, @NonNull Button iavsia,
       @NonNull LinearLayout linearLayoutSettings, @NonNull Button player1, @NonNull Button player2,
       @NonNull SeekBar seekBarBlue, @NonNull SeekBar seekBarOrange,
       @NonNull TextView seekBarTextBlue, @NonNull TextView seekBarTextOrange,
       @NonNull TextView seekBarValueBlue, @NonNull TextView seekBarValueOrange,
-      @NonNull ImageView settings, @NonNull TextView test) {
+      @NonNull ImageView settings) {
     this.rootView = rootView;
     this.GameName = GameName;
+    this.adjustingDifficultyOfAI = adjustingDifficultyOfAI;
     this.back = back;
     this.gridBackground = gridBackground;
     this.iavsia = iavsia;
@@ -90,7 +92,6 @@ public final class FragmentSelectBinding implements ViewBinding {
     this.seekBarValueBlue = seekBarValueBlue;
     this.seekBarValueOrange = seekBarValueOrange;
     this.settings = settings;
-    this.test = test;
   }
 
   @Override
@@ -123,6 +124,12 @@ public final class FragmentSelectBinding implements ViewBinding {
       id = R.id.GameName;
       TextView GameName = ViewBindings.findChildViewById(rootView, id);
       if (GameName == null) {
+        break missingId;
+      }
+
+      id = R.id.adjustingDifficultyOfAI;
+      TextView adjustingDifficultyOfAI = ViewBindings.findChildViewById(rootView, id);
+      if (adjustingDifficultyOfAI == null) {
         break missingId;
       }
 
@@ -204,15 +211,10 @@ public final class FragmentSelectBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.test;
-      TextView test = ViewBindings.findChildViewById(rootView, id);
-      if (test == null) {
-        break missingId;
-      }
-
-      return new FragmentSelectBinding((RelativeLayout) rootView, GameName, back, gridBackground,
-          iavsia, linearLayoutSettings, player1, player2, seekBarBlue, seekBarOrange,
-          seekBarTextBlue, seekBarTextOrange, seekBarValueBlue, seekBarValueOrange, settings, test);
+      return new FragmentSelectBinding((RelativeLayout) rootView, GameName, adjustingDifficultyOfAI,
+          back, gridBackground, iavsia, linearLayoutSettings, player1, player2, seekBarBlue,
+          seekBarOrange, seekBarTextBlue, seekBarTextOrange, seekBarValueBlue, seekBarValueOrange,
+          settings);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

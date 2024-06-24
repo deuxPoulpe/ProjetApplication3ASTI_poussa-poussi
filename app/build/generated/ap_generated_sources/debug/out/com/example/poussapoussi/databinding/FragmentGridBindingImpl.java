@@ -26,6 +26,7 @@ public class FragmentGridBindingImpl extends FragmentGridBinding  {
         sViewsWithIds.put(R.id.squareLayout, 10);
         sViewsWithIds.put(R.id.winnerBackground, 11);
         sViewsWithIds.put(R.id.winnerTextView, 12);
+        sViewsWithIds.put(R.id.restartButton, 13);
     }
     // views
     // variables
@@ -34,7 +35,7 @@ public class FragmentGridBindingImpl extends FragmentGridBinding  {
     // Inverse Binding Event Handlers
 
     public FragmentGridBindingImpl(@Nullable androidx.databinding.DataBindingComponent bindingComponent, @NonNull View root) {
-        this(bindingComponent, root, mapBindings(bindingComponent, root, 13, sIncludes, sViewsWithIds));
+        this(bindingComponent, root, mapBindings(bindingComponent, root, 14, sIncludes, sViewsWithIds));
     }
     private FragmentGridBindingImpl(androidx.databinding.DataBindingComponent bindingComponent, View root, Object[] bindings) {
         super(bindingComponent, root, 0
@@ -45,6 +46,7 @@ public class FragmentGridBindingImpl extends FragmentGridBinding  {
             , (android.widget.Button) bindings[1]
             , (android.widget.ImageView) bindings[3]
             , (android.widget.TextView) bindings[2]
+            , (android.widget.Button) bindings[13]
             , (android.widget.TextView) bindings[6]
             , (android.widget.FrameLayout) bindings[10]
             , (android.widget.GridLayout) bindings[9]

@@ -16,6 +16,17 @@
         android:scaleType="fitXY"
         android:src="@drawable/home_page_background" />
 
+    <Spinner
+        android:id="@+id/language_spinner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:padding="8dp"
+        android:background="@drawable/rules_texte_background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/linearLayout" />
 
     <LinearLayout
         android:id="@+id/linearLayout"
@@ -23,7 +34,7 @@
         android:layout_height="0dp"
         android:orientation="vertical"
         android:gravity="center"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/language_spinner"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,53 +42,24 @@
         android:padding="16dp"
         android:background="@drawable/rules_texte_background">
 
-
         <TextView
-            android:id="@+id/nameGame"
+            android:id="@+id/rules_title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:fontFamily="sans-serif-black"
-            android:text="Poussa Poussi"
-            android:textSize="@dimen/_16ssp"
+            android:textSize="@dimen/_18ssp"
             android:textStyle="bold"
-            android:textColor="@color/black"
-            />
-
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/preambule"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-black"
-            android:text="\t\t\t\tPoussi-poussi is an abstract combinatorial strategy game for one or two players."
             android:textSize="@dimen/_14ssp"
             android:layout_marginTop="16dp"
-            android:textColor="@color/black"
-            />
-
-        <TextView
-            android:id="@+id/materials"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="5dp"
-            android:fontFamily="sans-serif-black"
-            android:text="Equipment :"
-            android:textSize="@dimen/_10ssp"
-            android:layout_marginTop="8dp"
-            android:textColor="@color/black"
-            />
-
-        <TextView
-            android:id="@+id/equipment_detail"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:fontFamily="sans-serif-black"
-            android:text="The game contains a board of 64 cells, 32 blue tokens and 32 orange tokens to place on the board."
-            android:textSize="@dimen/_10ssp"
-            android:layout_marginTop="8dp"
-            android:textColor="@color/black"
-            />
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/goal"
@@ -85,68 +67,75 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:fontFamily="sans-serif-black"
-            android:text="Goal :"
-            android:textSize="@dimen/_12ssp"
+            android:textSize="@dimen/_16ssp"
             android:layout_marginTop="8dp"
-            android:textColor="@color/black"
-            />
+            android:textColor="@color/black" />
 
         <TextView
             android:id="@+id/goal_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-black"
-            android:text="The goal of the game is to score 2 points before the opponent. To score a point, you have to align 5 of your tokens."
-            android:textSize="@dimen/_10ssp"
+            android:textSize="@dimen/_12ssp"
             android:layout_marginTop="8dp"
-            android:textColor="@color/black"
-            />
+            android:textColor="@color/black" />
 
         <TextView
-            android:id="@+id/game_beginning"
+            android:id="@+id/game_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:fontFamily="sans-serif-black"
-            android:text="Beginning of the game :"
-            android:textSize="@dimen/_12ssp"
+            android:textSize="@dimen/_16ssp"
             android:layout_marginTop="8dp"
-            android:textColor="@color/black"
-            />
+            android:textColor="@color/black" />
 
         <TextView
-            android:id="@+id/textView"
+            android:id="@+id/game_start_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-black"
-            android:text="The game begins with no token on the board. The first player is the one owning the blue tokens."
-            android:textSize="@dimen/_10ssp"
+            android:textSize="@dimen/_12ssp"
             android:layout_marginTop="8dp"
-            android:textColor="@color/black"
-            />
+            android:textColor="@color/black" />
 
         <TextView
-            android:id="@+id/turns"
+            android:id="@+id/turn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="5dp"
             android:fontFamily="sans-serif-black"
-            android:text="Player turn :"
-            android:textSize="@dimen/_12ssp"
+            android:textSize="@dimen/_16ssp"
             android:layout_marginTop="8dp"
-            android:textColor="@color/black"
-            />
+            android:textColor="@color/black" />
+
 
         <TextView
             android:id="@+id/turn_detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:fontFamily="sans-serif-black"
-            android:text="\t\t\tA player's turn consists of 2 phases :\n the first phase demands the player to place one of his token on the board. The token must be put either on the board's edge, or next to another token. This phase is mandatory.\n\t\t\t The second phase is optional. If the player wants to, he can push one of his tokens in any direction. When pushed, the token pushes with it the line of adjacent tokens in the chosen direction. Pushed tokens stop only when encountering the edge of the board, or a token in the direction for which there is at least one empty cell between the token and the line of tokens."
-            android:textSize="@dimen/_10ssp"
+            android:textSize="@dimen/_12ssp"
             android:layout_marginTop="8dp"
-            android:textColor="@color/black"
-            />
+            android:textColor="@color/black" />
+
+        <TextView
+            android:id="@+id/turn_detail_attention_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-black"
+            android:textSize="@dimen/_12ssp"
+            android:layout_marginTop="8dp"
+            android:textColor="#c90d04" />
+
+        <TextView
+            android:id="@+id/turn_detail_attention"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="sans-serif-black"
+            android:textSize="@dimen/_12ssp"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/black" />
 
     </LinearLayout>
 
@@ -167,7 +156,5 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.045" />
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

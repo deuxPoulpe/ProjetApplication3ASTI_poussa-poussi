@@ -53,14 +53,12 @@ public class SelectFragment extends Fragment {
     }
 
 
-
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
      * @return A new instance of fragment SelectFragment.
      */
-    // TODO: Rename and change types and number of parameters
     public static SelectFragment newInstance() {
         SelectFragment fragment = new SelectFragment();
         Bundle args = new Bundle();
@@ -92,18 +90,22 @@ public class SelectFragment extends Fragment {
         // Set the seekbar to handle the difficulty
         handleSeekBar();
 
+        // Set the buttons to navigate to the grid fragment for 1 player vs ai
         binding.player1.setOnClickListener(v -> {
             navigateToGridFragment('2');
         });
 
+        // Set the buttons to navigate to the grid fragment for 2 players
         binding.player2.setOnClickListener(v -> {
             navigateToGridFragment('1');
         });
 
+        // Set the buttons to navigate to the grid fragment for ai vs ai
         binding.iavsia.setOnClickListener(v -> {
             navigateToGridFragment('3');
         });
-        
+
+        // Set the back button to navigate to the home page fragment
         binding.back.setOnClickListener(v -> {
             if (getActivity() != null) {
                 getActivity().getSupportFragmentManager().beginTransaction()
@@ -119,6 +121,10 @@ public class SelectFragment extends Fragment {
 
     }
 
+    /**
+     * This method is used to navigate to the grid fragment
+     * @param choice the choice of the user
+     */
     private void navigateToGridFragment(char choice) {
         if (getActivity() != null) {
             gridFragment = new GridFragment(choice, homePageFragment, orangeDifficulty, blueDifficulty);
@@ -138,8 +144,16 @@ public class SelectFragment extends Fragment {
         }
     }
 
-    
+    /**
+     * This method is used to display the settings
+     * It will display the settings if they are not displayed and hide them if they are displayed
+     * It will also animate the views
+     */
     private void displaySettings() {
+
+        //disable the buttons while tha animation is running
+        binding.settings.setEnabled(false);
+        DelayedTaskUtil.executeWithDelay(1000, () -> binding.settings.setEnabled(true));
         
         if (settingsDisplayed) {
             invertAnimationView(binding.linearLayoutSettings);
@@ -166,6 +180,11 @@ public class SelectFragment extends Fragment {
                
     }
 
+    /**
+     * This method is used to handle the seekbar
+     * It will update the difficulty of the AI
+     * It will also update the textview displaying the difficulty
+     */
     private void handleSeekBar() {
         // Handle the seekbar
         binding.seekBarOrange.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -204,6 +223,10 @@ public class SelectFragment extends Fragment {
         });
     }
 
+    /**
+     * This method is used to start the animation of the textview
+     * @param textView the textview to animate
+     */
     private void startAnimation(TextView textView) {
         ObjectAnimator rotateAnimator = ObjectAnimator.ofFloat(textView, "rotation", -15f, 15f);
         rotateAnimator.setDuration(ANIMATION_DURATION);
@@ -240,6 +263,10 @@ public class SelectFragment extends Fragment {
         animatorSet.start();
     }
 
+    /**
+     * This method is used to animate a view
+     * @param view the view to animate
+     */
     private void animateView(View view) {
         // Créez des animations pour l'apparition (fade in) et l'agrandissement (scale up)
         ObjectAnimator fadeIn = ObjectAnimator.ofFloat(view, "alpha", 0.5f, 1f);
@@ -256,7 +283,11 @@ public class SelectFragment extends Fragment {
         animatorSet.playTogether(fadeIn, scaleX, scaleY);
         animatorSet.start();
     }
-    
+
+    /**
+     * This method is used to invert the animation of a view
+     * @param view the view to animate
+     */
     private void invertAnimationView(View view) {
         // Créez des animations pour la disparition (fade out) et la réduction (scale down)
         ObjectAnimator fadeOut = ObjectAnimator.ofFloat(view, "alpha", 1f, 0f);

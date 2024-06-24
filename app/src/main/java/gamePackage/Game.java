@@ -14,18 +14,33 @@ public class Game {
     private Agent player2;
     private Agent currentPlayer = player1;
 
-    private int agent1Smartness;
-    private int agent2Smartness;
+    private int[] scores = {0, 0};
 
-    public Game(Grid myGrid, int agent1Smartness, int agent2Smartness) {
+    private int orangeAiDifficulty;
+    private int blueAiDifficulty;
+
+    public Game(Grid myGrid) {
         this.grid = myGrid;
-        this.agent1Smartness = agent1Smartness;
-        this.agent2Smartness = agent2Smartness;
+    }
+
+    public Game(Grid myGrid, int blueAiDifficulty, int orangeAiDifficulty) {
+        this.grid = myGrid;
+        this.blueAiDifficulty = blueAiDifficulty;
+        this.orangeAiDifficulty = orangeAiDifficulty;
+    }
+
+    public Agent getCurrentPlayer() {
+        return currentPlayer;
+    }
+
+    public int[] getScores() {
+        return scores;
     }
 
     public char getColorOfCurrentPlayer() {
         return currentPlayer.getColor();
     }
+
     public void switchPlayer() {
         if (currentPlayer == player1) {
             currentPlayer = player2;
@@ -34,19 +49,12 @@ public class Game {
         }
     }
 
-    public Agent getCurrentPlayer() {
-        return currentPlayer;
-    }
-
     public Agent getPlayer1() {
         return player1;
     }
-
     public Agent getPlayer2() {
         return player2;
     }
-
-
 
     public void start(char choice) {
         // Initialisation des joueurs
@@ -55,24 +63,24 @@ public class Game {
             System.out.println("Do you want to play with a friend (1) or against the computer (2), or make computers play against each other (3) ?");
         }
 
-        //char choice;
-
-        //while ((choice = scanner.next().charAt(0)) != '1' && choice != '2' && choice != '3') {
-        //    System.out.println("Invalid choice. Please enter 1, 2 or 3.");
-        //}
+//        char choice;
+//
+//        while ((choice = scanner.next().charAt(0)) != '1' && choice != '2' && choice != '3') {
+//            System.out.println("Invalid choice. Please enter 1, 2 or 3.");
+//        }
 
         if (Settings.getInstance().getDisplayInTerminal())
             grid.display();
 
         if (choice == '1') {
-            this.player1 = new PlayerAgent('B');
-            this.player2 = new PlayerAgent('Y');
+            this.player1 = new PlayerAgent('B', scores);
+            this.player2 = new PlayerAgent('Y', scores);
         } else if (choice == '2') {
-            this.player1 = new PlayerAgent('B');
-            this.player2 = new MinMaxAgent('Y', agent2Smartness);
+            this.player1 = new PlayerAgent('B', scores);
+            this.player2 = new MinMaxAgent('Y', orangeAiDifficulty, scores);
         } else {
-            this.player1 = new MinMaxAgent('B', agent1Smartness);
-            this.player2 = new MinMaxAgent('Y', agent2Smartness);
+            this.player1 = new MinMaxAgent('B', blueAiDifficulty, scores);
+            this.player2 = new MinMaxAgent('Y', orangeAiDifficulty, scores);
         }
         currentPlayer = player1;
     }
@@ -80,7 +88,7 @@ public class Game {
     public void run() {
         
         while (true) {
-            Round();
+            executeRound();
 
             if (checkScore() == 0) {
                 System.out.println("B wins");
@@ -98,19 +106,18 @@ public class Game {
         }
     }
 
-    public void Round() {
+    public void executeRound() {
         // Avant placement du jeton
         if (grid.isFull()) {
             System.out.println("It's a draw.");
             System.exit(0);
         }
         // Placement et poussée du jeton
-        currentPlayer.executeGameRound(grid);
+        Action action = currentPlayer.evaluateAction(grid);
+        currentPlayer.executeAction(action);
 
         // Vérification du score
         int gameState = checkScore();
-        if (Settings.getInstance().getDisplayInTerminal())
-            System.out.println("Score: B = " + player1.getScore() + " Y = " + player2.getScore());
 
         if (gameState == 0) {
             System.out.println("B wins");
@@ -122,8 +129,8 @@ public class Game {
     }
  
     public int checkScore() {
-        // TODO: Implement this method
 
         return -1;
     }
+
 }

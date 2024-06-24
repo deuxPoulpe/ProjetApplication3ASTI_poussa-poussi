@@ -12,6 +12,10 @@
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\layout\\fragment_rules.xml"
     },
     {
+        "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-mergeDebugResources-33:\\layout\\spinner_item.xml",
+        "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\layout\\spinner_item.xml"
+    },
+    {
         "merged": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-mergeDebugResources-33:\\layout\\activity_main.xml",
         "source": "C:\\Users\\unPoulpe\\.gradle\\daemon\\8.6\\com.example.poussapoussi.app-main-36:\\layout\\activity_main.xml"
     },

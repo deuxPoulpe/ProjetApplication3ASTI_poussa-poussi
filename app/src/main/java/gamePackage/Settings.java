@@ -6,7 +6,7 @@ public class Settings {
 
     private boolean allowPushBack = false;
     private boolean displayInTerminal = true;
-    private boolean mandatoryPush = true;
+    private boolean mandatoryPush = false;
 
     private Settings(boolean pushBack, boolean display, boolean mandatoryPushRule) {
         this.allowPushBack = pushBack;

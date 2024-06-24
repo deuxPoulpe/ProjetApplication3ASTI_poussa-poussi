@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -23,13 +24,13 @@ public final class FragmentRulesBinding implements ViewBinding {
   private final ConstraintLayout rootView;
 
   @NonNull
-  public final TextView equipmentDetail;
-
-  @NonNull
   public final Button exit;
 
   @NonNull
-  public final TextView gameBeginning;
+  public final TextView gameStart;
+
+  @NonNull
+  public final TextView gameStartDetail;
 
   @NonNull
   public final TextView goal;
@@ -41,46 +42,51 @@ public final class FragmentRulesBinding implements ViewBinding {
   public final ImageView gridBackground;
 
   @NonNull
+  public final Spinner languageSpinner;
+
+  @NonNull
   public final LinearLayout linearLayout;
-
-  @NonNull
-  public final TextView materials;
-
-  @NonNull
-  public final TextView nameGame;
 
   @NonNull
   public final TextView preambule;
 
   @NonNull
-  public final TextView textView;
+  public final TextView rulesTitle;
+
+  @NonNull
+  public final TextView turn;
 
   @NonNull
   public final TextView turnDetail;
 
   @NonNull
-  public final TextView turns;
+  public final TextView turnDetailAttention;
 
-  private FragmentRulesBinding(@NonNull ConstraintLayout rootView,
-      @NonNull TextView equipmentDetail, @NonNull Button exit, @NonNull TextView gameBeginning,
-      @NonNull TextView goal, @NonNull TextView goalDetail, @NonNull ImageView gridBackground,
-      @NonNull LinearLayout linearLayout, @NonNull TextView materials, @NonNull TextView nameGame,
-      @NonNull TextView preambule, @NonNull TextView textView, @NonNull TextView turnDetail,
-      @NonNull TextView turns) {
+  @NonNull
+  public final TextView turnDetailAttentionTitle;
+
+  private FragmentRulesBinding(@NonNull ConstraintLayout rootView, @NonNull Button exit,
+      @NonNull TextView gameStart, @NonNull TextView gameStartDetail, @NonNull TextView goal,
+      @NonNull TextView goalDetail, @NonNull ImageView gridBackground,
+      @NonNull Spinner languageSpinner, @NonNull LinearLayout linearLayout,
+      @NonNull TextView preambule, @NonNull TextView rulesTitle, @NonNull TextView turn,
+      @NonNull TextView turnDetail, @NonNull TextView turnDetailAttention,
+      @NonNull TextView turnDetailAttentionTitle) {
     this.rootView = rootView;
-    this.equipmentDetail = equipmentDetail;
     this.exit = exit;
-    this.gameBeginning = gameBeginning;
+    this.gameStart = gameStart;
+    this.gameStartDetail = gameStartDetail;
     this.goal = goal;
     this.goalDetail = goalDetail;
     this.gridBackground = gridBackground;
+    this.languageSpinner = languageSpinner;
     this.linearLayout = linearLayout;
-    this.materials = materials;
-    this.nameGame = nameGame;
     this.preambule = preambule;
-    this.textView = textView;
+    this.rulesTitle = rulesTitle;
+    this.turn = turn;
     this.turnDetail = turnDetail;
-    this.turns = turns;
+    this.turnDetailAttention = turnDetailAttention;
+    this.turnDetailAttentionTitle = turnDetailAttentionTitle;
   }
 
   @Override
@@ -110,21 +116,21 @@ public final class FragmentRulesBinding implements ViewBinding {
     // This is done to optimize the compiled bytecode for size and performance.
     int id;
     missingId: {
-      id = R.id.equipment_detail;
-      TextView equipmentDetail = ViewBindings.findChildViewById(rootView, id);
-      if (equipmentDetail == null) {
-        break missingId;
-      }
-
       id = R.id.exit;
       Button exit = ViewBindings.findChildViewById(rootView, id);
       if (exit == null) {
         break missingId;
       }
 
-      id = R.id.game_beginning;
-      TextView gameBeginning = ViewBindings.findChildViewById(rootView, id);
-      if (gameBeginning == null) {
+      id = R.id.game_start;
+      TextView gameStart = ViewBindings.findChildViewById(rootView, id);
+      if (gameStart == null) {
+        break missingId;
+      }
+
+      id = R.id.game_start_detail;
+      TextView gameStartDetail = ViewBindings.findChildViewById(rootView, id);
+      if (gameStartDetail == null) {
         break missingId;
       }
 
@@ -146,21 +152,15 @@ public final class FragmentRulesBinding implements ViewBinding {
         break missingId;
       }
 
+      id = R.id.language_spinner;
+      Spinner languageSpinner = ViewBindings.findChildViewById(rootView, id);
+      if (languageSpinner == null) {
+        break missingId;
+      }
+
       id = R.id.linearLayout;
       LinearLayout linearLayout = ViewBindings.findChildViewById(rootView, id);
       if (linearLayout == null) {
-        break missingId;
-      }
-
-      id = R.id.materials;
-      TextView materials = ViewBindings.findChildViewById(rootView, id);
-      if (materials == null) {
-        break missingId;
-      }
-
-      id = R.id.nameGame;
-      TextView nameGame = ViewBindings.findChildViewById(rootView, id);
-      if (nameGame == null) {
         break missingId;
       }
 
@@ -170,9 +170,15 @@ public final class FragmentRulesBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.textView;
-      TextView textView = ViewBindings.findChildViewById(rootView, id);
-      if (textView == null) {
+      id = R.id.rules_title;
+      TextView rulesTitle = ViewBindings.findChildViewById(rootView, id);
+      if (rulesTitle == null) {
+        break missingId;
+      }
+
+      id = R.id.turn;
+      TextView turn = ViewBindings.findChildViewById(rootView, id);
+      if (turn == null) {
         break missingId;
       }
 
@@ -182,15 +188,21 @@ public final class FragmentRulesBinding implements ViewBinding {
         break missingId;
       }
 
-      id = R.id.turns;
-      TextView turns = ViewBindings.findChildViewById(rootView, id);
-      if (turns == null) {
+      id = R.id.turn_detail_attention;
+      TextView turnDetailAttention = ViewBindings.findChildViewById(rootView, id);
+      if (turnDetailAttention == null) {
         break missingId;
       }
 
-      return new FragmentRulesBinding((ConstraintLayout) rootView, equipmentDetail, exit,
-          gameBeginning, goal, goalDetail, gridBackground, linearLayout, materials, nameGame,
-          preambule, textView, turnDetail, turns);
+      id = R.id.turn_detail_attention_title;
+      TextView turnDetailAttentionTitle = ViewBindings.findChildViewById(rootView, id);
+      if (turnDetailAttentionTitle == null) {
+        break missingId;
+      }
+
+      return new FragmentRulesBinding((ConstraintLayout) rootView, exit, gameStart, gameStartDetail,
+          goal, goalDetail, gridBackground, languageSpinner, linearLayout, preambule, rulesTitle,
+          turn, turnDetail, turnDetailAttention, turnDetailAttentionTitle);
     }
     String missingId = rootView.getResources().getResourceName(id);
     throw new NullPointerException("Missing required view with ID: ".concat(missingId));

@@ -1,19 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <string-array name="languages">
+        <item>English</item>
+        <item>Français</item>
+        <item>Español</item>
+        <item>Italiano</item>
+        <item>Deutsch</item>
+        <item>Dansk</item>
+        <item>Polski</item>
+        <item>日本語</item>
+        <item>中文</item>
+        <item>한국어</item>
+        <item>العربية</item>
+        <item>Vietnamese</item>
+    </string-array>
     <color name="black">#000000</color>
     <color name="blue">#154daf</color>
     <color name="darkBlue">#022a70</color>
     <color name="darkOrange">#aa6703</color>
     <color name="grey">#303030</color>
+    <color name="grey_white">#BB727272</color>
     <color name="orange">#d38208</color>
     <color name="white">#FFFFFF</color>
     <string name="_1_player">VS</string>
     <string name="_2_players">VS</string>
-    <string name="app_name">Poussapoussi</string>
+    <string name="app_name">Poussa poussi</string>
     <string name="game_logo">game_logo</string>
+    <string name="game_start_ar">بداية اللعبة</string>
+    <string name="game_start_da">Spilstart</string>
+    <string name="game_start_de">Spielstart</string>
+    <string name="game_start_detail_ar">تبدأ اللوحة فارغة. يستخدم اللاعب الأول الرموز الزرقاء.</string>
+    <string name="game_start_detail_da">Brættet starter tomt. Den første spiller bruger blå brikker.</string>
+    <string name="game_start_detail_de">Das Brett beginnt leer. Der erste Spieler verwendet blaue Spielsteine.</string>
+    <string name="game_start_detail_en">The board starts empty. The first player uses blue tokens.</string>
+    <string name="game_start_detail_es">El tablero comienza vacío. El primer jugador usa fichas azules.</string>
+    <string name="game_start_detail_fr">Le plateau commence vide. Le premier joueur utilise les jetons bleus.</string>
+    <string name="game_start_detail_it">Il tabellone inizia vuoto. Il primo giocatore usa pedine blu.</string>
+    <string name="game_start_detail_ja">ボードは空の状態から始まります。最初のプレイヤーは青いトークンを使用します。</string>
+    <string name="game_start_detail_ko">보드는 비어 있는 상태에서 시작합니다. 첫 번째 플레이어는 파란색 토큰을 사용합니다.</string>
+    <string name="game_start_detail_pl">Plansza zaczyna się pusta. Pierwszy gracz używa niebieskich pionków.</string>
+    <string name="game_start_detail_vi">Bàn cờ bắt đầu trống. Người chơi đầu tiên sử dụng quân cờ màu xanh.</string>
+    <string name="game_start_detail_zh">棋盘从空开始。第一个玩家使用蓝色代币。</string>
+    <string name="game_start_en">Game Start</string>
+    <string name="game_start_es">Inicio del juego</string>
+    <string name="game_start_fr">Début du jeu</string>
+    <string name="game_start_it">Inizio del gioco</string>
+    <string name="game_start_ja">ゲームの開始</string>
+    <string name="game_start_ko">게임 시작</string>
+    <string name="game_start_pl">Początek gry:</string>
+    <string name="game_start_vi">Bắt đầu trò chơi</string>
+    <string name="game_start_zh">游戏开始</string>
+    <string name="goal_ar">الهدف</string>
+    <string name="goal_da">Mål</string>
+    <string name="goal_de">Ziel</string>
+    <string name="goal_detail_ar">قم بمحاذاة 5 رموز لكسب النقاط. الفائز هو أول من يحقق نقطتين.</string>
+    <string name="goal_detail_da">Align 5 brikker for at score point. Den første, der scorer 2 point, vinder.</string>
+    <string name="goal_detail_de">Richte 5 Spielsteine aus, um Punkte zu erzielen. Der Erste, der 2 Punkte erzielt, gewinnt.</string>
+    <string name="goal_detail_en">Align 5 tokens to score points. The first to score 2 points wins.</string>
+    <string name="goal_detail_es">Alinea 5 fichas para ganar puntos. El primero en obtener 2 puntos gana.</string>
+    <string name="goal_detail_fr">Alignez 5 jetons pour marquer des points. Le premier à marquer 2 points gagne.</string>
+    <string name="goal_detail_it">Allinea 5 pedine per segnare punti. Il primo che segna 2 punti vince.</string>
+    <string name="goal_detail_ja">5つのトークンを揃えてポイントを獲得します。最初に2ポイントを獲得した人が勝ちです。</string>
+    <string name="goal_detail_ko">5개의 토큰을 정렬하여 점수를 얻습니다. 먼저 2점을 얻는 사람이 승리합니다.</string>
+    <string name="goal_detail_pl">Ustaw 5 pionków, aby zdobyć punkty. Pierwszy, który zdobędzie 2 punkty, wygrywa.</string>
+    <string name="goal_detail_vi">Xếp thẳng 5 quân cờ để ghi điểm. Người đầu tiên ghi được 2 điểm sẽ thắng.</string>
+    <string name="goal_detail_zh">排列5个代币以得分。首先得2分的人获胜。</string>
+    <string name="goal_en">Goal</string>
+    <string name="goal_es">Objetivo</string>
+    <string name="goal_fr">Objectif</string>
+    <string name="goal_it">Obiettivo</string>
+    <string name="goal_ja">目的</string>
+    <string name="goal_ko">목표</string>
+    <string name="goal_pl">Cel</string>
+    <string name="goal_vi">Mục tiêu</string>
+    <string name="goal_zh">目标</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="ia_vs_ia">VS</string>
     <string name="poussa_poussi">Poussa\nPoussi</string>
+    <string name="preamble_ar">بوسا بوسي هي لعبة استراتيجية للاعب واحد أو لاعبين.</string>
+    <string name="preamble_da">Poussi-poussi er et strategispil for 1 eller 2 spillere.</string>
+    <string name="preamble_de">Poussi-poussi ist ein Strategiespiel für 1 oder 2 Spieler.</string>
+    <string name="preamble_en">Poussi-poussi is a strategy game for 1 or 2 players.</string>
+    <string name="preamble_es">Poussi-poussi es un juego de estrategia para 1 o 2 jugadores.</string>
+    <string name="preamble_fr">Poussi-poussi est un jeu de stratégie pour 1 ou 2 joueurs.</string>
+    <string name="preamble_it">Poussi-poussi è un gioco di strategia per 1 o 2 giocatori.</string>
+    <string name="preamble_ja">プッサプッシは1人または2人用の戦略ゲームです。</string>
+    <string name="preamble_ko">푸사푸시는 1명 또는 2명의 플레이어를 위한 전략 게임입니다.</string>
+    <string name="preamble_pl">Poussi-poussi to gra strategiczna dla 1 lub 2 graczy.</string>
+    <string name="preamble_vi">Poussi-poussi là một trò chơi chiến lược dành cho 1 hoặc 2 người chơi.</string>
+    <string name="preamble_zh">普萨普西是一种适合1或2名玩家的策略游戏。</string>
+    <string name="rules_title_ar">بوسا بوسي</string>
+    <string name="rules_title_da">Poussa Poussi</string>
+    <string name="rules_title_de">Poussa Poussi</string>
+    <string name="rules_title_en">Poussa Poussi</string>
+    <string name="rules_title_es">Poussa Poussi</string>
+    <string name="rules_title_fr">Poussa Poussi</string>
+    <string name="rules_title_it">Poussa Poussi</string>
+    <string name="rules_title_ja">プッサプッシ</string>
+    <string name="rules_title_ko">푸사푸시</string>
+    <string name="rules_title_pl">Poussa Poussi</string>
+    <string name="rules_title_vi">Poussa Poussi</string>
+    <string name="rules_title_zh">普萨普西</string>
+    <string name="select_language">Select Language</string>
+    <string name="turn_ar">دور اللاعب</string>
+    <string name="turn_da">Spillertræk</string>
+    <string name="turn_de">Spielerzug</string>
+    <string name="turn_detail_ar">1. ضع رمزًا على الحافة أو بجوار رمز آخر.\n2. اختياريا، ادفع رمزًا وصفًا من الرموز المجاورة في أي اتجاه.</string>
+    <string name="turn_detail_attention_ar">لا يمكن للدفع إعادة الرموز إلى الحالة التي كانت عليها قبل آخر دفعة للخصم.</string>
+    <string name="turn_detail_attention_da">Skubbet kan ikke bringe brikkerne tilbage til tilstanden før modstanderens sidste skub.</string>
+    <string name="turn_detail_attention_de">Das Schieben kann die Spielsteine nicht in den Zustand vor dem letzten Schieben des Gegners zurückversetzen.</string>
+    <string name="turn_detail_attention_en">The push cannot revert the tokens to the state before the opponent\'s last push.</string>
+    <string name="turn_detail_attention_es">El empuje no puede revertir las fichas al estado antes del último empuje del oponente.</string>
+    <string name="turn_detail_attention_fr">La poussée ne peut pas remettre les jetons dans l\'état avant le dernier coup de l\'adversaire.</string>
+    <string name="turn_detail_attention_it">La spinta non può riportare le pedine allo stato prima dell\'ultima spinta dell\'avversario.</string>
+    <string name="turn_detail_attention_ja">押し戻しは、相手の最後の押し戻しの前の状態にトークンを戻すことはできません。</string>
+    <string name="turn_detail_attention_ko">밀기는 상대의 마지막 밀기 이전 상태로 토큰을 되돌릴 수 없습니다.</string>
+    <string name="turn_detail_attention_pl">Przesunięcie nie może przywrócić pionków do stanu sprzed ostatniego przesunięcia przeciwnika.</string>
+    <string name="turn_detail_attention_title_ar">⚠ انتباه</string>
+    <string name="turn_detail_attention_title_da">⚠ Opmærksomhed</string>
+    <string name="turn_detail_attention_title_de">⚠ Achtung</string>
+    <string name="turn_detail_attention_title_en">⚠ Attention</string>
+    <string name="turn_detail_attention_title_es">⚠ Atención</string>
+    <string name="turn_detail_attention_title_fr">⚠ Attention</string>
+    <string name="turn_detail_attention_title_it">⚠ Attenzione</string>
+    <string name="turn_detail_attention_title_ja">⚠ 注意</string>
+    <string name="turn_detail_attention_title_ko">⚠ 주의</string>
+    <string name="turn_detail_attention_title_pl">⚠ Uwaga</string>
+    <string name="turn_detail_attention_title_vi">⚠ Chú ý</string>
+    <string name="turn_detail_attention_title_zh">⚠ 注意</string>
+    <string name="turn_detail_attention_vi">Lượt đẩy không được phép đưa các quân cờ trở về trạng thái trước khi đối thủ đẩy lần trước.</string>
+    <string name="turn_detail_attention_zh">推动不能将代币恢复到对手上次推动之前的状态。</string>
+    <string name="turn_detail_da">1. Placer en brik på kanten eller ved siden af en anden brik.\n2. Valgfrit kan du skubbe en brik og dens række af tilstødende brikker i enhver retning.</string>
+    <string name="turn_detail_de">1. Platziere einen Spielstein am Rand oder neben einem anderen Spielstein.\n2. Optional kannst du einen Spielstein und seine Reihe benachbarter Spielsteine in jede Richtung schieben.</string>
+    <string name="turn_detail_en">1. Place a token on the edge or next to another token.\n2. Optionally, push a token and its line of adjacent tokens in any direction</string>
+    <string name="turn_detail_es">1. Coloca una ficha en el borde o junto a otra ficha.\n2. Opcionalmente, empuja una ficha y su línea de fichas adyacentes en cualquier dirección.</string>
+    <string name="turn_detail_fr">1. Placez un jeton sur le bord ou à côté d\'un autre jeton.\n2. Optionnellement, poussez un jeton et sa ligne de jetons adjacents dans n\'importe quelle direction.</string>
+    <string name="turn_detail_it">1. Metti una pedina sul bordo o accanto a un\'altra pedina.\n2. Facoltativamente, spingi una pedina e la sua fila di pedine adiacenti in qualsiasi direzione.</string>
+    <string name="turn_detail_ja">1. トークンをボードの端または別のトークンの隣に配置します。\n2. 任意で、トークンとその隣接するトークンの列を任意の方向に押します。</string>
+    <string name="turn_detail_ko">1. 토큰을 가장자리 또는 다른 토큰 옆에 배치합니다.\n2. 선택적으로, 토큰과 인접한 토큰의 행을 임의의 방향으로 밀어 넣습니다.</string>
+    <string name="turn_detail_pl">1. Umieść pionek na krawędzi lub obok innego pionka.\n2. Opcjonalnie, przesuń pionek i jego linię sąsiednich pionków w dowolnym kierunku.</string>
+    <string name="turn_detail_vi">1. Đặt một quân cờ ở cạnh hoặc bên cạnh một quân cờ khác.\n2. Tùy chọn, đẩy một quân cờ và dòng quân cờ liền kề theo bất kỳ hướng nào</string>
+    <string name="turn_detail_zh">1. 将一个代币放在边缘或另一个代币旁边。\n2. 可选地，推一个代币及其相邻代币的行。</string>
+    <string name="turn_en">Player Turn</string>
+    <string name="turn_es">Turno del jugador</string>
+    <string name="turn_fr">Tour de joueur</string>
+    <string name="turn_it">Turno del giocatore</string>
+    <string name="turn_ja">プレイヤーのターン</string>
+    <string name="turn_ko">플레이어의 턴</string>
+    <string name="turn_pl">Ruch gracza</string>
+    <string name="turn_vi">Lượt chơi của người chơi</string>
+    <string name="turn_zh">玩家回合</string>
     <style name="Base.Theme.Poussapoussi" parent="Theme.Material3.DayNight.NoActionBar">
         
         
