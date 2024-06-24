@@ -51,12 +51,12 @@ public class ActionIterator implements Iterator<ActionTree>{
                 RemovAction removAction = endRemovIterator.next();
                 child.getAction().setGrid(removAction.getGrid());
 
-                if (node.getDepth() == 0) {
-                    child.getAction().setStartRemove(removAction.getCoordinates());
-                }
-                else {
+                // if (node.getDepth() == 0) {
+                //     child.getAction().setStartRemove(removAction.getCoordinates());
+                // }
+                // else {
                     child.getAction().setEndRemove(removAction.getCoordinates());
-                }
+                // }
 
                 // On sort de la boucle
                 actionPending = false;
@@ -72,7 +72,6 @@ public class ActionIterator implements Iterator<ActionTree>{
                 endRemovIterator = new RemovIterator(child.getAction().getGrid(), child.getAgent().getColor());
 
                 // Si on n'a pas de retrait en fin de tour, on sort de la boucle
-                actionPending = false;
                 if (!endRemovIterator.hasNext()) {
                     actionPending = false;
                 }

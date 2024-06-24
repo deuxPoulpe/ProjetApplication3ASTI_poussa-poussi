@@ -86,6 +86,8 @@ public class PushIterator implements Iterator<ActionTree> {
             currentPushAction.setDirection(null);
         }
 
+        child.incrementDepth();
+
         return child;
     }
 

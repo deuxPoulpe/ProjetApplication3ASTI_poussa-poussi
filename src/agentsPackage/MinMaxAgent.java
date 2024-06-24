@@ -123,9 +123,6 @@ public class MinMaxAgent extends Agent{
             while (childIterator.hasNext()) {
                 ActionTree child = childIterator.next(); // Correction: déplacement de cette ligne dans la boucle
 
-                // Définit la profondeur du noeud enfant
-                child.setDepth(node.getDepth() + 1);
-
                 // Évalue le noeud enfant
                 ActionTree nodeEval = findBestMove(child, depth - 1, alpha, beta, false);
                 int eval = nodeEval.getHeuristicValue();

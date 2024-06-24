@@ -54,6 +54,10 @@ public class PlaceIterator implements Iterator<ActionTree> {
         Grid placeGrid = grid.clone();
         placeGrid.placeToken(node.getAgent().getColor(), currentPlaceCoordinates);
 
-        return new ActionTree(node, placeGrid, currentPlaceCoordinates, null);
+        // On retourne un fils pour placer le jeton à la coordonnée actuelle.
+        ActionTree placeChild = new ActionTree(node, placeGrid, currentPlaceCoordinates, null);
+        placeChild.incrementDepth();
+
+        return placeChild;
     }
 }

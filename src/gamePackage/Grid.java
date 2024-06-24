@@ -37,8 +37,6 @@ public class Grid {
         this.map = new HashMap<>();
     }
 
-    // Methods
-
     public Grid clone() {
         Grid newGrid = new Grid();
 
@@ -47,6 +45,7 @@ public class Grid {
             newMap.put(c, map.get(c));
         }
         newGrid.map = newMap;
+        newGrid.previousMovedTokens = previousMovedTokens;
 
         return newGrid;
     }
@@ -285,6 +284,7 @@ public class Grid {
             // Pour chaque direction
             for (int[] direction : directions) {
 
+
                 // Si le jeton n'est pas déjà aligné dans cette direction
                 if (!token.getAlignments().contains(direction)) {
 
@@ -304,17 +304,22 @@ public class Grid {
                         result.add(neighbours);
                     }
                 }
+
             }
         }
-    
-        // Nettoyer les alignements des jetons avant de retourner le résultat
-        for (List<Coordinates> alignment : result) {
-            for (Coordinates c : alignment) {
-                getToken(c).clearAlignments();
-            }
-        }
-        
         return result;
+    }
+    
+    public void clearAlignment(List<Coordinates> alignment) {
+        for (Coordinates c : alignment) {
+            map.get(c).clearAlignments();
+        }
+    }
+
+    public void clearAlignments(List<List<Coordinates>> alignments) {
+        for (List<Coordinates> alignment : alignments) {
+            clearAlignment(alignment);
+        }
     }
 
     public void display() {

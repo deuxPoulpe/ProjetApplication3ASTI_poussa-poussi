@@ -51,6 +51,7 @@ public class PlayerAgent extends Agent {
 
         // Pour chaque alignement de 5 jetons du joueur formé par l'adversaire, on retire 2 jetons de l'alignement
         List<List<Coordinates>> alignments = grid.getAlignments(getColor(), 5);
+        grid.clearAlignments(alignments);
         for (int i = 0; i < alignments.size(); i++) {
             List<Coordinates> alignment = alignments.get(i);
             for (int j = 0; j < 2; j++) {
@@ -113,6 +114,7 @@ public class PlayerAgent extends Agent {
 
         // Pour chaque alignement de 5 jetons du joueur formé par le joueur, on retire 2 jetons de l'alignement
         alignments = grid.getAlignments(getColor(), 5);
+        grid.clearAlignments(alignments);
         for (int i = 0; i < alignments.size(); i++) {
             List<Coordinates> alignment = alignments.get(i);
             for (int j = 0; j < 2; j++) {

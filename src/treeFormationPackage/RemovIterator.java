@@ -19,6 +19,7 @@ public class RemovIterator implements Iterator<RemovAction> {
     public RemovIterator(Grid grid, char color) {
         currentPair = new RemovAction(null, grid);
         List<List<Coordinates>> alignments = grid.getAlignments(color, 5);
+        grid.clearAlignments(alignments);
         combinationsIterator = new CombinationIterator(alignments);
         this.grid = grid;
     }
