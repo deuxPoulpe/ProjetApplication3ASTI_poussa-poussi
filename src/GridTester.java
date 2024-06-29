@@ -24,6 +24,21 @@ public class GridTester {
         grid.placeToken('Y', new Coordinates(5, 0));
         grid.placeToken('Y', new Coordinates(4, 0));
 
+        grid.placeToken('Y', new Coordinates(0, 0));
+        grid.placeToken('Y', new Coordinates(0, 1));
+        grid.placeToken('Y', new Coordinates(0, 2));
+
+        grid.placeToken('Y', new Coordinates(0, 7));
+        grid.placeToken('Y', new Coordinates(1, 7));
+        grid.placeToken('Y', new Coordinates(2, 7));
+        grid.placeToken('Y', new Coordinates(3, 7));
+
+        grid.placeToken('B', new Coordinates(7, 1));
+        grid.placeToken('B', new Coordinates(6, 1));
+        grid.placeToken('B', new Coordinates(5, 1));
+        grid.placeToken('B', new Coordinates(4, 1));
+
+
         // grid.placeToken('B', new Coordinates(3, 0));
         // grid.placeToken('B', new Coordinates(0, 2));    
         // grid.placeToken('B', new Coordinates(0, 3));
@@ -35,17 +50,17 @@ public class GridTester {
         MinMaxAgent agent = new MinMaxAgent('Y', 1);
         ActionTree root = new ActionTree(agent, grid);
 
-        // AFFICHAGE DES ACTIONS
-        ActionIterator actionIterator = new ActionIterator(root);
-        int maxIter = 10000;
-        int i = 0;
-        while (actionIterator.hasNext() && i < maxIter) {
-            ActionTree action = actionIterator.next();
-            System.out.println("Action: " + action);
-            action.getAction().getGrid().display();
-            i++;
-        }
-        System.out.println("Nombre d'actions: " + i);
+        // // AFFICHAGE DES ACTIONS
+        // ActionIterator actionIterator = new ActionIterator(root);
+        // int maxIter = 10000;
+        // int i = 0;
+        // while (actionIterator.hasNext() && i < maxIter) {
+        //     ActionTree action = actionIterator.next();
+        //     System.out.println("Action: " + action);
+        //     action.getAction().getGrid().display();
+        //     i++;
+        // }
+        // System.out.println("Nombre d'actions: " + i);
 
         // // AFFICHAGE DU MEILLEUR COUP
         // Action bestMove = agent.evaluateAction(grid);
@@ -97,17 +112,17 @@ public class GridTester {
         //     i++;
         // }
 
-        // // CALCUL DE LA VALEUR HEURISTIQUE
-        // root.calculateHeuristicValue();
-        // System.out.println("Heuristic value: " + root.getHeuristicValue());
-        // Set<Coordinates> endRemove = new HashSet<>();
-        // endRemove.add(new Coordinates(0, 0));
-        // endRemove.add(new Coordinates(0, 1));
-        // ActionTree actionTree = new ActionTree(agent, grid);
-        // actionTree.getAction().setEndRemove(endRemove);
-        // actionTree.getAction().setPlacement(new Coordinates(0, 4));
-        // actionTree.calculateHeuristicValue();
-        // System.out.println("Heuristic value: " + actionTree.getHeuristicValue());
+        // CALCUL DE LA VALEUR HEURISTIQUE
+        root.calculateHeuristicValue();
+        System.out.println("Heuristic value: " + root.getHeuristicValue());
+        Set<Coordinates> endRemove = new HashSet<>();
+        endRemove.add(new Coordinates(0, 0));
+        endRemove.add(new Coordinates(0, 1));
+        ActionTree actionTree = new ActionTree(agent, grid);
+        actionTree.getAction().setEndRemove(endRemove);
+        actionTree.getAction().setPlacement(new Coordinates(0, 4));
+        actionTree.calculateHeuristicValue();
+        System.out.println("Heuristic value: " + actionTree.getHeuristicValue());
     }
 
 }

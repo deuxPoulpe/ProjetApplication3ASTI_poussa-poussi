@@ -79,14 +79,29 @@ public class ActionTree {
 
         // On récupère les alignements de chaque joueur
         for (int i = 4; i > 1; i--) {
+
             // joueur courant
-            alignmentsList.add(grid.getAlignments(agent.getColor(), i));
-            alignmentCounts[i - 2] = alignmentsList.get(4 - i).size(); // Correction : index correct pour alignmentCounts
+            List<List<Coordinates>> alignments = grid.getAlignments(agent.getColor(), i);
+
+            // On filtre les alignements contenant des jetons déjà présents dans d'autres alignements déjà comptés
+            grid.filterAlignments(alignments);
+
+            // On ajoute les alignements de 2, 3 et 4 jetons à la liste et on marque les jetons comme alignés dans leur direction
+            alignmentsList.add(alignments);
+            alignmentCounts[i - 2] = alignments.size(); // Correction : Utilisation directe de la taille de `alignments`
+            for (List<Coordinates> alignment : alignments) {
+                grid.markAlignment(alignment);
+            }
 
             // adversaire
             char opponentColor = agent.getColor() == 'Y' ? 'B' : 'Y';
-            opponentAlignmentsList.add(grid.getAlignments(opponentColor, i));
-            opponentAlignmentCounts[i - 2] = opponentAlignmentsList.get(4 - i).size(); // Correction : index correct pour opponentAlignmentCounts
+            List<List<Coordinates>> opponentAlignments = grid.getAlignments(opponentColor, i);
+            grid.filterAlignments(opponentAlignments); // Correction : Filtrage des alignements de l'adversaire
+            opponentAlignmentsList.add(opponentAlignments);
+            opponentAlignmentCounts[i - 2] = opponentAlignments.size(); // Correction : Utilisation directe de la taille de `opponentAlignments`
+            for (List<Coordinates> alignment : opponentAlignments) {
+                grid.markAlignment(alignment);
+            }
         }
         
         // On nettoie tous nos alignements de 5 jetons
