@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import agentsPackage.MinMaxAgent;
 import gamePackage.Coordinates;
 import gamePackage.Grid;
-import gamePackage.PushAction;
 import gamePackage.Action;
 
 public class ActionTree {
@@ -27,10 +26,10 @@ public class ActionTree {
     }
 
     // Constructeur pour les noeuds de l'arbre
-    public ActionTree(ActionTree parent, Grid myGrid, Coordinates placeCoordinates, PushAction pushAction) {
+    public ActionTree(ActionTree parent, Action myAction) {
 
         this.agent = parent.agent;
-        this.action = new Action(parent.action.getStartRemove(), placeCoordinates, pushAction, new HashSet<>(), myGrid);
+        this.action = myAction;
     }
 
     @Override

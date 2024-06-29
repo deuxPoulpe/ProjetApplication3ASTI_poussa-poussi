@@ -35,28 +35,26 @@ public class GridTester {
         MinMaxAgent agent = new MinMaxAgent('Y', 1);
         ActionTree root = new ActionTree(agent, grid);
 
-        // // AFFICHAGE DES ACTIONS
-        // ActionIterator actionIterator = new ActionIterator(root);
-        // int maxIter = 10000;
-        // int i = 0;
-        // while (actionIterator.hasNext() && i < maxIter) {
-        //     ActionTree action = actionIterator.next();
-        //     System.out.println("Action: " + action);
-        //     action.getAction().getGrid().display();
-        //     i++;
-        //     if (action.getAction().getEndRemove().size() > 0) {
-        //         break;
-        //     }
-        // }
+        // AFFICHAGE DES ACTIONS
+        ActionIterator actionIterator = new ActionIterator(root);
+        int maxIter = 10000;
+        int i = 0;
+        while (actionIterator.hasNext() && i < maxIter) {
+            ActionTree action = actionIterator.next();
+            System.out.println("Action: " + action);
+            action.getAction().getGrid().display();
+            i++;
+        }
+        System.out.println("Nombre d'actions: " + i);
 
-        // AFFICHAGE DU MEILLEUR COUP
-        Action bestMove = agent.evaluateAction(grid);
-        System.out.println("Best move: " + bestMove);
+        // // AFFICHAGE DU MEILLEUR COUP
+        // Action bestMove = agent.evaluateAction(grid);
+        // System.out.println("Best move: " + bestMove);
         
-        ActionTree bestAction = new ActionTree(agent, grid);
-        bestAction.setAction(bestMove);
-        bestAction.calculateHeuristicValue();
-        System.out.println("Heuristic value: " + bestAction.getHeuristicValue());
+        // ActionTree bestAction = new ActionTree(agent, grid);
+        // bestAction.setAction(bestMove);
+        // bestAction.calculateHeuristicValue();
+        // System.out.println("Heuristic value: " + bestAction.getHeuristicValue());
 
         // // // Affichage des grilles de retrait
         // RemovIterator removIterator = new RemovIterator(grid, 'Y');

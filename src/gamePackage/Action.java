@@ -61,17 +61,19 @@ public class Action {
     @Override
     public String toString() {
         String strStartRemove = "Start remove: " + startRemove + "\n";
-        String strPlacement = "Placement: " + placement + "\n";
-        String strPush = "Push: " + push + "\n";
+        String strPlacement = placement == null ? "No placement\n" : "Placement: " + placement + "\n";
+        String strPush = push == null ? "No push\n" : "Push: " + push;
         String strEndRemove = "End remove: " + endRemove + "\n";
         return strStartRemove + strPlacement + strPush + strEndRemove;
     }
 
     @Override
     public Action clone() {
-        PushAction pushClone;
-        pushClone = push == null ? null : push.clone();
-        return new Action(startRemove, placement, pushClone, endRemove, grid.clone());
+        PushAction pushClone = push == null ? null : push.clone();
+        Coordinates placementClone = placement == null ? null : placement.clone();
+        Set<Coordinates> startRemoveClone = startRemove == null ? null : Set.copyOf(startRemove);
+        Set<Coordinates> endRemoveClone = endRemove == null ? null : Set.copyOf(endRemove);
+        return new Action(startRemoveClone, placementClone, pushClone, endRemoveClone, grid.clone());
     }
     
 }
