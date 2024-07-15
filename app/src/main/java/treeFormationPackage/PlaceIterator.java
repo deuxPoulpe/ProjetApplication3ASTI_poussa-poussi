@@ -1,8 +1,10 @@
 package treeFormationPackage;
 
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import gamePackage.Action;
 import gamePackage.Coordinates;
 import gamePackage.EmptyCoordIterator;
 import gamePackage.Grid;
@@ -55,7 +57,8 @@ public class PlaceIterator implements Iterator<ActionTree> {
         placeGrid.placeToken(node.getAgent().getColor(), currentPlaceCoordinates);
 
         // On retourne un fils pour placer le jeton à la coordonnée actuelle.
-        ActionTree placeChild = new ActionTree(node, placeGrid, currentPlaceCoordinates, null);
+        Action childAction = new Action(node.getAction().getStartRemove(), currentPlaceCoordinates, null, new HashSet<>(), placeGrid);
+        ActionTree placeChild = new ActionTree(node, childAction);
         placeChild.incrementDepth();
 
         return placeChild;

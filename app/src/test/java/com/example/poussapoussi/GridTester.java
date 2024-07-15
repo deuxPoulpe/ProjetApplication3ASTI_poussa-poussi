@@ -1,3 +1,5 @@
+package com.example.poussapoussi;
+
 import agentsPackage.MinMaxAgent;
 import gamePackage.Coordinates;
 import gamePackage.Grid;
@@ -47,7 +49,7 @@ public class GridTester {
 
         grid.display();
 
-        MinMaxAgent agent = new MinMaxAgent('Y', 1);
+        MinMaxAgent agent = new MinMaxAgent('Y', 1 , new int[]{0, 0});
         ActionTree root = new ActionTree(agent, grid);
 
         // // AFFICHAGE DES ACTIONS

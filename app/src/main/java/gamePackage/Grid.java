@@ -15,8 +15,7 @@ public class Grid {
     private HashMap<Coordinates, Token> map;
     private HashMap<Coordinates, Token> previousMovedTokens = new HashMap<>();
 
-    private AnimationVariables animationVariables;
-
+    private AnimationVariables animationVariables; 
 
 
     public HashMap<Coordinates, Token> getHashMap() {
@@ -42,10 +41,7 @@ public class Grid {
     public Grid(AnimationVariables animationVariables) {
         this.map = new HashMap<>();
         this.animationVariables = animationVariables;
-
-    }
-
-    // Methods
+    } 
 
     public Grid clone() {
         Grid newGrid = new Grid();
@@ -56,8 +52,7 @@ public class Grid {
         }
         newGrid.map = newMap;
         newGrid.animationVariables = this.animationVariables;
-        newGrid.previousMovedTokens = this.previousMovedTokens;
-
+        newGrid.previousMovedTokens = previousMovedTokens;
 
         return newGrid;
     }
@@ -124,6 +119,7 @@ public class Grid {
             currentCoordinates = new Coordinates(currentCoordinates.getX() + direction[0], currentCoordinates.getY() + direction[1]);
             nbEmptyCells++; 
         }
+        
         return nbEmptyCells;
     }
     
@@ -150,8 +146,7 @@ public class Grid {
             tokensToMove.put(new Coordinates(iterationsCoordinates.getX(), iterationsCoordinates.getY()), map.get(iterationsCoordinates));
             iterationsCoordinates = new Coordinates(iterationsCoordinates.getX() + direction[0], iterationsCoordinates.getY() + direction[1]);
         }
-
-
+        
         return tokensToMove;
     }
     
@@ -187,7 +182,7 @@ public class Grid {
         }
 
         animationVariables.setAnimationVariables(distance, direction, tokensToMove);
-
+        
         return tokensMoved;
     }
 
@@ -280,7 +275,6 @@ public class Grid {
      * @param alignmentSize la taille de l'alignement à chercher.
      */
     public List<List<Coordinates>> getAlignments(char color, int alignmentSize) {
-
         List<List<Coordinates>> result = new ArrayList<>();
         int[][] directions = {{0, 1}, {1, 0}, {1, 1}, {1, -1}};
         Set<Coordinates> visitedTokens = new HashSet<>();
@@ -289,7 +283,7 @@ public class Grid {
         for (Coordinates c : map.keySet()) {
             Token token = map.get(c);
             char tokenColor = token.getColor();
-
+            
             // Si le jeton n'est pas de la couleur spécifiée ou a déjà été visité, on passe au suivant
             if (tokenColor != color || visitedTokens.contains(c)) {
                 continue;
@@ -297,33 +291,26 @@ public class Grid {
 
             // Pour chaque direction
             for (int[] direction : directions) {
-
-
-                // Si le jeton n'est pas déjà aligné dans cette direction
-                if (!token.getAlignments().contains(direction)) {
-
-                    // Trouver les voisins alignés dans cette direction
-                    Set<Coordinates> visited = new HashSet<>();
-                    List<Coordinates> neighbours = getAlignment(c, direction, visited);
-
-                    // Si le nombre de voisins alignés est suffisant
-                    if (neighbours.size() >= alignmentSize) {
-
-                        // Marquer tous les jetons alignés et les ajouter aux résultats
-                        for (Coordinates neighbourCoordinates : neighbours) {
-                            getToken(neighbourCoordinates).addToAlignments(direction);
-                            visitedTokens.add(neighbourCoordinates);
-                        }
-
-                        result.add(neighbours);
+                // Trouver les voisins alignés dans cette direction
+                Set<Coordinates> visited = new HashSet<>();
+                List<Coordinates> neighbours = getAlignment(c, direction, visited);
+                
+                // Si le nombre de voisins alignés est suffisant
+                if (neighbours.size() >= alignmentSize) {
+                    
+                    // Marquer tous les jetons alignés comme visités et les ajouter aux résultats
+                    for (Coordinates neighbourCoordinates : neighbours) {
+                        visitedTokens.add(neighbourCoordinates);
                     }
-                }
 
+                    result.add(neighbours);
+                }
             }
         }
+
         return result;
     }
-
+    
     public void clearAlignment(List<Coordinates> alignment) {
         for (Coordinates c : alignment) {
             map.get(c).clearAlignments();
@@ -334,6 +321,60 @@ public class Grid {
         for (List<Coordinates> alignment : alignments) {
             clearAlignment(alignment);
         }
+    }
+
+    public void markAlignment(List<Coordinates> alignment) {
+            
+        // Pour chaque alignement, récupère la direction
+        Coordinates start = alignment.get(0);
+        Coordinates end = alignment.get(1);
+        int[] direction = new int[]{end.getX() - start.getX(), end.getY() - start.getY()};
+
+        // Marque les jetons alignés dans la direction correspondante
+        for (Coordinates coord : alignment) {
+            getToken(coord).addToAlignments(direction);
+        }
+    }
+
+    public void filterAlignments(List<List<Coordinates>> alignments) {
+        // Création d'une nouvelle liste pour stocker les alignements valides
+        List<List<Coordinates>> validAlignments = new ArrayList<>();
+
+        // Pour chaque alignement, on vérifie si chacun des jetons n'est pas déjà aligné dans la même direction
+        for (List<Coordinates> alignment : alignments) {
+            if (alignment.size() < 2) {
+                // Si l'alignement contient moins de 2 jetons, il ne peut définir une direction
+                continue;
+            }
+
+            // On récupère la direction de l'alignement
+            int[] direction = new int[2];
+            direction[0] = alignment.get(1).getX() - alignment.get(0).getX();
+            direction[1] = alignment.get(1).getY() - alignment.get(0).getY();
+
+            // On vérifie si les jetons ne sont pas déjà alignés dans la même direction
+            boolean alreadyAligned = false;
+            for (Coordinates coords : alignment) {
+                for (int[] dir : getToken(coords).getAlignments()) {
+                    if (dir[0] == direction[0] && dir[1] == direction[1]) {
+                        alreadyAligned = true;
+                        break;
+                    }
+                }
+                if (alreadyAligned) {
+                    break;
+                }
+            }
+
+            // Si les jetons ne sont pas déjà alignés dans la même direction, on les ajoute
+            if (!alreadyAligned) {
+                validAlignments.add(alignment);
+            }
+        }
+
+        // Mise à jour des alignements avec uniquement ceux valides
+        alignments.clear();
+        alignments.addAll(validAlignments);
     }
 
     public void display() {

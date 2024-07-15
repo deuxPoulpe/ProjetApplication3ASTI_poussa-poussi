@@ -1,3 +1,5 @@
+package com.example.poussapoussi;
+
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -19,7 +21,7 @@ public class BenchmarkMinMax {
     public static void main(String[] args) throws Exception {
 
         // Initialisation de l'agent MinMax
-        MinMaxAgent agent = new MinMaxAgent('Y', depth);
+        MinMaxAgent agent = new MinMaxAgent('Y', depth, new int[]{0, 0});
 
         // Initialisation des paramètres de jeu
         Settings.getInstance(true, true, false);

@@ -136,7 +136,6 @@ public class GridFragment extends Fragment {
         initSkipButton();
         initGame();
 
-
         binding.mainMenu.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View v) {
@@ -174,20 +173,81 @@ public class GridFragment extends Fragment {
         if(!resume) {
             animationVariables = new AnimationVariables();
             this.grid = new Grid(animationVariables);
+
+            //############################### TEST ########################################//
+////
 //            grid.placeToken('B', new Coordinates(0, 0));
 //            grid.placeToken('B', new Coordinates(1, 0));
 //            grid.placeToken('B', new Coordinates(2, 0));
 //            grid.placeToken('B', new Coordinates(3, 0));
+//            grid.placeToken('Y', new Coordinates(6, 0));
+//
 //
 //            grid.placeToken('B', new Coordinates(0, 1));
-//            grid.placeToken('B', new Coordinates(1, 1));
+//            grid.placeToken('Y', new Coordinates(1, 1));
 //            grid.placeToken('B', new Coordinates(2, 1));
-//            grid.placeToken('B', new Coordinates(3, 1));
+//            grid.placeToken('Y', new Coordinates(3, 1));
+//            grid.placeToken('B', new Coordinates(4, 1));
+//            grid.placeToken('Y', new Coordinates(5, 1));
+//            grid.placeToken('B', new Coordinates(6, 1));
+//            grid.placeToken('Y', new Coordinates(7, 1));
 //
-//            grid.placeToken('Y', new Coordinates(0, 2));
+//            grid.placeToken('B', new Coordinates(0, 2));
 //            grid.placeToken('Y', new Coordinates(1, 2));
-//            grid.placeToken('Y', new Coordinates(2, 2));
+//            grid.placeToken('B', new Coordinates(2, 2));
 //            grid.placeToken('Y', new Coordinates(3, 2));
+//            grid.placeToken('B', new Coordinates(4, 2));
+//            grid.placeToken('Y', new Coordinates(5, 2));
+//            grid.placeToken('B', new Coordinates(6, 2));
+//            grid.placeToken('Y', new Coordinates(7, 2));
+//
+//            grid.placeToken('B', new Coordinates(0, 3));
+//            grid.placeToken('Y', new Coordinates(1, 3));
+//            grid.placeToken('B', new Coordinates(2, 3));
+//            grid.placeToken('Y', new Coordinates(3, 3));
+//            grid.placeToken('B', new Coordinates(4, 3));
+//            grid.placeToken('Y', new Coordinates(5, 3));
+//            grid.placeToken('B', new Coordinates(6, 3));
+//            grid.placeToken('Y', new Coordinates(7, 3));
+//
+//            grid.placeToken('Y', new Coordinates(0, 4));
+//            grid.placeToken('B', new Coordinates(1, 4));
+//            grid.placeToken('Y', new Coordinates(2, 4));
+//            grid.placeToken('B', new Coordinates(3, 4));
+//            grid.placeToken('Y', new Coordinates(4, 4));
+//            grid.placeToken('B', new Coordinates(5, 4));
+//            grid.placeToken('Y', new Coordinates(6, 4));
+//            grid.placeToken('B', new Coordinates(7, 4));
+//
+//            grid.placeToken('Y', new Coordinates(0, 5));
+//            grid.placeToken('B', new Coordinates(1, 5));
+//            grid.placeToken('Y', new Coordinates(2, 5));
+//            grid.placeToken('B', new Coordinates(3, 5));
+//            grid.placeToken('Y', new Coordinates(4, 5));
+//            grid.placeToken('B', new Coordinates(5, 5));
+//            grid.placeToken('Y', new Coordinates(6, 5));
+//            grid.placeToken('B', new Coordinates(7, 5));
+//
+//            grid.placeToken('B', new Coordinates(0, 6));
+//            grid.placeToken('Y', new Coordinates(1, 6));
+//            grid.placeToken('B', new Coordinates(2, 6));
+//            grid.placeToken('Y', new Coordinates(3, 6));
+//            grid.placeToken('B', new Coordinates(4, 6));
+//            grid.placeToken('Y', new Coordinates(5, 6));
+//            grid.placeToken('B', new Coordinates(6, 6));
+//            grid.placeToken('Y', new Coordinates(7, 6));
+//
+//            grid.placeToken('B', new Coordinates(0, 7));
+//            grid.placeToken('Y', new Coordinates(1, 7));
+//            grid.placeToken('B', new Coordinates(2, 7));
+//            grid.placeToken('Y', new Coordinates(3, 7));
+//            grid.placeToken('B', new Coordinates(4, 7));
+//            grid.placeToken('Y', new Coordinates(5, 7));
+//            grid.placeToken('B', new Coordinates(6, 7));
+//            grid.placeToken('Y', new Coordinates(7, 7));
+
+
+            //############################### TEST ########################################//
 
             this.game = new Game(this.grid, this.blueAiDifficulty, this.orangeAiDifficulty);
             this.game.start(this.choice);
@@ -207,6 +267,7 @@ public class GridFragment extends Fragment {
 
 
     }
+
 
     /**
      * Initialize the skip button
@@ -327,11 +388,12 @@ public class GridFragment extends Fragment {
             return;
         }
 
-        if (!this.removeTurnPlayer1.isEmpty() || !this.removeTurnPlayer2.isEmpty()) {
-            displayTokenGrid();
-            displayBorderGrid();
-            return;
-        }
+//        if (!this.removeTurnPlayer1.isEmpty() || !this.removeTurnPlayer2.isEmpty()) {
+//            displayTokenGrid();
+//            displayBorderGrid();
+//            return;
+//        }
+// =================== THIS WILL MAY BE PROBLEMATIC ===================
 
 
         if (this.placeTurn) {
@@ -369,10 +431,12 @@ public class GridFragment extends Fragment {
             this.aiTurn = !this.aiTurn;
         }
 
+
         updateDisplayScore();
         if (removeTurnPlayer1.isEmpty() && removeTurnPlayer2.isEmpty()) {
             game.switchPlayer();
             changeColorToCurrentPlayer();
+
         }
         displayTurn();
 
@@ -382,10 +446,7 @@ public class GridFragment extends Fragment {
      * Check for a win or alignments of five tokens
      */
     private void checkWin() {
-        if (grid.isFull()){
-            displayWinner("Draw");
-            return;
-        }
+
 
         if(!this.removeTurnPlayer1.isEmpty() || !this.removeTurnPlayer2.isEmpty()){
             printTest("the score has already been updated");
@@ -395,6 +456,11 @@ public class GridFragment extends Fragment {
         HashMap<String, List<List<Coordinates>>> alignments = game.getCurrentPlayer().updateAgentScore(grid);
         List<List<Coordinates>> blueAlignments = alignments.get("B");
         List<List<Coordinates>> orangeAlignments = alignments.get("Y");
+
+        if (grid.isFull() && blueAlignments.isEmpty() && orangeAlignments.isEmpty()){
+            displayWinner("Draw");
+            return;
+        }
 
         firstRemovePlayer = game.getColorOfCurrentPlayer();
 
@@ -408,6 +474,16 @@ public class GridFragment extends Fragment {
             for (List<Coordinates> alignment : orangeAlignments) {
                 this.removeTurnPlayer2.put(alignment, 2);
             }
+        }
+
+
+        boolean shouldSwitchPlayer = (firstRemovePlayer == 'B')
+                ? this.removeTurnPlayer1.isEmpty() && !this.removeTurnPlayer2.isEmpty()
+                : !this.removeTurnPlayer1.isEmpty() && this.removeTurnPlayer2.isEmpty();
+
+        if (shouldSwitchPlayer) {
+            game.switchPlayer();
+            changeColorToCurrentPlayer();
         }
 
 
@@ -648,9 +724,6 @@ public class GridFragment extends Fragment {
         });
 
 
-
-
-
     }
 
 
@@ -782,9 +855,6 @@ public class GridFragment extends Fragment {
                 }
 
                 displayTurn();
-                if (this.choice == '2' && currentPlayer.equals(game.getPlayer1())) {
-                    handleTurn();
-                }
             }
             displayTokenGrid();
         }

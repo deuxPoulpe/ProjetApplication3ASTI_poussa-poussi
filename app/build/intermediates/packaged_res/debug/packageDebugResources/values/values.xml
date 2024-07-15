@@ -12,7 +12,7 @@
         <item>中文</item>
         <item>한국어</item>
         <item>العربية</item>
-        <item>Vietnamese</item>
+        <item>Tiếng Việt</item>
     </string-array>
     <color name="black">#000000</color>
     <color name="blue">#154daf</color>
@@ -47,7 +47,7 @@
     <string name="game_start_it">Inizio del gioco</string>
     <string name="game_start_ja">ゲームの開始</string>
     <string name="game_start_ko">게임 시작</string>
-    <string name="game_start_pl">Początek gry:</string>
+    <string name="game_start_pl">Początek gry</string>
     <string name="game_start_vi">Bắt đầu trò chơi</string>
     <string name="game_start_zh">游戏开始</string>
     <string name="goal_ar">الهدف</string>
@@ -78,29 +78,29 @@
     <string name="ia_vs_ia">VS</string>
     <string name="poussa_poussi">Poussa\nPoussi</string>
     <string name="preamble_ar">بوسا بوسي هي لعبة استراتيجية للاعب واحد أو لاعبين.</string>
-    <string name="preamble_da">Poussi-poussi er et strategispil for 1 eller 2 spillere.</string>
-    <string name="preamble_de">Poussi-poussi ist ein Strategiespiel für 1 oder 2 Spieler.</string>
-    <string name="preamble_en">Poussi-poussi is a strategy game for 1 or 2 players.</string>
-    <string name="preamble_es">Poussi-poussi es un juego de estrategia para 1 o 2 jugadores.</string>
-    <string name="preamble_fr">Poussi-poussi est un jeu de stratégie pour 1 ou 2 joueurs.</string>
-    <string name="preamble_it">Poussi-poussi è un gioco di strategia per 1 o 2 giocatori.</string>
-    <string name="preamble_ja">プッサプッシは1人または2人用の戦略ゲームです。</string>
+    <string name="preamble_da">Poussa-Poussi er et strategispil for 1 eller 2 spillere.</string>
+    <string name="preamble_de">Poussa-Poussi ist ein Strategiespiel für 1 oder 2 Spieler.</string>
+    <string name="preamble_en">Poussa-Poussi is a strategy game for 1 or 2 players.</string>
+    <string name="preamble_es">Poussa-Poussi es un juego de estrategia para 1 o 2 jugadores.</string>
+    <string name="preamble_fr">Poussa-Poussi est un jeu de stratégie pour 1 ou 2 joueurs.</string>
+    <string name="preamble_it">Poussa-Poussi è un gioco di strategia per 1 o 2 giocatori.</string>
+    <string name="preamble_ja">プッサ・プッシは1人または2人用の戦略ゲームです。</string>
     <string name="preamble_ko">푸사푸시는 1명 또는 2명의 플레이어를 위한 전략 게임입니다.</string>
-    <string name="preamble_pl">Poussi-poussi to gra strategiczna dla 1 lub 2 graczy.</string>
-    <string name="preamble_vi">Poussi-poussi là một trò chơi chiến lược dành cho 1 hoặc 2 người chơi.</string>
+    <string name="preamble_pl">Poussa-Poussi to gra strategiczna dla 1 lub 2 graczy.</string>
+    <string name="preamble_vi">Poussa-Poussi là một trò chơi chiến lược dành cho 1 hoặc 2 người chơi.</string>
     <string name="preamble_zh">普萨普西是一种适合1或2名玩家的策略游戏。</string>
-    <string name="rules_title_ar">بوسا بوسي</string>
+    <string name="rules_title_ar">Poussa Poussi</string>
     <string name="rules_title_da">Poussa Poussi</string>
     <string name="rules_title_de">Poussa Poussi</string>
     <string name="rules_title_en">Poussa Poussi</string>
     <string name="rules_title_es">Poussa Poussi</string>
     <string name="rules_title_fr">Poussa Poussi</string>
     <string name="rules_title_it">Poussa Poussi</string>
-    <string name="rules_title_ja">プッサプッシ</string>
-    <string name="rules_title_ko">푸사푸시</string>
+    <string name="rules_title_ja">Poussa Poussi</string>
+    <string name="rules_title_ko">Poussa Poussi</string>
     <string name="rules_title_pl">Poussa Poussi</string>
     <string name="rules_title_vi">Poussa Poussi</string>
-    <string name="rules_title_zh">普萨普西</string>
+    <string name="rules_title_zh">Poussa Poussi</string>
     <string name="select_language">Select Language</string>
     <string name="turn_ar">دور اللاعب</string>
     <string name="turn_da">Spillertræk</string>
@@ -132,7 +132,7 @@
     <string name="turn_detail_attention_zh">推动不能将代币恢复到对手上次推动之前的状态。</string>
     <string name="turn_detail_da">1. Placer en brik på kanten eller ved siden af en anden brik.\n2. Valgfrit kan du skubbe en brik og dens række af tilstødende brikker i enhver retning.</string>
     <string name="turn_detail_de">1. Platziere einen Spielstein am Rand oder neben einem anderen Spielstein.\n2. Optional kannst du einen Spielstein und seine Reihe benachbarter Spielsteine in jede Richtung schieben.</string>
-    <string name="turn_detail_en">1. Place a token on the edge or next to another token.\n2. Optionally, push a token and its line of adjacent tokens in any direction</string>
+    <string name="turn_detail_en">1. Place a token on the edge or next to another token.\n2. Optionally, push a token and its line of adjacent tokens in any direction.</string>
     <string name="turn_detail_es">1. Coloca una ficha en el borde o junto a otra ficha.\n2. Opcionalmente, empuja una ficha y su línea de fichas adyacentes en cualquier dirección.</string>
     <string name="turn_detail_fr">1. Placez un jeton sur le bord ou à côté d\'un autre jeton.\n2. Optionnellement, poussez un jeton et sa ligne de jetons adjacents dans n\'importe quelle direction.</string>
     <string name="turn_detail_it">1. Metti una pedina sul bordo o accanto a un\'altra pedina.\n2. Facoltativamente, spingi una pedina e la sua fila di pedine adiacenti in qualsiasi direzione.</string>

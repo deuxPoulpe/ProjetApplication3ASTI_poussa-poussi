@@ -12,19 +12,19 @@
 
     <!-- English Strings -->
     <string name="rules_title_en">Poussa Poussi</string>
-    <string name="preamble_en">Poussi-poussi is a strategy game for 1 or 2 players.</string>
+    <string name="preamble_en">Poussa-Poussi is a strategy game for 1 or 2 players.</string>
     <string name="goal_en">Goal</string>
     <string name="goal_detail_en">Align 5 tokens to score points. The first to score 2 points wins.</string>
     <string name="game_start_en">Game Start</string>
     <string name="game_start_detail_en">The board starts empty. The first player uses blue tokens.</string>
     <string name="turn_en">Player Turn</string>
-    <string name="turn_detail_en">1. Place a token on the edge or next to another token.\n2. Optionally, push a token and its line of adjacent tokens in any direction</string>
+    <string name="turn_detail_en">1. Place a token on the edge or next to another token.\n2. Optionally, push a token and its line of adjacent tokens in any direction.</string>
     <string name="turn_detail_attention_title_en">⚠ Attention</string>
     <string name="turn_detail_attention_en">The push cannot revert the tokens to the state before the opponent\'s last push.</string>
 
     <!-- French Strings -->
     <string name="rules_title_fr">Poussa Poussi</string>
-    <string name="preamble_fr">Poussi-poussi est un jeu de stratégie pour 1 ou 2 joueurs.</string>
+    <string name="preamble_fr">Poussa-Poussi est un jeu de stratégie pour 1 ou 2 joueurs.</string>
     <string name="goal_fr">Objectif</string>
     <string name="goal_detail_fr">Alignez 5 jetons pour marquer des points. Le premier à marquer 2 points gagne.</string>
     <string name="game_start_fr">Début du jeu</string>
@@ -36,7 +36,7 @@
 
     <!-- Spanish Strings -->
     <string name="rules_title_es">Poussa Poussi</string>
-    <string name="preamble_es">Poussi-poussi es un juego de estrategia para 1 o 2 jugadores.</string>
+    <string name="preamble_es">Poussa-Poussi es un juego de estrategia para 1 o 2 jugadores.</string>
     <string name="goal_es">Objetivo</string>
     <string name="goal_detail_es">Alinea 5 fichas para ganar puntos. El primero en obtener 2 puntos gana.</string>
     <string name="game_start_es">Inicio del juego</string>
@@ -48,7 +48,7 @@
 
     <!-- Italian Strings -->
     <string name="rules_title_it">Poussa Poussi</string>
-    <string name="preamble_it">Poussi-poussi è un gioco di strategia per 1 o 2 giocatori.</string>
+    <string name="preamble_it">Poussa-Poussi è un gioco di strategia per 1 o 2 giocatori.</string>
     <string name="goal_it">Obiettivo</string>
     <string name="goal_detail_it">Allinea 5 pedine per segnare punti. Il primo che segna 2 punti vince.</string>
     <string name="game_start_it">Inizio del gioco</string>
@@ -60,7 +60,7 @@
 
     <!-- German Strings -->
     <string name="rules_title_de">Poussa Poussi</string>
-    <string name="preamble_de">Poussi-poussi ist ein Strategiespiel für 1 oder 2 Spieler.</string>
+    <string name="preamble_de">Poussa-Poussi ist ein Strategiespiel für 1 oder 2 Spieler.</string>
     <string name="goal_de">Ziel</string>
     <string name="goal_detail_de">Richte 5 Spielsteine aus, um Punkte zu erzielen. Der Erste, der 2 Punkte erzielt, gewinnt.</string>
     <string name="game_start_de">Spielstart</string>
@@ -72,7 +72,7 @@
 
     <!-- Danish Strings -->
     <string name="rules_title_da">Poussa Poussi</string>
-    <string name="preamble_da">Poussi-poussi er et strategispil for 1 eller 2 spillere.</string>
+    <string name="preamble_da">Poussa-Poussi er et strategispil for 1 eller 2 spillere.</string>
     <string name="goal_da">Mål</string>
     <string name="goal_detail_da">Align 5 brikker for at score point. Den første, der scorer 2 point, vinder.</string>
     <string name="game_start_da">Spilstart</string>
@@ -84,10 +84,10 @@
 
     <!-- Polish Strings -->
     <string name="rules_title_pl">Poussa Poussi</string>
-    <string name="preamble_pl">Poussi-poussi to gra strategiczna dla 1 lub 2 graczy.</string>
+    <string name="preamble_pl">Poussa-Poussi to gra strategiczna dla 1 lub 2 graczy.</string>
     <string name="goal_pl">Cel</string>
     <string name="goal_detail_pl">Ustaw 5 pionków, aby zdobyć punkty. Pierwszy, który zdobędzie 2 punkty, wygrywa.</string>
-    <string name="game_start_pl">Początek gry:</string>
+    <string name="game_start_pl">Początek gry</string>
     <string name="game_start_detail_pl">Plansza zaczyna się pusta. Pierwszy gracz używa niebieskich pionków.</string>
     <string name="turn_pl">Ruch gracza</string>
     <string name="turn_detail_pl">1. Umieść pionek na krawędzi lub obok innego pionka.\n2. Opcjonalnie, przesuń pionek i jego linię sąsiednich pionków w dowolnym kierunku.</string>
@@ -95,8 +95,8 @@
     <string name="turn_detail_attention_pl">Przesunięcie nie może przywrócić pionków do stanu sprzed ostatniego przesunięcia przeciwnika.</string>
 
     <!-- Japanese Strings -->
-    <string name="rules_title_ja">プッサプッシ</string>
-    <string name="preamble_ja">プッサプッシは1人または2人用の戦略ゲームです。</string>
+    <string name="rules_title_ja">Poussa Poussi</string>
+    <string name="preamble_ja">プッサ・プッシは1人または2人用の戦略ゲームです。</string>
     <string name="goal_ja">目的</string>
     <string name="goal_detail_ja">5つのトークンを揃えてポイントを獲得します。最初に2ポイントを獲得した人が勝ちです。</string>
     <string name="game_start_ja">ゲームの開始</string>
@@ -107,7 +107,7 @@
     <string name="turn_detail_attention_ja">押し戻しは、相手の最後の押し戻しの前の状態にトークンを戻すことはできません。</string>
 
     <!-- Chinese Strings -->
-    <string name="rules_title_zh">普萨普西</string>
+    <string name="rules_title_zh">Poussa Poussi</string>
     <string name="preamble_zh">普萨普西是一种适合1或2名玩家的策略游戏。</string>
     <string name="goal_zh">目标</string>
     <string name="goal_detail_zh">排列5个代币以得分。首先得2分的人获胜。</string>
@@ -119,7 +119,7 @@
     <string name="turn_detail_attention_zh">推动不能将代币恢复到对手上次推动之前的状态。</string>
 
     <!-- Korean Strings -->
-    <string name="rules_title_ko">푸사푸시</string>
+    <string name="rules_title_ko">Poussa Poussi</string>
     <string name="preamble_ko">푸사푸시는 1명 또는 2명의 플레이어를 위한 전략 게임입니다.</string>
     <string name="goal_ko">목표</string>
     <string name="goal_detail_ko">5개의 토큰을 정렬하여 점수를 얻습니다. 먼저 2점을 얻는 사람이 승리합니다.</string>
@@ -131,7 +131,7 @@
     <string name="turn_detail_attention_ko">밀기는 상대의 마지막 밀기 이전 상태로 토큰을 되돌릴 수 없습니다.</string>
 
     <!-- Arabic Strings -->
-    <string name="rules_title_ar">بوسا بوسي</string>
+    <string name="rules_title_ar">Poussa Poussi</string>
     <string name="preamble_ar">بوسا بوسي هي لعبة استراتيجية للاعب واحد أو لاعبين.</string>
     <string name="goal_ar">الهدف</string>
     <string name="goal_detail_ar">قم بمحاذاة 5 رموز لكسب النقاط. الفائز هو أول من يحقق نقطتين.</string>
@@ -142,10 +142,9 @@
     <string name="turn_detail_attention_title_ar">⚠ انتباه</string>
     <string name="turn_detail_attention_ar">لا يمكن للدفع إعادة الرموز إلى الحالة التي كانت عليها قبل آخر دفعة للخصم.</string>
 
-    <!-- Vietnam Strings -->
-
+    <!-- Vietnamese Strings -->
     <string name="rules_title_vi">Poussa Poussi</string>
-    <string name="preamble_vi">Poussi-poussi là một trò chơi chiến lược dành cho 1 hoặc 2 người chơi.</string>
+    <string name="preamble_vi">Poussa-Poussi là một trò chơi chiến lược dành cho 1 hoặc 2 người chơi.</string>
     <string name="goal_vi">Mục tiêu</string>
     <string name="goal_detail_vi">Xếp thẳng 5 quân cờ để ghi điểm. Người đầu tiên ghi được 2 điểm sẽ thắng.</string>
     <string name="game_start_vi">Bắt đầu trò chơi</string>

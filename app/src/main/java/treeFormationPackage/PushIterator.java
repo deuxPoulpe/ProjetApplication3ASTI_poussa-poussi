@@ -5,6 +5,7 @@ import java.util.NoSuchElementException;
 import gamePackage.Coordinates;
 import gamePackage.Grid;
 import gamePackage.PushAction;
+import gamePackage.Action;
 
 import java.util.Iterator;
 import java.util.List;
@@ -66,7 +67,9 @@ public class PushIterator implements Iterator<ActionTree> {
         }
 
         // On crée un nouvel enfant avec la copie de la grille actuelle
-        ActionTree child = new ActionTree(node, node.getAction().getGrid().clone(), node.getAction().getPlacement(), currentPushAction.clone());
+        Action childAction = node.getAction().clone();
+        childAction.setPush(currentPushAction.clone());
+        ActionTree child = new ActionTree(node, childAction);
 
         // On effectue l'action de poussée sur la grille du nouvel enfant
         child.getAction().getGrid().pushToken(currentPushAction, node.getAgent().getColor());
