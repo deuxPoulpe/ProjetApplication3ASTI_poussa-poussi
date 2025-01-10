@@ -1,0 +1,10 @@
+
+/populations
+src/game/agents/MinMaxAgent.java
+src/game/tests/RemovalIteratorTest.java
+src/game/treeBuilding/ActionIterator.java
+src/game/treeBuilding/Node.java
+src/game/treeBuilding/PieceIterator.java
+src/game/treeBuilding/PlacementIterator.java
+src/game/treeBuilding/PushIterator.java
+src/game/treeBuilding/RemovalIterator.java
